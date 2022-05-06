@@ -1,2 +1,7 @@
+numpy
+scipy
 bsl==0.4.0
 mne
+opencv-python
+matplotlib
+screeninfo
