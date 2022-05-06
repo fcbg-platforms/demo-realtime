@@ -7,9 +7,6 @@ extend-exclude = '''
       __pycache__
     | \.github
     | setup.py
-    | doc/
-    | examples/
-    | tutorials/
 )
 '''
 
@@ -20,7 +17,4 @@ line_length = 79
 py_version = 37
 extend_skip_glob = [
     'setup.py',
-    'doc/*',
-    'examples/*',
-    'tutorials/*'
     ]

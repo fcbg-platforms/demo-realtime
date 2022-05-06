@@ -36,7 +36,7 @@ jobs:
       - name: Run flake8
         uses: py-actions/flake8@v1
         with:
-          path: "template"
+          path: "demo_nfb"
       - name: Run black
         uses: psf/black@stable
         with:
