@@ -1,7 +1,7 @@
 import cv2
 
-from ._visual import _Visual
 from ..utils._docs import fill_doc
+from ._visual import _Visual
 
 
 @fill_doc
@@ -15,7 +15,7 @@ class Cross(_Visual):
     %(window_size)s
     """
 
-    def __init__(self, window_name='Visual', window_size=None):
+    def __init__(self, window_name="Visual", window_size=None):
         super().__init__(window_name, window_size)
 
     def putCross(self, length, thickness, color, position):
@@ -58,18 +58,19 @@ class Cross(_Visual):
         thickness = Cross._check_thickness(thickness, length)
         color = _Visual._check_color(color)
         position = Cross._check_position(
-            position, length, self.window_size, self.window_center)
+            position, length, self.window_size, self.window_center
+        )
 
         # Horizontal rectangle
-        xP1 = position[0] - length//2
-        yP1 = position[1] - thickness//2
+        xP1 = position[0] - length // 2
+        yP1 = position[1] - thickness // 2
         xP2 = xP1 + length
         yP2 = yP1 + thickness
         cv2.rectangle(self._img, (xP1, yP1), (xP2, yP2), color, -1)
 
         # Vertical rectangle
-        xP1 = position[0] - thickness//2
-        yP1 = position[1] - length//2
+        xP1 = position[0] - thickness // 2
+        yP1 = position[1] - length // 2
         xP2 = xP1 + thickness
         yP2 = yP1 + length
         cv2.rectangle(self._img, (xP1, yP1), (xP2, yP2), color, -1)
@@ -107,12 +108,12 @@ class Cross(_Visual):
         """
         if isinstance(position, str):
             position = position.lower().strip()
-            assert position in ['centered', 'center']
+            assert position in ["centered", "center"]
             position = window_center
         position = tuple(position)
         assert len(position) == 2
-        assert 0 <= position[0] - length//2
-        assert position[0] - length//2 + length <= window_size[0]
-        assert 0 <= position[1] - length//2
-        assert position[1] - length//2 + length <= window_size[1]
+        assert 0 <= position[0] - length // 2
+        assert position[0] - length // 2 + length <= window_size[0]
+        assert 0 <= position[1] - length // 2
+        assert position[1] - length // 2 + length <= window_size[1]
         return position

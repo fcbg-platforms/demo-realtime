@@ -2,8 +2,8 @@ import copy
 
 import cv2
 
-from ._visual import _Visual
 from ..utils._docs import fill_doc
+from ._visual import _Visual
 
 
 @fill_doc
@@ -19,12 +19,13 @@ class FillingBar(_Visual):
     %(window_size)s
     """
 
-    def __init__(self, window_name='Visual', window_size=None):
+    def __init__(self, window_name="Visual", window_size=None):
         super().__init__(window_name, window_size)
         self._backup_img = None
 
-    def putBar(self, length, width, margin, color, fill_color,
-               fill_perc=0, axis=0):
+    def putBar(
+        self, length, width, margin, color, fill_color, fill_perc=0, axis=0
+    ):
         """
         Backup the visual and draw the bar on top.
 
@@ -62,9 +63,11 @@ class FillingBar(_Visual):
 
         self._axis = _Visual._check_axis(axis)
         self._length, margin = FillingBar._check_length_margin(
-            length, margin, self._axis, self.window_size)
+            length, margin, self._axis, self.window_size
+        )
         self._width, margin = FillingBar._check_width_margin(
-            width, margin, self._length, self._axis, self.window_size)
+            width, margin, self._length, self._axis, self.window_size
+        )
         self._margin = margin
         self._color = _Visual._check_color(color)
         self._fill_color = _Visual._check_color(fill_color)
@@ -92,35 +95,37 @@ class FillingBar(_Visual):
         """
         # External rectangle to fill
         if self._axis == 0:
-            xP1 = self.window_center[0] - self._width//2 - self._margin
-            yP1 = self.window_center[1] - self._length//2 - self._margin
-            xP2 = xP1 + self._width + 2*self._margin
-            yP2 = yP1 + self._length + 2*self._margin
+            xP1 = self.window_center[0] - self._width // 2 - self._margin
+            yP1 = self.window_center[1] - self._length // 2 - self._margin
+            xP2 = xP1 + self._width + 2 * self._margin
+            yP2 = yP1 + self._length + 2 * self._margin
         elif self._axis == 1:
-            xP1 = self.window_center[0] - self._length//2 - self._margin
-            yP1 = self.window_center[1] - self._width//2 - self._margin
-            xP2 = xP1 + self._length + 2*self._margin
-            yP2 = yP1 + self._width + 2*self._margin
+            xP1 = self.window_center[0] - self._length // 2 - self._margin
+            yP1 = self.window_center[1] - self._width // 2 - self._margin
+            xP2 = xP1 + self._length + 2 * self._margin
+            yP2 = yP1 + self._width + 2 * self._margin
 
         cv2.rectangle(self._img, (xP1, yP1), (xP2, yP2), self._color, -1)
 
         # Internal smaller rectangle filling the external rectangle
         fill_perc = FillingBar._convert_fill_perc_to_pixel(
-            self.fill_perc, self._length)
+            self.fill_perc, self._length
+        )
         if fill_perc != 0:
             if self._axis == 0:
-                xP1 = self.window_center[0] - self._width//2
+                xP1 = self.window_center[0] - self._width // 2
                 yP1 = self.window_center[1] - fill_perc
                 xP2 = xP1 + self._width
-                yP2 = yP1 + 2*fill_perc
+                yP2 = yP1 + 2 * fill_perc
             elif self._axis == 1:
                 xP1 = self.window_center[0] - fill_perc
-                yP1 = self.window_center[1] - self._width//2
-                xP2 = xP1 + 2*fill_perc
+                yP1 = self.window_center[1] - self._width // 2
+                xP2 = xP1 + 2 * fill_perc
                 yP2 = yP1 + self._width
 
             cv2.rectangle(
-                self._img, (xP1, yP1), (xP2, yP2), self._fill_color, -1)
+                self._img, (xP1, yP1), (xP2, yP2), self._fill_color, -1
+            )
 
     def _reset(self):
         """
@@ -174,7 +179,7 @@ class FillingBar(_Visual):
             - 1: Fully filled
         Expresses the % of length//2 filled.
         """
-        return int((length//2) * fill_perc)
+        return int((length // 2) * fill_perc)
 
     # --------------------------------------------------------------------
     @property
@@ -187,7 +192,8 @@ class FillingBar(_Visual):
     @length.setter
     def length(self, length):
         self._length, _ = FillingBar._check_length_margin(
-            length, self._margin, self._axis, self.window_size)
+            length, self._margin, self._axis, self.window_size
+        )
         self._reset()
         self._putBar()
 
@@ -201,7 +207,8 @@ class FillingBar(_Visual):
     @width.setter
     def width(self, width):
         self._width, _ = FillingBar._check_width_margin(
-            width, self._margin, self._length, self._axis, self.window_size)
+            width, self._margin, self._length, self._axis, self.window_size
+        )
         self._reset()
         self._putBar()
 
@@ -215,9 +222,11 @@ class FillingBar(_Visual):
     @margin.setter
     def margin(self, margin):
         _, margin = FillingBar._check_length_margin(
-            self._length, margin, self._axis, self.window_size)
+            self._length, margin, self._axis, self.window_size
+        )
         _, margin = FillingBar._check_width_margin(
-            self._width, margin, self._length, self._axis, self.window_size)
+            self._width, margin, self._length, self._axis, self.window_size
+        )
         self._margin = margin
         self._reset()
         self._putBar()

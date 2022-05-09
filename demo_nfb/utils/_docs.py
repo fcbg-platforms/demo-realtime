@@ -9,10 +9,14 @@ import sys
 docdict = dict()
 
 # ---------------------------------- visuals ---------------------------------
-docdict['window_name'] = """
+docdict[
+    "window_name"
+] = """
 window_name : str
     Name of the window in which the visual is displayed."""
-docdict['window_size'] = """
+docdict[
+    "window_size"
+] = """
 window_size : list | None
     Either None to automatically select a window size based on the
     available monitors, or a 2-length of positive integer sequence, as

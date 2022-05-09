@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 
 import cv2
-from matplotlib import colors
 import numpy as np
 import screeninfo
+from matplotlib import colors
 
 from ..utils._docs import fill_doc
 
@@ -20,19 +20,24 @@ class _Visual(ABC):
     """
 
     @abstractmethod
-    def __init__(self, window_name='Visual', window_size=None):
+    def __init__(self, window_name="Visual", window_size=None):
         self._window_name = str(window_name)
 
         # Size attributes
         self._window_size = _Visual._check_window_size(window_size)
         self._window_width = self._window_size[0]
         self._window_height = self._window_size[1]
-        self._window_center = (self._window_width//2, self._window_height//2)
+        self._window_center = (
+            self._window_width // 2,
+            self._window_height // 2,
+        )
 
         # Default black background
         self._img = np.full(
             (self._window_height, self._window_width, 3),
-            fill_value=(0, 0, 0), dtype=np.uint8)
+            fill_value=(0, 0, 0),
+            dtype=np.uint8,
+        )
         self._background = [0, 0, 0]
 
     def show(self, wait=1):
@@ -67,7 +72,9 @@ class _Visual(ABC):
         color = _Visual._check_color(color)
         self._img = np.full(
             (self._window_height, self._window_width, 3),
-            fill_value=color, dtype=np.uint8)
+            fill_value=color,
+            dtype=np.uint8,
+        )
         self._background = color
 
     def __del__(self):
@@ -88,9 +95,11 @@ class _Visual(ABC):
         else:
             try:
                 width = min(
-                    monitor.width for monitor in screeninfo.get_monitors())
+                    monitor.width for monitor in screeninfo.get_monitors()
+                )
                 height = min(
-                    monitor.height for monitor in screeninfo.get_monitors())
+                    monitor.height for monitor in screeninfo.get_monitors()
+                )
             except ValueError as headless:
                 raise ValueError from headless
             window_size = (width, height)
@@ -103,7 +112,7 @@ class _Visual(ABC):
         """
         if isinstance(color, str):
             r, g, b, _ = colors.to_rgba(color)
-            color = [int(c*255) for c in (b, g, r)]
+            color = [int(c * 255) for c in (b, g, r)]
         elif isinstance(color, (tuple, list)) and len(color) == 3:
             color = [int(c) for c in color]
             assert all(0 <= c <= 255 for c in color)
@@ -120,8 +129,8 @@ class _Visual(ABC):
         """
         if isinstance(axis, str):
             axis = axis.lower().strip()
-            assert axis in ['horizontal', 'h', 'vertical', 'v']
-            axis = 0 if axis.startswith('v') else 1
+            assert axis in ["horizontal", "h", "vertical", "v"]
+            axis = 0 if axis.startswith("v") else 1
         elif isinstance(axis, (bool, int, float)):
             axis = int(axis)
             assert axis in (0, 1)
