@@ -17,7 +17,7 @@ def basic(stream_name: str):
     # create receiver and feedback
     sr = StreamReceiver(bufsize=1, winsize=1, stream_name=stream_name)
     feedback = FillingBar()
-    feedback.draw_background('lightgrey')
+    feedback.draw_background("lightgrey")
     feedback.putBar(400, 50, 5, "black", "teal", axis=1)  # empty bar
 
     # init min/max for percentage
