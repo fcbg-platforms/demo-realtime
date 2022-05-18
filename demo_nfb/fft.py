@@ -19,7 +19,7 @@ def fft(data: NDArray[float], fs: float, band: Tuple[float, float]):
     Returns
     -------
     metric : float
-        Average of abs(FFT) across channel and frequency binds in the band of
+        Average of abs(FFT) across channel and frequency bins in the band of
         interest.
     """
     assert data.ndim == 2
