@@ -1,9 +1,9 @@
 import time
 
 from bsl import StreamReceiver
+from stimuli.visuals import FillingBar
 
 from . import fft
-from .visuals import FillingBar
 
 
 def basic(stream_name: str):
