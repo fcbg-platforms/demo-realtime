@@ -7,7 +7,7 @@ from . import fft
 
 
 def basic(stream_name: str):
-    """A basic NFB loop that runs 30 seconds.
+    """Run a 30 second neurofeedback loop.
 
     Parameters
     ----------

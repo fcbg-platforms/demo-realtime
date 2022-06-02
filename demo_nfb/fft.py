@@ -24,7 +24,7 @@ def fft(data: NDArray[float], fs: float, band: Tuple[float, float]):
     """
     assert data.ndim == 2
     winsize = data.shape[-1]
-    # mutliply the data with a window
+    # multiply the data with a window
     window = np.hamming(winsize)
     data = data * window
     # retrieve fft
