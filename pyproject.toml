@@ -35,9 +35,7 @@ classifiers = [
 ]
 dependencies = [
     'numpy',
-    'scipy',
     'bsl==0.4.0',
-    'mne',
     'stimuli',
 ]
 
