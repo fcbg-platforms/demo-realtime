@@ -68,7 +68,7 @@ source = 'https://github.com/mscheltienne/demo-nfb'
 tracker = 'https://github.com/mscheltienne/demo-nfb/issues'
 
 [tool.setuptools]
-include-package-data = true
+include-package-data = false
 
 [tool.setuptools.packages.find]
 include = ['demo_nfb*']
