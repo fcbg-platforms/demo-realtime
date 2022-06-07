@@ -56,15 +56,9 @@ build = [
     'twine',
 ]
 all = [
-    'black',
-    'codespell',
-    'isort',
-    'flake8',
-    'pydocstyle[toml]',
-    'pytest',
-    'pytest-cov',
-    'build',
-    'twine',
+    'demo_nfb[style]',
+    'demo_nfb[test]',
+    'demo_nfb[build]',
 ]
 
 [project.urls]
@@ -78,7 +72,7 @@ include-package-data = true
 
 [tool.setuptools.packages.find]
 include = ['demo_nfb*']
-exclude = ['^.*tests']
+exclude = ['demo_nfb*tests']
 
 [tool.black]
 line-length = 79
