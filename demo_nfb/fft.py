@@ -4,8 +4,8 @@ import numpy as np
 from numpy.typing import NDArray
 
 
-def fft(data: NDArray[float], fs: float, band: Tuple[float, float]):
-    """Apply FFT to the data after applying a hamming window.
+def fft(data: NDArray[float], fs: float, band: Tuple[float, float]) -> float:
+    """Compute FFT of the data after applying a hamming window.
 
     Parameters
     ----------
@@ -23,14 +23,14 @@ def fft(data: NDArray[float], fs: float, band: Tuple[float, float]):
         interest.
     """
     assert data.ndim == 2
+    assert len(band) == 2
+    assert band[0] <= band[1]
     winsize = data.shape[-1]
     # multiply the data with a window
     window = np.hamming(winsize)
-    data = data * window
+    data = data * window  # 'data *= window' raises if the dtypes are different
     # retrieve fft
     frequencies = np.fft.rfftfreq(winsize, 1 / fs)
-    assert len(band) == 2
-    assert band[0] <= band[1]
     band_idx = np.where((band[0] <= frequencies) & (frequencies <= band[1]))[0]
     fftval = np.abs(np.fft.rfft(data, axis=-1))
     # average across channels and band of interest

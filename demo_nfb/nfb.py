@@ -6,7 +6,7 @@ from stimuli.visuals import FillingBar
 from . import fft
 
 
-def basic(stream_name: str):
+def basic(stream_name: str) -> None:
     """Run a 30 second neurofeedback loop.
 
     Parameters
@@ -15,7 +15,7 @@ def basic(stream_name: str):
         The name of the LSL stream to connect to.
     """
     # create receiver and feedback
-    sr = StreamReceiver(bufsize=1, winsize=1, stream_name=stream_name)
+    sr = StreamReceiver(bufsize=3, winsize=3, stream_name=stream_name)
     feedback = FillingBar()
     feedback.draw_background("lightgrey")
     feedback.putBar(400, 50, 5, "black", "teal", axis=1)  # empty bar
@@ -28,7 +28,7 @@ def basic(stream_name: str):
     fs = sr.streams[stream_name].sample_rate
 
     # wait to fill one buffer
-    time.sleep(1)
+    time.sleep(3)
 
     # loop for 30 seconds
     start = time.time()
