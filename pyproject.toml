@@ -34,12 +34,17 @@ classifiers = [
     'License :: OSI Approved :: MIT License',
 ]
 dependencies = [
-    'numpy',
     'bsl==0.4.0',
+    'numpy',
+    'psutil',
     'stimuli',
 ]
 
 [project.optional-dependencies]
+build = [
+    'build',
+    'twine',
+]
 style = [
     'black',
     'codespell',
@@ -51,14 +56,13 @@ test = [
     'pytest',
     'pytest-cov',
 ]
-build = [
-    'build',
-    'twine',
-]
 all = [
     'demo_nfb[style]',
     'demo_nfb[test]',
     'demo_nfb[build]',
+]
+full = [
+    'demo_nfb[all]',
 ]
 
 [project.urls]
@@ -66,6 +70,9 @@ homepage = 'https://github.com/mscheltienne/demo-nfb'
 documentation = 'https://github.com/mscheltienne/demo-nfb'
 source = 'https://github.com/mscheltienne/demo-nfb'
 tracker = 'https://github.com/mscheltienne/demo-nfb/issues'
+
+[project.scripts]
+demo_nfb-sys_info = 'template.commands.sys_info:run'
 
 [tool.setuptools]
 include-package-data = false
@@ -97,7 +104,29 @@ extend_skip_glob = [
 
 [tool.pydocstyle]
 convention = 'numpy'
-ignore-decorators = '(copy_doc|property|.*setter|.*getter|pyqtSlot)'
+ignore-decorators = '(copy_doc|property|.*setter|.*getter|pyqtSlot|Slot)'
 match = '^(?!setup|__init__|test_).*\.py'
-match-dir = '^(?!build|dist|\.).*'
+match-dir = '^demo_nfb.*'
 add_ignore = 'D100,D104,D107'
+
+[tool.pytest.ini_options]
+minversion = '6.0'
+addopts = '--durations 20 --junit-xml=junit-results.xml --verbose'
+filterwarnings = []
+
+[tool.coverage.run]
+branch = true
+cover_pylib = false
+omit = [
+    '**/__init__.py',
+    '**/demo_nfb/_version.py',
+    '**/demo_nfb/commands/*',
+    '**/tests/**',
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    'pragma: no cover',
+    'if __name__ == .__main__.:',
+]
+precision = 2
