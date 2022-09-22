@@ -13,8 +13,8 @@ It implements a simple neurofeedback loop of 30 seconds using [BSL](https://bsl-
 # Example
 
 ```
-from demo_nfb import basic
+from demo_nfb import nfb_fft_alpha_occipital
 
-stream_name = ...  # str
-basic(stream_name)
+stream_name: str = "My LSL Stream"
+nfb_fft_alpha_occipital(stream_name)
 ```

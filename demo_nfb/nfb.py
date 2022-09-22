@@ -5,18 +5,42 @@ from bsl import StreamReceiver
 from stimuli.visuals import FillingBar
 
 from . import fft
+from .utils._checks import _check_type
 
 
-def basic(stream_name: str) -> None:
-    """Run a 30 second neurofeedback loop.
+def nfb_fft_alpha_occipital(
+    stream_name: str, winsize: float = 3, duration: float = 30
+) -> None:
+    """Run a simple neurofeedback loop.
+
+    The feedback represents the alpha-band FFT on the O1 and O2 electrodes.
 
     Parameters
     ----------
     stream_name : str
         The name of the LSL stream to connect to.
+    winsize : float
+        Duration of an acquisition window.
+    duration : float
+        Duration of the neurofeedback loop.
     """
+    # check inputs
+    _check_type(stream_name, (str,), "stream_name")
+    _check_type(winsize, ("numeric",), "winsize")
+    if winsize <= 0:
+        raise ValueError(
+            "Argument 'winsize' should be a strictly positive number."
+        )
+    _check_type(duration, ("numeric",), "duration")
+    if duration <= 0:
+        raise ValueError(
+            "Argument 'duration' should be a strictly positive number."
+        )
+
     # create receiver and feedback
-    sr = StreamReceiver(bufsize=3, winsize=3, stream_name=stream_name)
+    sr = StreamReceiver(
+        bufsize=winsize, winsize=winsize, stream_name=stream_name
+    )
     feedback = FillingBar()
     feedback.draw_background("lightgrey")
     feedback.putBar(400, 50, 5, "black", "teal", axis=1)  # empty bar
@@ -25,20 +49,22 @@ def basic(stream_name: str) -> None:
     metrics = np.ones(100) * np.nan
     inc = 0
 
-    # retrieve sampling rate
+    # retrieve sampling rate and channels
     fs = sr.streams[stream_name].sample_rate
+    ch_names = sr.streams[stream_name].ch_list
+    ch_idx = [k for k, ch in enumerate(ch_names) if ch in ("O1", "O2")]
 
     # wait to fill one buffer
-    time.sleep(3)
+    time.sleep(winsize)
 
     # loop for 30 seconds
     start = time.time()
-    while time.time() - start <= 30:
+    while time.time() - start <= duration:
         # retrieve data
         sr.acquire()
         data, _ = sr.get_window()
         # compute metric
-        metric = fft(data.T, fs=fs, band=(8, 13))
+        metric = fft(data[:, ch_idx].T, fs=fs, band=(8, 13))
 
         # store metric and update feedback range
         metrics[inc % 100] = metric
