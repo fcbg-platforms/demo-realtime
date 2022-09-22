@@ -13,6 +13,8 @@ exclude =
     .git
     .github
     setup.py
+    doc
+    *.egg-info
 
 per-file-ignores =
     # __init__.py files are allowed to have unused imports and lines-too-long
