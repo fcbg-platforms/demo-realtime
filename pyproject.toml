@@ -34,7 +34,7 @@ classifiers = [
     'License :: OSI Approved :: MIT License',
 ]
 dependencies = [
-    'bsl==0.4.0',
+    'bsl>=0.4.0',
     'numpy',
     'psutil',
     'stimuli',
@@ -73,6 +73,7 @@ tracker = 'https://github.com/mscheltienne/demo-nfb/issues'
 
 [project.scripts]
 demo_nfb-sys_info = 'demo_nfb.commands.sys_info:run'
+demo_nfb = 'demo_nfb.commands.demo_nfb:run'
 
 [tool.setuptools]
 include-package-data = false
