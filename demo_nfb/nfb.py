@@ -57,7 +57,7 @@ def nfb_fft_alpha_occipital(
     # wait to fill one buffer
     time.sleep(winsize)
 
-    # loop for 30 seconds
+    # main loop
     start = time.time()
     while time.time() - start <= duration:
         # retrieve data
@@ -69,8 +69,9 @@ def nfb_fft_alpha_occipital(
         # store metric and update feedback range
         metrics[inc % 100] = metric
         inc += 1
-        if inc < metrics.size:
-            continue  # skip until we have 100 points
+        if inc < metrics.size:  # skip until we have 100 points
+            start = time.time()  # reset start time
+            continue
         min_ = np.percentile(metrics, 5)
         max_ = np.percentile(metrics, 95)
         fill_perc = (metric - min_) / (max_ - min_)
