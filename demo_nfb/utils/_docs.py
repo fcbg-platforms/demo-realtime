@@ -5,10 +5,10 @@ Inspired from mne.utils.docs.py by Eric Larson <larson.eric.d@gmail.com>
 """
 
 import sys
-from typing import Callable, List
+from typing import Callable, Dict, List
 
 # ------------------------- Documentation dictionary -------------------------
-docdict = dict()
+docdict: Dict[str, str] = dict()
 
 # ---------------------------------- verbose ---------------------------------
 docdict[
@@ -22,7 +22,7 @@ verbose : int | str | bool | None
     "INFO" for True."""
 
 # ------------------------- Documentation functions --------------------------
-docdict_indented = dict()
+docdict_indented: Dict[int, Dict[str, str]] = dict()
 
 
 def fill_doc(f: Callable) -> Callable:
@@ -90,8 +90,6 @@ def _indentcount_lines(lines: List[str]) -> int:
         line_stripped = line.lstrip()
         if line_stripped:
             indent = min(indent, len(line) - len(line_stripped))
-    if indent == sys.maxsize:
-        return 0
     return indent
 
 

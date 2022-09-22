@@ -8,7 +8,9 @@ import importlib
 # A mapping from import name to package name (on PyPI) when the package name
 # is different.
 INSTALL_MAPPING = {
+    "codespell_lib": "codespell",
     "cv2": "opencv-python",
+    "pytest_cov": "pytest-cov",
     "serial": "pyserial",
 }
 
