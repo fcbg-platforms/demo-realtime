@@ -41,7 +41,7 @@ def nfb_fft_alpha_occipital(
     sr = StreamReceiver(
         bufsize=winsize, winsize=winsize, stream_name=stream_name
     )
-    feedback = FillingBar()
+    feedback = FillingBar(window_size=(1280, 720))
     feedback.draw_background("lightgrey")
     feedback.putBar(400, 50, 5, "black", "teal", axis=1)  # empty bar
 
