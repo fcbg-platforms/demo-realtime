@@ -59,6 +59,7 @@ def nfb_fft_alpha_occipital(
         data, _ = sr.get_window()
         # compute metric
         metric = fft(data[:, ch_idx].T, fs=fs, band=(8, 13))
+        metric = np.average(metric)  # average across selected channels
 
         # store metric
         metrics[inc % 100] = metric

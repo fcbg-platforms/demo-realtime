@@ -4,13 +4,13 @@ import numpy as np
 from numpy.typing import NDArray
 
 
-def fft(data: NDArray[float], fs: float, band: Tuple[float, float]) -> float:
-    """Compute FFT of the data after applying a hamming window.
+def fft(data: NDArray[float], fs: float, band: Tuple[float, float]) -> NDArray[float]:
+    """Compute the power of each frequency component represented by the FFT.
 
     Parameters
     ----------
-    data : array
-        2D array of shape (n_channels, n_times) containing the received data.
+    data : array of shape (n_channels, n_times)
+        Data on which the the FFT is computed.
     fs : float
         Sampling frequency in Hz.
     band : tuple
@@ -18,9 +18,8 @@ def fft(data: NDArray[float], fs: float, band: Tuple[float, float]) -> float:
 
     Returns
     -------
-    metric : float
-        Average of abs(FFT) across channel and frequency bins in the band of
-        interest.
+    metric : array of shape (n_channels,)
+        Average of power across the frequency component of interest.
     """
     assert data.ndim == 2
     assert len(band) == 2
@@ -32,7 +31,7 @@ def fft(data: NDArray[float], fs: float, band: Tuple[float, float]) -> float:
     # retrieve fft
     frequencies = np.fft.rfftfreq(winsize, 1 / fs)
     band_idx = np.where((band[0] <= frequencies) & (frequencies <= band[1]))[0]
-    fftval = np.abs(np.fft.rfft(data, axis=-1))
-    # average across channels and band of interest
-    metric = np.average(fftval[:, band_idx])
+    fftval = np.abs(np.fft.rfft(data, axis=1)[:, band_idx])**2
+    # average across band of interest
+    metric = np.average(fftval, axis=1)
     return metric
