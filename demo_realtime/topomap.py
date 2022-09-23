@@ -26,7 +26,7 @@ def rt_topomap(
     Parameters
     ----------
     %(stream_name)s
-    %(winsize)s
+    %(winsize)sdemo
     %(duration)s
     %(figsize)s
     %(verbose)s
@@ -37,6 +37,8 @@ def rt_topomap(
     _check_type(stream_name, (str,), "stream_name")
     _check_type(winsize, ("numeric",), "winsize")
     assert 0 < winsize
+    _check_type(duration, ("numeric",), "duration")
+    assert 0 < duration
 
     # create receiver and feedback
     sr = StreamReceiver(

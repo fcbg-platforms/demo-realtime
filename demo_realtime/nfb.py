@@ -18,7 +18,7 @@ def nfb_alpha_power_occipital(
     duration: float = 30,
     verbose: Optional[Union[str, int]] = None,
 ) -> None:
-    """Run a simple neurofeedback loop.
+    """Real-time simple neurofeedback loop.
 
     The feedback represents the alpha-band FFT power on the O1 and O2
     electrodes.

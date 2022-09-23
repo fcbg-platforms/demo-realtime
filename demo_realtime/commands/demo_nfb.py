@@ -37,8 +37,17 @@ def run():
         help="duration of the nfb loop (seconds).",
         default=30.0,
     )
+    parser.add_argument(
+        "--verbose", help="enable debug logs.", action="store_true"
+    )
     args = parser.parse_args()
+
     stream_name = args.stream_name
     if stream_name is None:
         stream_name = search_lsl(ignore_markers=True, timeout=3)
-    nfb_alpha_power_occipital(stream_name, args.winsize, args.duration)
+    nfb_alpha_power_occipital(
+        stream_name,
+        args.winsize,
+        args.duration,
+        verbose="DEBUG" if args.verbose else "INFO",
+    )
