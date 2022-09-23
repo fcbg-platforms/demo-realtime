@@ -41,5 +41,5 @@ def fft_power(
     fftval = np.abs(np.fft.rfft(data, axis=1)[:, band_idx]) ** 2
     # average across band of interest
     metric = np.average(fftval, axis=1)
-    metric = 10 * np.log10(fftval) if dB else metric
+    metric = 10 * np.log10(metric) if dB else metric
     return metric

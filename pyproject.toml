@@ -75,6 +75,7 @@ tracker = 'https://github.com/mscheltienne/demo-realtime/issues'
 [project.scripts]
 demo-sys_info = 'demo_realtime.commands.sys_info:run'
 demo-nfb = 'demo_realtime.commands.demo_nfb:run'
+demo-topomap = 'demo_realtime.commands.demo_topomap:run'
 
 [tool.setuptools]
 include-package-data = false

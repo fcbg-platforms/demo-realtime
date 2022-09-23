@@ -21,6 +21,36 @@ verbose : int | str | bool | None
     If a bool is provided, the verbosity is set to "WARNING" for False and to
     "INFO" for True."""
 
+# ---------------------------------- stream ----------------------------------
+docdict[
+    "stream_name"
+] = """
+stream_name : str
+    The name of the LSL stream to connect to."""
+docdict[
+    "winsize"
+] = """
+winsize : float
+    Duration of an acquisition window."""
+docdict[
+    "duration"
+] = """
+duration : float
+    Duration of the neurofeedback loop."""
+
+# --------------------------------- topomap ----------------------------------
+docdict[
+    "info"
+] = """
+info : Info
+    MNE Info instance with a montage."""
+docdict[
+    "figsize"
+] = """
+figsize : tuple
+    2-sequence tuple defining the matplotlib figure size as (width, height)
+    in inches."""
+
 # ------------------------- Documentation functions --------------------------
 docdict_indented: Dict[int, Dict[str, str]] = dict()
 

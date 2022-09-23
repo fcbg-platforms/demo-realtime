@@ -1,4 +1,5 @@
 import time
+from typing import Optional, Union
 
 import numpy as np
 from bsl import StreamReceiver
@@ -6,24 +7,31 @@ from stimuli.visuals import FillingBar
 
 from .utils import fft_power
 from .utils._checks import _check_type
+from .utils._docs import fill_doc
+from .utils._logs import set_log_level
 
 
+@fill_doc
 def nfb_alpha_power_occipital(
-    stream_name: str, winsize: float = 3, duration: float = 30
+    stream_name: str,
+    winsize: float = 3,
+    duration: float = 30,
+    verbose: Optional[Union[str, int]] = None,
 ) -> None:
     """Run a simple neurofeedback loop.
 
-    The feedback represents the alpha-band FFT on the O1 and O2 electrodes.
+    The feedback represents the alpha-band FFT power on the O1 and O2
+    electrodes.
 
     Parameters
     ----------
-    stream_name : str
-        The name of the LSL stream to connect to.
-    winsize : float
-        Duration of an acquisition window.
-    duration : float
-        Duration of the neurofeedback loop.
+    %(stream_name)s
+    %(winsize)s
+    %(duration)s
+    %(verbose)s
     """
+    # set verbosity
+    set_log_level(verbose)
     # check inputs
     _check_type(stream_name, (str,), "stream_name")
     _check_type(winsize, ("numeric",), "winsize")
