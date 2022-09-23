@@ -131,7 +131,7 @@ class TopomapMPL(BaseTopomap):
         # define kwargs for plot_topomap
         self._kwargs = dict(
             cmap=self._cmap,
-            sensors=False,
+            sensors=True,
             res=64,
             axes=self._axes,
             names=None,
