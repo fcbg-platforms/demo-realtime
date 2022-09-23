@@ -4,7 +4,9 @@ import numpy as np
 from numpy.typing import NDArray
 
 
-def fft(data: NDArray[float], fs: float, band: Tuple[float, float]) -> NDArray[float]:
+def fft(
+    data: NDArray[float], fs: float, band: Tuple[float, float]
+) -> NDArray[float]:
     """Compute the power of each frequency component represented by the FFT.
 
     Parameters
@@ -31,7 +33,7 @@ def fft(data: NDArray[float], fs: float, band: Tuple[float, float]) -> NDArray[f
     # retrieve fft
     frequencies = np.fft.rfftfreq(winsize, 1 / fs)
     band_idx = np.where((band[0] <= frequencies) & (frequencies <= band[1]))[0]
-    fftval = np.abs(np.fft.rfft(data, axis=1)[:, band_idx])**2
+    fftval = np.abs(np.fft.rfft(data, axis=1)[:, band_idx]) ** 2
     # average across band of interest
     metric = np.average(fftval, axis=1)
     return metric

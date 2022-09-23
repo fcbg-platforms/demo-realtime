@@ -8,7 +8,7 @@ from . import fft
 from .utils._checks import _check_type
 
 
-def nfb_fft_alpha_occipital(
+def nfb_alpha_power_occipital(
     stream_name: str, winsize: float = 3, duration: float = 30
 ) -> None:
     """Run a simple neurofeedback loop.
