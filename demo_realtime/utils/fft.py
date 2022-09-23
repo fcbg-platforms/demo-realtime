@@ -5,7 +5,10 @@ from numpy.typing import NDArray
 
 
 def fft_power(
-    data: NDArray[float], fs: float, band: Tuple[float, float], dB: bool,
+    data: NDArray[float],
+    fs: float,
+    band: Tuple[float, float],
+    dB: bool,
 ) -> NDArray[float]:
     """Compute the power of each frequency component represented by the FFT.
 
