@@ -7,7 +7,7 @@ from .. import nfb_alpha_power_occipital
 
 
 def run():
-    """Run demo_nfb() command."""
+    """Run 'demo-nfb' command."""
     bsl_set_log_level("INFO")
 
     parser = argparse.ArgumentParser(

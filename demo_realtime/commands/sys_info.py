@@ -4,7 +4,7 @@ from .. import sys_info
 
 
 def run():
-    """Run sys_info() command."""
+    """Run 'demo-sys_info' command."""
     parser = argparse.ArgumentParser(
         prog=f"{__package__.split('.')[0]}-sys_info", description="sys_info"
     )
