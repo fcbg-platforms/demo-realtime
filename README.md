@@ -8,7 +8,7 @@
 
 This repository can be installed via `pip` with `pip install git+https://github.com/mscheltienne/demo-realtime`.
 
-It implements a simple neurofeedback loop of 30 seconds using [BSL](https://bsl-tools.github.io/).
+It implements simple real-time demonstration using [BSL](https://bsl-tools.github.io/).
 
 # Example
 
