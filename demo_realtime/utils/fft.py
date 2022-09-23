@@ -5,7 +5,7 @@ from numpy.typing import NDArray
 
 
 def fft_power(
-    data: NDArray[float], fs: float, band: Tuple[float, float]
+    data: NDArray[float], fs: float, band: Tuple[float, float], dB: bool,
 ) -> NDArray[float]:
     """Compute the power of each frequency component represented by the FFT.
 
@@ -17,6 +17,8 @@ def fft_power(
         Sampling frequency in Hz.
     band : tuple
         Frequency band of interest in Hz as 2 floats, e.g. (8, 13) (edge inc.).
+    dB : bool
+        If True, the fftval are converted to dB with 10 * np.log10(fftval).
 
     Returns
     -------
@@ -36,4 +38,5 @@ def fft_power(
     fftval = np.abs(np.fft.rfft(data, axis=1)[:, band_idx]) ** 2
     # average across band of interest
     metric = np.average(fftval, axis=1)
+    metric = 10 * np.log10(fftval) if dB else metric
     return metric

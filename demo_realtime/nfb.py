@@ -58,7 +58,7 @@ def nfb_alpha_power_occipital(
         sr.acquire()
         data, _ = sr.get_window()
         # compute metric
-        metric = fft_power(data[:, ch_idx].T, fs=fs, band=(8, 13))
+        metric = fft_power(data[:, ch_idx].T, fs=fs, band=(8, 13), dB=True)
         metric = np.average(metric)  # average across selected channels
 
         # store metric
