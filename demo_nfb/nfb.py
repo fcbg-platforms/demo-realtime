@@ -27,15 +27,9 @@ def nfb_fft_alpha_occipital(
     # check inputs
     _check_type(stream_name, (str,), "stream_name")
     _check_type(winsize, ("numeric",), "winsize")
-    if winsize <= 0:
-        raise ValueError(
-            "Argument 'winsize' should be a strictly positive number."
-        )
+    assert 0 < winsize
     _check_type(duration, ("numeric",), "duration")
-    if duration <= 0:
-        raise ValueError(
-            "Argument 'duration' should be a strictly positive number."
-        )
+    assert 0 < duration
 
     # create receiver and feedback
     sr = StreamReceiver(
@@ -66,12 +60,14 @@ def nfb_fft_alpha_occipital(
         # compute metric
         metric = fft(data[:, ch_idx].T, fs=fs, band=(8, 13))
 
-        # store metric and update feedback range
+        # store metric
         metrics[inc % 100] = metric
         inc += 1
-        if inc < metrics.size:  # skip until we have 100 points
+        # skip until we have enough points to define the feedback range
+        if inc < metrics.size:
             start = time.time()  # reset start time
             continue
+        # define the feedback range
         min_ = np.percentile(metrics, 5)
         max_ = np.percentile(metrics, 95)
         fill_perc = (metric - min_) / (max_ - min_)
