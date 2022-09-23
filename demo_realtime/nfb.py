@@ -47,6 +47,7 @@ def nfb_alpha_power_occipital(
     fs = sr.streams[stream_name].sample_rate
     ch_names = sr.streams[stream_name].ch_list
     ch_idx = [k for k, ch in enumerate(ch_names) if ch in ("O1", "O2")]
+    assert len(ch_idx) == 2
 
     # wait to fill one buffer
     time.sleep(winsize)
