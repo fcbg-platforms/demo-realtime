@@ -38,9 +38,9 @@ jobs:
           python -m pip install --progress-bar off --upgrade pip setuptools wheel
           python -m pip install --progress-bar off .[test]
       - name: Display system information
-        run: demo_nfb-sys_info --developer
+        run: demo-sys_info --developer
       - name: Run pytest
-        run: pytest demo_nfb --cov=demo_nfb --cov-report=xml --cov-config=pyproject.toml
+        run: pytest demo_realtime --cov=demo_realtime --cov-report=xml --cov-config=pyproject.toml
       - name: Upload to codecov
         if: ${{ matrix.os == 'ubuntu' && matrix.python-version == 3.9 }}
         uses: codecov/codecov-action@v3

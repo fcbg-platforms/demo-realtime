@@ -34,20 +34,20 @@ jobs:
           python -m pip install --progress-bar off --upgrade pip setuptools wheel
           python -m pip install --progress-bar off .[build]
       - name: Test package install
-        run: demo_nfb-sys_info
+        run: demo-sys_info
       - name: Remove package install
-        run: python -m pip uninstall -yq demo_nfb
+        run: python -m pip uninstall -yq demo_realtime
       - name: Build package
         run: python -m build
       - name: Install sdist
         run: pip install ./dist/*.tar.gz
       - name: Test sdist install
-        run: demo_nfb-sys_info
+        run: demo-sys_info
       - name: Remove sdist install
-        run: python -m pip uninstall -yq demo_nfb
+        run: python -m pip uninstall -yq demo_realtime
       - name: Install wheel
         run: pip install ./dist/*.whl
       - name: Test wheel install
-        run: demo_nfb-sys_info
+        run: demo-sys_info
       - name: Remove wheel install
-        run: python -m pip uninstall -yq demo_nfb
+        run: python -m pip uninstall -yq demo_realtime

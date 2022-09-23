@@ -3,9 +3,9 @@ requires = ['setuptools >= 61.0.0']
 build-backend = 'setuptools.build_meta'
 
 [project]
-name = 'demo_nfb'
+name = 'demo_realtime'
 version = '0.1.0'
-description = 'Demo for neurofeedback projects.'
+description = 'Demo for realtime projects.'
 readme = 'README.md'
 license = {file = 'LICENSE'}
 requires-python = '>=3.8'
@@ -16,11 +16,12 @@ maintainers = [
     {name = 'Mathieu Scheltienne', email = 'mathieu.scheltienne@fcbg.ch'},
 ]
 keywords = [
-    'python',
-    'neuroscience',
-    'neuroimaging',
-    'neurofeedback',
     'brain',
+    'neurofeedback',
+    'neuroimaging',
+    'neuroscience',
+    'python',
+    'real-time',
 ]
 classifiers = [
     'Operating System :: Microsoft :: Windows',
@@ -57,30 +58,30 @@ test = [
     'pytest-cov',
 ]
 all = [
-    'demo_nfb[style]',
-    'demo_nfb[test]',
-    'demo_nfb[build]',
+    'demo_realtime[style]',
+    'demo_realtime[test]',
+    'demo_realtime[build]',
 ]
 full = [
-    'demo_nfb[all]',
+    'demo_realtime[all]',
 ]
 
 [project.urls]
-homepage = 'https://github.com/mscheltienne/demo-nfb'
-documentation = 'https://github.com/mscheltienne/demo-nfb'
-source = 'https://github.com/mscheltienne/demo-nfb'
-tracker = 'https://github.com/mscheltienne/demo-nfb/issues'
+homepage = 'https://github.com/mscheltienne/demo-realtime'
+documentation = 'https://github.com/mscheltienne/demo-realtime'
+source = 'https://github.com/mscheltienne/demo-realtime'
+tracker = 'https://github.com/mscheltienne/demo-realtime/issues'
 
 [project.scripts]
-demo_nfb-sys_info = 'demo_nfb.commands.sys_info:run'
-demo_nfb = 'demo_nfb.commands.demo_nfb:run'
+demo-sys_info = 'demo_realtime.commands.sys_info:run'
+demo-nfb = 'demo_realtime.commands.demo_nfb:run'
 
 [tool.setuptools]
 include-package-data = false
 
 [tool.setuptools.packages.find]
-include = ['demo_nfb*']
-exclude = ['demo_nfb*tests']
+include = ['demo_realtime*']
+exclude = ['demo_realtime*tests']
 
 [tool.black]
 line-length = 79
@@ -107,7 +108,7 @@ extend_skip_glob = [
 convention = 'numpy'
 ignore-decorators = '(copy_doc|property|.*setter|.*getter|pyqtSlot|Slot)'
 match = '^(?!setup|__init__|test_).*\.py'
-match-dir = '^demo_nfb.*'
+match-dir = '^demo_realtime.*'
 add_ignore = 'D100,D104,D107'
 
 [tool.pytest.ini_options]
@@ -120,8 +121,8 @@ branch = true
 cover_pylib = false
 omit = [
     '**/__init__.py',
-    '**/demo_nfb/_version.py',
-    '**/demo_nfb/commands/*',
+    '**/demo_realtime/_version.py',
+    '**/demo_realtime/commands/*',
     '**/tests/**',
 ]
 
