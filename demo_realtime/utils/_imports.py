@@ -12,6 +12,8 @@ INSTALL_MAPPING = {
     "cv2": "opencv-python",
     "pytest_cov": "pytest-cov",
     "serial": "pyserial",
+    "sklearn": "scikit-learn",
+    "sksparse": "scikit-sparse",
 }
 
 
