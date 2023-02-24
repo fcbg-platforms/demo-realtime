@@ -5,8 +5,8 @@ try:
 except ImportError:
     from importlib_resources import files  # type: ignore
 
-from typing import TYPE_CHECKING
 from multiprocessing import Process, Value
+from typing import TYPE_CHECKING
 
 import numpy as np
 from numpy.typing import NDArray
@@ -14,7 +14,7 @@ from numpy.typing import NDArray
 from ..utils._imports import import_optional_dependency
 
 if TYPE_CHECKING:
-    from psychopy.visual import Window, ImageStim
+    from psychopy.visual import ImageStim, Window
 
 
 class DoubleSpinningWheel:
@@ -43,7 +43,7 @@ class DoubleSpinningWheel:
         **kwargs,
     ) -> None:
         import_optional_dependency("psychopy")
-        from psychopy.visual import Window, ImageStim
+        from psychopy.visual import ImageStim, Window
 
         # prepare PsychoPy objects
         self._win = Window(
