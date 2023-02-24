@@ -84,6 +84,9 @@ include-package-data = false
 include = ['demo_realtime*']
 exclude = ['demo_realtime*tests']
 
+[tool.setuptools.package-data]
+"demo_realtime.feedbacks" = ["resources/*.png"]
+
 [tool.black]
 line-length = 79
 target-version = ['py38']
