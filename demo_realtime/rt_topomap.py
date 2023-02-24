@@ -22,7 +22,8 @@ def rt_topomap(
 ):
     """Real-time topographic feedback loop.
 
-    The feedback represents the alpha-band FFT power.
+    The feedback represents the alpha-band relative power measured by a DSI-24
+    amplifier.
 
     Parameters
     ----------
@@ -32,7 +33,6 @@ def rt_topomap(
     %(figsize)s
     %(verbose)s
     """
-    # set verbosity
     set_log_level(verbose)
     # check inputs
     _check_type(stream_name, (str,), "stream_name")
@@ -72,7 +72,9 @@ def rt_topomap(
         sr.acquire()
         data, _ = sr.get_window()
         # compute metric
-        metric = bandpower(data[:, ch_idx].T, fs=fs, band=(8, 13))
+        metric = bandpower(
+            data[:, ch_idx].T, fs=fs, method="periodogram", band=(8, 13)
+        )
         # update feedback
         feedback.update(metric)
 

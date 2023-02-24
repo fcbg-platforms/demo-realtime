@@ -3,7 +3,7 @@ import argparse
 from bsl import set_log_level as bsl_set_log_level
 from bsl.utils.lsl import search_lsl
 
-from .. import nfb_alpha_power_occipital
+from .. import nfb_fillingbar
 
 
 def run():
@@ -11,8 +11,8 @@ def run():
     bsl_set_log_level("INFO")
 
     parser = argparse.ArgumentParser(
-        prog="demo_nfb",
-        description="Start a demo of basic neurofeedback.",
+        prog="demo-nfb",
+        description="Start a demo of a neurofeedback system.",
     )
     parser.add_argument(
         "-s",
@@ -45,7 +45,7 @@ def run():
     stream_name = args.stream_name
     if stream_name is None:
         stream_name = search_lsl(ignore_markers=True, timeout=3)
-    nfb_alpha_power_occipital(
+    nfb_fillingbar(
         stream_name,
         args.winsize,
         args.duration,

@@ -1,6 +1,6 @@
 from ._version import __version__  # noqa: F401
-from .nfb import nfb_alpha_power_occipital  # noqa: F401
-from .topomap import rt_topomap  # noqa: F401
+from .nfb_fillingbar import nfb_fillingbar  # noqa: F401
+from .rt_topomap import rt_topomap  # noqa: F401
 from .utils._config import sys_info  # noqa: F401
 from .utils._logs import (  # noqa: F401
     add_file_handler,

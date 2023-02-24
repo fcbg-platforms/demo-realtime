@@ -12,16 +12,16 @@ from .utils._logs import set_log_level
 
 
 @fill_doc
-def nfb_alpha_power_occipital(
+def nfb_fillingbar(
     stream_name: str,
     winsize: float = 3,
     duration: float = 30,
     verbose: Optional[Union[str, int]] = None,
 ) -> None:
-    """Real-time simple neurofeedback loop.
+    """Real-time neurofeedback loop using a feedback horizontal filling bar.
 
-    The feedback represents the alpha-band FFT power on the O1 and O2
-    electrodes.
+    The feedback represents the alpha-band power on the occipital electrodes
+    ``O1`` and ``O2``.
 
     Parameters
     ----------
@@ -30,7 +30,6 @@ def nfb_alpha_power_occipital(
     %(duration)s
     %(verbose)s
     """
-    # set verbosity
     set_log_level(verbose)
     # check inputs
     _check_type(stream_name, (str,), "stream_name")
@@ -67,7 +66,9 @@ def nfb_alpha_power_occipital(
         sr.acquire()
         data, _ = sr.get_window()
         # compute metric
-        metric = bandpower(data[:, ch_idx].T, fs=fs, band=(8,13))
+        metric = bandpower(
+            data[:, ch_idx].T, fs=fs, method="multitaper", band=(8, 13)
+        )
         metric = np.average(metric)  # average across selected channels
 
         # store metric

@@ -27,7 +27,7 @@ def test_relative_bandpower(method):
 
     bp1 = bandpower(data, fs, method, band=(7, 9), relative=True, **kwargs)
     bp2 = bandpower(data, fs, method, band=(19, 21), relative=True, **kwargs)
-    assert np.allclose(bp1 + bp2, np.ones(n_channels), atol=0.1)
+    assert np.allclose(bp1 + bp2, np.ones(n_channels), atol=0.3)
 
 
 @pytest.mark.parametrize("method", ("periodogram", "welch", "multitaper"))

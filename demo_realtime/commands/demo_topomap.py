@@ -11,7 +11,7 @@ def run():
     bsl_set_log_level("INFO")
 
     parser = argparse.ArgumentParser(
-        prog="demo_nfb",
+        prog="demo-topomap",
         description="Start a demo of real-time topographic map.",
     )
     parser.add_argument(
