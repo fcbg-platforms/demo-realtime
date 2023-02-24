@@ -2,16 +2,12 @@ import platform
 import re
 import sys
 from functools import partial
-from importlib import import_module
-from importlib.metadata import requires
+from importlib.metadata import requires, version
 from typing import IO, Callable, List, Optional
 
 import psutil
 
 from ._checks import _check_type
-from ._imports import INSTALL_MAPPING
-
-LIB_MAPPING = {value: key for key, value in INSTALL_MAPPING.items()}
 
 
 def sys_info(fid: Optional[IO] = None, developer: bool = False):
@@ -27,7 +23,7 @@ def sys_info(fid: Optional[IO] = None, developer: bool = False):
     """
     _check_type(developer, (bool,), "developer")
 
-    ljust = 18
+    ljust = 26
     out = partial(print, end="", file=fid)
     package = __package__.split(".")[0]
 
@@ -48,8 +44,12 @@ def sys_info(fid: Optional[IO] = None, developer: bool = False):
 
     # dependencies
     out("\nDependencies info\n")
-    out(f"{package}:".ljust(ljust) + import_module(package).__version__ + "\n")
-    dependencies = [elt for elt in requires(package) if "extra" not in elt]
+    out(f"{package}:".ljust(ljust) + version(package) + "\n")
+    dependencies = [
+        elt.split(";")[0].rstrip()
+        for elt in requires(package)
+        if "extra" not in elt
+    ]
     _list_dependencies_info(out, ljust, dependencies)
 
     # extras
@@ -60,12 +60,14 @@ def sys_info(fid: Optional[IO] = None, developer: bool = False):
             "style",
         )
         for key in keys:
-            out(f"\nOptional '{key}' info\n")
             dependencies = [
                 elt.split(";")[0].rstrip()
                 for elt in requires(package)
-                if "extra" in elt and key in elt
+                if f"extra == '{key}'" in elt or f'extra == "{key}"' in elt
             ]
+            if len(dependencies) == 0:
+                continue
+            out(f"\nOptional '{key}' info\n")
             _list_dependencies_info(out, ljust, dependencies)
 
 
@@ -84,12 +86,21 @@ def _list_dependencies_info(
         # handle dependencies provided with a [key], e.g. pydocstyle[toml]
         if "[" in dep:
             dep = dep.split("[")[0]
-        # handle dependencies with a different name between PyPI and the lib
-        if dep in LIB_MAPPING:
-            dep = LIB_MAPPING[dep]
         try:
-            module = import_module(dep)
-            version = module.__version__
+            version_ = version(dep)
         except Exception:
-            version = "Not found."
-        out(f"{dep}:".ljust(ljust) + version + "\n")
+            version_ = "Not found."
+
+        # handle special dependencies with backends, C dep, ..
+        if dep in ("matplotlib", "seaborn") and version_ != "Not found.":
+            try:
+                from matplotlib import pyplot as plt
+
+                backend = plt.get_backend()
+            except Exception:
+                backend = "Not found"
+
+            out(f"{dep}:".ljust(ljust) + version_ + f" (backend: {backend})\n")
+
+        else:
+            out(f"{dep}:".ljust(ljust) + version_ + "\n")
