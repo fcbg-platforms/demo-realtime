@@ -7,13 +7,13 @@ from mne import Info
 from mne.viz import plot_topomap
 from numpy.typing import NDArray
 
-from ._checks import _check_type
-from ._docs import copy_doc, fill_doc
-from ._logs import logger
+from ..utils._checks import _check_type
+from ..utils._docs import copy_doc, fill_doc
+from ..utils._logs import logger
 
 
 @fill_doc
-class BaseTopomap(ABC):
+class _BaseTopomap(ABC):
     """Abstract class defining a topographic map feedback.
 
     Parameters
@@ -22,9 +22,10 @@ class BaseTopomap(ABC):
     """
 
     @abstractmethod
-    def __init__(self, info):
-        self._info = BaseTopomap._check_info(info)
-        # define colorbar range
+    def __init__(self, info: Info) -> None:
+        _BaseTopomap._check_info(info)
+        self._info = info
+        # variables used to define and update the colorbar range
         self._vmin = None
         self._vmax = None
         self._inc = 0
@@ -32,13 +33,13 @@ class BaseTopomap(ABC):
         self._vmax_arr = np.ones(100) * np.nan
 
     @abstractmethod
-    def update(self, topodata: NDArray[float]):
-        """Update the topographic map with the new data array (n_channels, ).
+    def update(self, topodata: NDArray[float]) -> None:
+        """Update the topographic map with the new data array.
 
         Parameters
         ----------
-        topodata : array
-            1D array of shape (n_channels, ) containing the new data samples to
+        topodata : array of shape (n_channels,)
+            1D array of shape (n_channels,) containing the new data samples to
             plot.
         """
         # update arrays that stores 100 points for vmin/vmax
@@ -91,7 +92,7 @@ class BaseTopomap(ABC):
 
     # ------------------------------------------------------------------------
     @staticmethod
-    def _check_info(info):
+    def _check_info(info: Any) -> None:
         """Check that the info instance has a montage."""
         _check_type(info, (Info,), "info")
         if info.get_montage() is None:
@@ -99,11 +100,10 @@ class BaseTopomap(ABC):
                 "The provided info instance 'info' does not have "
                 "a DigMontage attached."
             )
-        return info
 
 
 @fill_doc
-class TopomapMPL(BaseTopomap):
+class TopomapMPL(_BaseTopomap):
     """Topographic map feedback using matplotlib.
 
     Parameters
@@ -148,13 +148,9 @@ class TopomapMPL(BaseTopomap):
             **self._kwargs,
         )
 
-    @copy_doc(BaseTopomap.update)
+    @copy_doc(_BaseTopomap.update)
     def update(self, topodata: NDArray[float]):
         super().update(topodata)
-        self._update_topoplot(topodata)
-
-    def _update_topoplot(self, topodata: NDArray[float]):
-        """Update topographic plot."""
         self._axes.clear()
         plot_topomap(
             topodata,
@@ -163,13 +159,11 @@ class TopomapMPL(BaseTopomap):
             vmax=self._vmax,
             **self._kwargs,
         )
-
-    def redraw(self):
-        """Redraw the canvas."""
+        # redraw the canvas
         self._fig.canvas.draw()
         self._fig.canvas.flush_events()
 
-    @copy_doc(BaseTopomap.close)
+    @copy_doc(_BaseTopomap.close)
     def close(self):
         plt.close(self._fig)
 

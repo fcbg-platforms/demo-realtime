@@ -5,7 +5,7 @@ import numpy as np
 from bsl import StreamReceiver
 from stimuli.visuals import FillingBar
 
-from .utils import fft_power
+from .metrics import bandpower
 from .utils._checks import _check_type
 from .utils._docs import fill_doc
 from .utils._logs import set_log_level
@@ -67,7 +67,7 @@ def nfb_alpha_power_occipital(
         sr.acquire()
         data, _ = sr.get_window()
         # compute metric
-        metric = fft_power(data[:, ch_idx].T, fs=fs, band=(8, 13), dB=True)
+        metric = bandpower(data[:, ch_idx].T, fs=fs, band=(8,13))
         metric = np.average(metric)  # average across selected channels
 
         # store metric

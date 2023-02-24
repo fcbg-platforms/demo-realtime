@@ -5,7 +5,8 @@ import numpy as np
 from bsl import StreamReceiver
 from mne import create_info
 
-from .utils import TopomapMPL, fft_power
+from .feedbacks import TopomapMPL
+from .metrics import bandpower
 from .utils._checks import _check_type
 from .utils._docs import fill_doc
 from .utils._logs import set_log_level
@@ -26,7 +27,7 @@ def rt_topomap(
     Parameters
     ----------
     %(stream_name)s
-    %(winsize)sdemo
+    %(winsize)s
     %(duration)s
     %(figsize)s
     %(verbose)s
@@ -71,10 +72,9 @@ def rt_topomap(
         sr.acquire()
         data, _ = sr.get_window()
         # compute metric
-        metric = fft_power(data[:, ch_idx].T, fs=fs, band=(8, 13), dB=True)
+        metric = bandpower(data[:, ch_idx].T, fs=fs, band=(8, 13))
         # update feedback
         feedback.update(metric)
-        feedback.redraw()
 
     # close the feedback window
     feedback.close()
