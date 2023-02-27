@@ -1,20 +1,17 @@
-from __future__ import annotations
+from multiprocessing import Process, Value
+from pathlib import Path
+
+import numpy as np
+from numpy.typing import NDArray
 
 try:
     from importlib.resources import files  # type: ignore
 except ImportError:
     from importlib_resources import files  # type: ignore
 
-from multiprocessing import Process, Value
-from typing import TYPE_CHECKING
-
-import numpy as np
-from numpy.typing import NDArray
-
+from ..utils._checks import _check_type
 from ..utils._imports import import_optional_dependency
-
-if TYPE_CHECKING:
-    from psychopy.visual import ImageStim, Window
+from ..utils._logs import logger
 
 
 class DoubleSpinningWheel:
@@ -43,92 +40,132 @@ class DoubleSpinningWheel:
         **kwargs,
     ) -> None:
         import_optional_dependency("psychopy")
-        from psychopy.visual import ImageStim, Window
 
-        # prepare PsychoPy objects
-        self._win = Window(
-            units="norm", winType="pyglet", color=(-1, -1, -1), **kwargs
-        )
-        fname = files("demo_realtime.feedbacks").joinpath(
+        # prepare psychopy settings
+        if "units" not in kwargs:
+            kwargs["units"] = "norm"
+        elif kwargs["units"] != "norm":
+            raise ValueError(
+                f"The unit used should be 'norm'. Provided {kwargs['units']} "
+                "is not supported."
+            )
+        if "winType" not in kwargs:
+            kwargs["winType"] = "pyglet"
+        elif kwargs["winType"] != "pyglet":
+            logger.warning(
+                "The 'pyglet' window type is recommanded above the provided "
+                "'%s'",
+                kwargs["winType"],
+            )
+
+        if "color" not in kwargs:
+            kwargs["color"] = (-1, -1, -1)
+        elif kwargs["color"] != (-1, -1, -1):
+            logger.warning(
+                "The color '(-1, -1, -1)' is recommanded above the provided "
+                "'%s'",
+                kwargs["color"],
+            )
+
+        self._winkwargs = kwargs
+
+        # store image path
+        image = files("demo_realtime.feedbacks").joinpath(
             "resources/wheel.png"
         )
+        assert image.is_file() and image.suffix == ".png"  # sanity-check
+        self._image = image
 
-        size = DoubleSpinningWheel._normalize_size(self._win.size, size)
-        self._lwheel = ImageStim(
-            self._win, image=fname, size=size, pos=[-offset, 0]
-        )
-        self._rwheel = ImageStim(
-            self._win, image=fname, size=size, pos=[offset, 0]
-        )
-        self._lwheel.autoDraw = True
-        self._rwheel.autoDraw = True
-        self._win.flip()
+        # and image settings
+        _check_type(size, ("numeric",), "size")
+        _check_type(offset, ("numeric",), "offset")
+        for var, name in [(size, "size"), (offset, "offset")]:
+            if var < -1 or var > 1:
+                logger.warning(
+                    "Normalized %s should be in the range (-1, 1). Values "
+                    "outside this range might yield an image outside of the "
+                    "window.",
+                    name,
+                )
+        self._size = size
+        self._offset = offset
 
         # prepare shared variables and process to control the wheel
         self._speed = Value("i", 0)
-        self._status = Value("i", 0)  # 0: stop feedback, 1: run feedback
+        self._status = Value("i", 0)
         self._process = Process(
-            target=DoubleSpinningWheel._update_window,
+            target=DoubleSpinningWheel._main_loop,
             args=(
+                self._winkwargs,
+                self._image,
+                self._size,
+                self._offset,
                 self._speed,
                 self._status,
-                self._win,
-                self._lwheel,
-                self._rwheel,
             ),
         )
 
     def start(self) -> None:
-        """Start the feedback visual."""
+        """Start the visual feedback."""
         if self._status.value == 1:
             raise RuntimeError("The feedback is already started.")
-
-        self._lwheel.draw()
-        self._rwheel.draw()
-        self._win.flip()
 
         with self._status.get_lock():
             self._status.value = 1
         self._process.start()
 
     def stop(self) -> None:
-        """Stop the feedback visual."""
+        """Stop the visual feedback."""
         if self._status.value == 0:
             raise RuntimeError("The feedback is already stopped.")
         with self._status.get_lock():
             self._status.value = 0
-        self._process.join(2)
-        if self._process.is_alive():
-            self._process.kill()
-
-    def close(self) -> None:
-        """Close the feedback window."""
-        self._win.close()
+        self._process.join(5)
 
     def __del__(self):
         """Make sure to stop the feedback and close the window before del."""
         if self._status.value == 1:
             self.stop()
-        self.close()
 
     # -------------------------------------------------------------------------
     @staticmethod
-    def _update_window(
+    def _main_loop(
+        winkargs: dict,
+        image: Path,
+        size: float,
+        offset: float,
         speed: Value,
         status: Value,
-        win: Window,
-        lwheel: ImageStim,
-        rwheel: ImageStim,
     ) -> None:
+        from psychopy.visual import ImageStim, Window
+
+        # open window
+        win = Window(**winkargs)
+        # normalize the image size to retain the aspect ratio
+        size = DoubleSpinningWheel._normalize_size(win.size, size)
+        lwheel = ImageStim(
+            win, image=image, size=size * [1, 1], pos=[-offset, 0]
+        )
+        rwheel = ImageStim(
+            win, image=image, size=size * [-1, 1], pos=[offset, 0]
+        )
+        lwheel.autoDraw = True
+        rwheel.autoDraw = True
+        win.flip()
+
+        # run infinite display-loop
         while True:
             if status.value == 0:
                 break
 
             lwheel.ori += speed.value
-            rwheel.ori += speed.value
+            rwheel.ori -= speed.value
             lwheel.draw()
             rwheel.draw()
             win.flip()
+
+        # close window after a stop is requested
+        win.close()
 
     @staticmethod
     def _normalize_size(winsize: NDArray[int], size: float) -> NDArray[float]:
@@ -151,19 +188,19 @@ class DoubleSpinningWheel:
 
     # -------------------------------------------------------------------------
     @property
-    def win(self) -> Window:
-        """PsychoPy window object."""
-        return self._win
+    def image(self) -> Path:
+        """Path to the image of the wheel displayed."""
+        return self._iamge
 
     @property
-    def lwheel(self) -> ImageStim:
-        """PsychoPy imagestim object of the left wheel."""
-        return self._lwheel
+    def offset(self) -> float:
+        """Normalized offset of the images."""
+        return self._offset
 
     @property
-    def rwheel(self) -> ImageStim:
-        """PsychoPy imagestim object of the right wheel."""
-        return self._rwheel
+    def size(self) -> float:
+        """Normalized size of the images."""
+        return self._size
 
     @property
     def speed(self) -> int:
@@ -181,7 +218,7 @@ class DoubleSpinningWheel:
             self._speed.value = speed
 
     @property
-    def running(self) -> bool:
+    def active(self) -> bool:
         """Return True if the feedback is running.
 
         :type: bool
