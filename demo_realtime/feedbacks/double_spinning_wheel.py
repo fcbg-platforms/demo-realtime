@@ -53,7 +53,7 @@ class DoubleSpinningWheel:
             kwargs["winType"] = "pyglet"
         elif kwargs["winType"] != "pyglet":
             logger.warning(
-                "The 'pyglet' window type is recommanded above the provided "
+                "The 'pyglet' window type is recommended above the provided "
                 "'%s'",
                 kwargs["winType"],
             )
@@ -62,7 +62,7 @@ class DoubleSpinningWheel:
             kwargs["color"] = (-1, -1, -1)
         elif kwargs["color"] != (-1, -1, -1):
             logger.warning(
-                "The color '(-1, -1, -1)' is recommanded above the provided "
+                "The color '(-1, -1, -1)' is recommended above the provided "
                 "'%s'",
                 kwargs["color"],
             )
