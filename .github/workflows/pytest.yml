@@ -4,12 +4,12 @@ concurrency:
   cancel-in-progress: true
 on:
   pull_request:
-    paths:
-      - '**.py'
+    # paths:
+    #   - '**.py'
   push:
     branches: [main]
-    paths:
-      - '**.py'
+    # paths:
+    #   - '**.py'
   workflow_dispatch:
   schedule:
   - cron: '0 8 * * 1'
