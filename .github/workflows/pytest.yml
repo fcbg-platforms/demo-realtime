@@ -54,7 +54,7 @@ jobs:
           sudo apt install xvfb xauth libgl1-mesa-dri
           sudo apt install -y -qq libdbus-1-3
           sudo apt install -y -qq '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev
-          python - m pip install --progress-bar off six
+          python -m pip install --progress-bar off six
           python -m pip install --progress-bar off -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.04/ wxPython
       - name: Install package
         run: |
