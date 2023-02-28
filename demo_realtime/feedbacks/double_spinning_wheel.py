@@ -54,7 +54,7 @@ class DoubleSpinningWheel:
         elif kwargs["winType"] != "pyglet":
             logger.warning(
                 "The 'pyglet' window type is recommended above the provided "
-                "'%s'",
+                "'%s'.",
                 kwargs["winType"],
             )
 
@@ -63,7 +63,7 @@ class DoubleSpinningWheel:
         elif kwargs["color"] != (-1, -1, -1):
             logger.warning(
                 "The color '(-1, -1, -1)' is recommended above the provided "
-                "'%s'",
+                "'%s'.",
                 kwargs["color"],
             )
 
@@ -126,6 +126,8 @@ class DoubleSpinningWheel:
         """Make sure to stop the feedback and close the window before del."""
         if self._status.value == 1:
             self.stop()
+        if self._process.is_alive():  # sanity-check
+            self._process.kill()
 
     # -------------------------------------------------------------------------
     @staticmethod
@@ -190,7 +192,7 @@ class DoubleSpinningWheel:
     @property
     def image(self) -> Path:
         """Path to the image of the wheel displayed."""
-        return self._iamge
+        return self._image
 
     @property
     def offset(self) -> float:
