@@ -1,3 +1,5 @@
+from platform import system
+
 import numpy as np
 import pytest
 from matplotlib import pyplot as plt
@@ -12,7 +14,10 @@ set_log_level("INFO")
 logger.propagate = True
 
 
-@pytest.mark.skip("core dumped error")
+@pytest.mark.skipif(
+    system() == "Linux",
+    reason="Interactive QtAgg backend not supported in Linux CIs.",
+)
 def test_topomap():
     """Test the topographic map feedback."""
     montage = make_standard_montage("biosemi32")
@@ -31,6 +36,10 @@ def test_topomap():
     viz.close()
 
 
+@pytest.mark.skipif(
+    system() == "Linux",
+    reason="Interactive QtAgg backend not supported in Linux CIs.",
+)
 def test_invalid_topomap(caplog):
     """Test the topographic map feedback with invalid arguments."""
     montage = make_standard_montage("biosemi32")
