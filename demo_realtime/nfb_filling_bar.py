@@ -16,6 +16,7 @@ def nfb_filling_bar(
     stream_name: str,
     winsize: float = 3,
     duration: float = 30,
+    *,
     verbose: Optional[Union[str, int]] = None,
 ) -> None:
     """Real-time neurofeedback loop using a feedback horizontal filling bar.

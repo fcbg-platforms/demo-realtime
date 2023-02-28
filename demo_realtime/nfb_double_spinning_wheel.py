@@ -16,6 +16,7 @@ def nfb_double_spinning_wheel(
     stream_name: str,
     winsize: float = 3,
     duration: float = 30,
+    *,
     verbose: Optional[Union[str, int]] = None,
 ) -> None:
     """Real-time neurofeedback loop using a double spinning wheel as feedback.

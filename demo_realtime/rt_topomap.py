@@ -18,6 +18,7 @@ def rt_topomap(
     winsize: float = 3,
     duration: float = 30,
     figsize: Optional[Tuple[float, float]] = None,
+    *,
     verbose: Optional[Union[str, int]] = None,
 ):
     """Real-time topographic feedback loop.
