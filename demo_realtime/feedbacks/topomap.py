@@ -75,20 +75,9 @@ class _BaseTopomap(ABC):
         return self._info
 
     @property
-    def vmin(self) -> float:
-        """Minimum value of the colormap range.
-
-        :type: float
-        """
-        return self._vmin
-
-    @property
-    def vmax(self) -> float:
-        """Maximum value of the colormap range.
-
-        :type: float
-        """
-        return self._vmax
+    def vlim(self) -> Tuple[float, float]:
+        """Colormap range."""
+        return (self._vmin, self._vmax)
 
     # ------------------------------------------------------------------------
     @staticmethod
@@ -127,6 +116,7 @@ class TopomapMPL(_BaseTopomap):
         super().__init__(info)
         _check_type(cmap, (str,), "cmap")
         self._cmap = cmap
+        figsize = TopomapMPL._check_figsize(figsize)
         self._fig, self._axes = plt.subplots(1, 1, figsize=figsize)
         # define kwargs for plot_topomap
         self._kwargs = dict(
@@ -155,8 +145,7 @@ class TopomapMPL(_BaseTopomap):
         plot_topomap(
             topodata,
             self._info,
-            vmin=self._vmin,
-            vmax=self._vmax,
+            vlim=self.vlim,
             **self._kwargs,
         )
         # redraw the canvas
@@ -187,7 +176,6 @@ class TopomapMPL(_BaseTopomap):
     @staticmethod
     def _check_figsize(figsize: Any) -> Tuple[float, float]:
         """Check the figure size."""
-        figsize = (3, 3) if figsize is None else figsize
         _check_type(figsize, (tuple, list), "figsize")
         if len(figsize) != 2:
             raise ValueError(
