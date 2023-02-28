@@ -4,12 +4,12 @@ concurrency:
   cancel-in-progress: true
 on:
   pull_request:
-    paths:
-      - '**.py'
+    # paths:
+    #   - '**.py'
   push:
     branches: [main]
-    paths:
-      - '**.py'
+    # paths:
+    #   - '**.py'
   workflow_dispatch:
   schedule:
   - cron: '0 8 * * 1'
@@ -41,14 +41,15 @@ jobs:
           python -m pip install --progress-bar off .[test]
       - name: Display system information
         run: demo-sys_info --developer
-      - name: Run pytest
-        run: pytest demo_realtime --cov=demo_realtime --cov-report=xml --cov-config=pyproject.toml
+      - name: Run pytest # headless via Xvfb on linux
+        uses: GabrielBB/xvfb-action@v1.6
+        with:
+          run: pytest demo_realtime --cov=demo_realtime --cov-report=xml --cov-config=pyproject.toml
       - name: Upload to codecov
-        if: ${{ matrix.os == 'ubuntu' && matrix.python-version == 3.9 }}
         uses: codecov/codecov-action@v3
         with:
           files: ./coverage.xml
           flags: unittests # optional
           name: codecov-umbrella # optional
-          fail_ci_if_error: true # optional (default = false)
+          fail_ci_if_error: false # optional (default = false)
           verbose: true # optional (default = false)

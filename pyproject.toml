@@ -36,6 +36,7 @@ classifiers = [
 ]
 dependencies = [
     'bsl>=0.4.0, <1.0.0',
+    'matplotlib',
     'mne>=1.2',
     'numpy>=1.21',
     'psutil',
@@ -46,9 +47,6 @@ dependencies = [
 build = [
     'build',
     'twine',
-]
-psychopy =[
-    'psychopy',
 ]
 style = [
     'black',
@@ -63,7 +61,6 @@ test = [
 ]
 all = [
     'demo_realtime[build]',
-    'demo_realtime[psychopy]',
     'demo_realtime[style]',
     'demo_realtime[test]',
 ]
