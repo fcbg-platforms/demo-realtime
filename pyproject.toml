@@ -48,9 +48,6 @@ build = [
     'build',
     'twine',
 ]
-psychopy =[
-    'psychopy',
-]
 style = [
     'black',
     'codespell',
@@ -64,7 +61,6 @@ test = [
 ]
 all = [
     'demo_realtime[build]',
-    'demo_realtime[psychopy]',
     'demo_realtime[style]',
     'demo_realtime[test]',
 ]
