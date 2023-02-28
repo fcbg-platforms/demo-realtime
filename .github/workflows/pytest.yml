@@ -49,7 +49,7 @@ jobs:
       - name: Run pytest # headless via Xvfb on linux
         uses: GabrielBB/xvfb-action@v1.6
         with:
-          run: pytest demo_realtime --cov=demo_realtime --cov-report=xml --cov-config=main/pyproject.toml
+          run: pytest demo_realtime --cov=demo_realtime --cov-report=xml --cov-config=pyproject.toml
       - name: Upload to codecov
         uses: codecov/codecov-action@v3
         with:
