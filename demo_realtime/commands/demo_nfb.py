@@ -3,7 +3,7 @@ import argparse
 from bsl import set_log_level as bsl_set_log_level
 from bsl.utils.lsl import search_lsl
 
-from .. import nfb_fillingbar
+from .. import nfb_filling_bar
 
 
 def run():
@@ -45,7 +45,7 @@ def run():
     stream_name = args.stream_name
     if stream_name is None:
         stream_name = search_lsl(ignore_markers=True, timeout=3)
-    nfb_fillingbar(
+    nfb_filling_bar(
         stream_name,
         args.winsize,
         args.duration,

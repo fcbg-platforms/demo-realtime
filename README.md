@@ -13,8 +13,8 @@ It implements simple real-time demonstration using [BSL](https://bsl-tools.githu
 # Example
 
 ```
-from demo_realtime import nfb_alpha_power_occipital
+from demo_realtime import nfb_filling_bar
 
 stream_name: str = "My LSL Stream"
-nfb_alpha_power_occipital(stream_name)
+nfb_filling_bar(stream_name)
 ```

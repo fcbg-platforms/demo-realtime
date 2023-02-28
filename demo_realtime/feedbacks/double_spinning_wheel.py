@@ -17,9 +17,12 @@ from ..utils._logs import logger
 class DoubleSpinningWheel:
     """Feedback visual using 2 counter-spinning wheel.
 
+    The rotation speed can be adjusted in real-time with the ``speed`` property
+    which typically ranges from 0 to 100.
+
     Parameters
     ----------
-    size : float
+    wheel_size : float
         Normalized size of the wheel image. The provided value will be
         converted to retain the aspect ratio of the image.
     offset : float
@@ -35,7 +38,7 @@ class DoubleSpinningWheel:
 
     def __init__(
         self,
-        size: float = 0.4,
+        wheel_size: float = 0.4,
         offset: float = 0.5,
         **kwargs,
     ) -> None:
@@ -77,9 +80,9 @@ class DoubleSpinningWheel:
         self._image = image
 
         # and image settings
-        _check_type(size, ("numeric",), "size")
+        _check_type(wheel_size, ("numeric",), "wheel_size")
         _check_type(offset, ("numeric",), "offset")
-        for var, name in [(size, "size"), (offset, "offset")]:
+        for var, name in [(wheel_size, "wheel_size"), (offset, "offset")]:
             if var < -1 or var > 1:
                 logger.warning(
                     "Normalized %s should be in the range (-1, 1). Values "
@@ -87,7 +90,7 @@ class DoubleSpinningWheel:
                     "window.",
                     name,
                 )
-        self._size = size
+        self._wheel_size = wheel_size
         self._offset = offset
 
         # prepare shared variables and process to control the wheel
@@ -98,7 +101,7 @@ class DoubleSpinningWheel:
             args=(
                 self._winkwargs,
                 self._image,
-                self._size,
+                self._wheel_size,
                 self._offset,
                 self._speed,
                 self._status,
@@ -134,7 +137,7 @@ class DoubleSpinningWheel:
     def _main_loop(
         winkargs: dict,
         image: Path,
-        size: float,
+        wheel_size: float,
         offset: float,
         speed: Value,
         status: Value,
@@ -144,12 +147,12 @@ class DoubleSpinningWheel:
         # open window
         win = Window(**winkargs)
         # normalize the image size to retain the aspect ratio
-        size = DoubleSpinningWheel._normalize_size(win.size, size)
+        wheel_size = DoubleSpinningWheel._normalize_size(win.size, wheel_size)
         lwheel = ImageStim(
-            win, image=image, size=size * [1, 1], pos=[-offset, 0]
+            win, image=image, size=wheel_size * [1, 1], pos=[-offset, 0]
         )
         rwheel = ImageStim(
-            win, image=image, size=size * [-1, 1], pos=[offset, 0]
+            win, image=image, size=wheel_size * [-1, 1], pos=[offset, 0]
         )
         lwheel.autoDraw = True
         rwheel.autoDraw = True
@@ -160,8 +163,9 @@ class DoubleSpinningWheel:
             if status.value == 0:
                 break
 
-            lwheel.ori += speed.value
-            rwheel.ori -= speed.value
+            # assuming speed set between [1, 100]
+            lwheel.ori += speed.value / 10
+            rwheel.ori -= speed.value / 10
             lwheel.draw()
             rwheel.draw()
             win.flip()
@@ -170,23 +174,26 @@ class DoubleSpinningWheel:
         win.close()
 
     @staticmethod
-    def _normalize_size(winsize: NDArray[int], size: float) -> NDArray[float]:
+    def _normalize_size(
+        winsize: NDArray[int],
+        wheel_size: float,
+    ) -> NDArray[float]:
         """Normalize the size to retain the aspect ratio of the image.
 
         Parameters
         ----------
         winsize : array of shape (2,)
             Size of the PsychoPy window.
-        size : float
+        wheel_size : float
             Normalized size of the image, between -1 and 1.
         """
         if winsize[0] == winsize[1]:
-            size = (size, size)
+            wheel_size = (wheel_size, wheel_size)
         elif winsize[1] < winsize[0]:
-            size = (size, size * winsize[0] / winsize[1])
+            wheel_size = (wheel_size, wheel_size * winsize[0] / winsize[1])
         elif winsize[0] < winsize[1]:
-            size = (size * winsize[1] / winsize[0], size)
-        return np.array(size)
+            wheel_size = (wheel_size * winsize[1] / winsize[0], wheel_size)
+        return np.array(wheel_size)
 
     # -------------------------------------------------------------------------
     @property
@@ -200,13 +207,13 @@ class DoubleSpinningWheel:
         return self._offset
 
     @property
-    def size(self) -> float:
-        """Normalized size of the images."""
-        return self._size
+    def wheel_size(self) -> float:
+        """Normalized size of the wheel images."""
+        return self._wheel_size
 
     @property
     def speed(self) -> int:
-        """Speed of the rotation.
+        """Speed of the rotation. Typical values range from 0 to 100.
 
         :type: int
         """

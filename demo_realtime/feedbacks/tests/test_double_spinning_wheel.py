@@ -68,12 +68,12 @@ def test_invalid_double_spinning_wheel(caplog):
     del viz
 
     with pytest.raises(TypeError, match="must be an instance of"):
-        DoubleSpinningWheel(size="101")
+        DoubleSpinningWheel(wheel_size="101")
     with pytest.raises(TypeError, match="must be an instance of"):
         DoubleSpinningWheel(offset="101")
 
     caplog.clear()
-    viz = DoubleSpinningWheel(size=101)
+    viz = DoubleSpinningWheel(wheel_size=101)
     assert "size should be" in caplog.text
     caplog.clear()
     del viz
