@@ -73,9 +73,7 @@ class DoubleSpinningWheel:
         self._winkwargs = kwargs
 
         # store image path
-        image = files("demo_realtime.feedbacks").joinpath(
-            "resources/wheel.png"
-        )
+        image = files("demo_realtime.feedbacks") / "resources" / "wheel.png"
         assert image.is_file() and image.suffix == ".png"  # sanity-check
         self._image = image
 
