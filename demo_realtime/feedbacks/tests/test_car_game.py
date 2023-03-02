@@ -22,7 +22,7 @@ def test_car_game(caplog):
     """Test the car game feedback."""
     game = CarGame()
     game.start()
-
+    assert game._process.is_alive()
     game.go_right()
     assert game.direction == "right"
     caplog.clear()
