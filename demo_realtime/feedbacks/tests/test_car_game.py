@@ -23,7 +23,7 @@ def test_car_game(caplog):
     game = CarGame()
     game.start()
 
-    time.sleep(1)
+    time.sleep(2)
     game.go_right()
     assert game.direction == "right"
     caplog.clear()
@@ -33,7 +33,7 @@ def test_car_game(caplog):
     assert "Already going right." in caplog.text
     caplog.clear()
 
-    time.sleep(1)
+    time.sleep(2)
     game.go_right()
     assert game.direction == "right"
     assert "Already going right." not in caplog.text
@@ -45,7 +45,7 @@ def test_car_game(caplog):
 
     game.stop()
 
-    time.sleep(1)
+    time.sleep(2)
     game.go_left()
     assert "The game is not running." in caplog.text
     caplog.clear()
@@ -55,7 +55,7 @@ def test_car_game(caplog):
     caplog.clear()
 
     game.start()
-    time.sleep(1)
+    time.sleep(2)
     assert game.direction == "straight"
     game.go_right()
     assert game.direction == "right"
