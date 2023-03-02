@@ -90,7 +90,7 @@ class Player(Entity):
     def go_right(self) -> None:
         """Move the car one lane to the right."""
         self.x += 5 * time.dt
-        if np.isclose(self.x, LANES[self.pos_idx + 1], atol=0.25):
+        if np.isclose(self.x, LANES[self.pos_idx + 1], atol=0.15):
             self.pos_idx += 1
             self.x = LANES[self.pos_idx]
             with self.direction.get_lock():
@@ -99,7 +99,7 @@ class Player(Entity):
     def go_left(self) -> None:
         """Move the car one lane to the left."""
         self.x -= 5 * time.dt
-        if np.isclose(self.x, LANES[self.pos_idx - 1], atol=0.25):
+        if np.isclose(self.x, LANES[self.pos_idx - 1], atol=0.15):
             self.pos_idx -= 1
             self.x = LANES[self.pos_idx]
             with self.direction.get_lock():
@@ -116,7 +116,7 @@ class Player(Entity):
             self.shake(magnitude=1)
 
         # break condition
-        if self.hit_edge and np.isclose(self.x, LANES[-1], atol=0.01):
+        if self.hit_edge and np.isclose(self.x, LANES[-1], atol=0.15):
             self.x = LANES[-1]
             # reset variables
             self.hit_edge = False
@@ -134,7 +134,7 @@ class Player(Entity):
             self.shake(magnitude=1)
 
         # break condition
-        if self.hit_edge and np.isclose(self.x, LANES[0], atol=0.01):
+        if self.hit_edge and np.isclose(self.x, LANES[0], atol=0.15):
             self.x = LANES[0]
             # reset variables
             self.hit_edge = False
