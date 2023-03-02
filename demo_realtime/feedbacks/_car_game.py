@@ -80,12 +80,7 @@ class Player(Entity):
             raycast(self.world_position, (0.5, -1, 0), distance=1),
         ]
         if any(hit_info.hit for hit_info in hit_infos):
-            if hasattr(self, "shake_sequence") and self.shake_sequence:
-                finished = getattr(getattr(self, "shake_sequence"), "finished")
-                if finished:
-                    self.shake(duration=0.3, magnitude=3)
-            else:
-                self.shake(duration=0.3, magnitude=3)
+            self.safe_shake(duration=0.3, magnitude=3)
 
     def go_right(self) -> None:
         """Move the car one lane to the right."""
@@ -113,7 +108,7 @@ class Player(Entity):
             self.x += 5 * time.dt
         if RIGHT_EDGE <= self.x:
             self.hit_edge = True
-            self.shake(magnitude=1)
+            self.safe_shake(magnitude=1)
 
         # break condition
         if self.hit_edge and np.isclose(self.x, LANES[-1], atol=0.15):
@@ -131,7 +126,7 @@ class Player(Entity):
             self.x -= 5 * time.dt
         if self.x <= LEFT_EDGE:
             self.hit_edge = True
-            self.shake(magnitude=1)
+            self.safe_shake(magnitude=1)
 
         # break condition
         if self.hit_edge and np.isclose(self.x, LANES[0], atol=0.15):
@@ -140,6 +135,15 @@ class Player(Entity):
             self.hit_edge = False
             with self.direction.get_lock():
                 self.direction.value = 0
+
+    def safe_shake(self, *args, **kwargs) -> None:
+        """Shake the player car if it's not already shaking."""
+        if hasattr(self, "shake_sequence") and self.shake_sequence:
+            finished = getattr(getattr(self, "shake_sequence"), "finished")
+            if finished:
+                self.shake(*args, **kwargs)
+        else:
+            self.shake(*args, **kwargs)
 
 
 class Enemy(Entity):
