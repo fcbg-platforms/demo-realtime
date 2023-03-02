@@ -13,8 +13,14 @@ class CarGame:
 
     def __init__(self) -> None:
         import_optional_dependency("ursina")
+        from ._car_game import game
+
         # prepare shared variables and process to control the game
-        self._create_shared_variables()
+        self._direction = Value("i", 0)  # -1: left, 0: straight, 1: right
+        self._process = Process(
+            target=game,
+            args=(self._direction,),
+        )
 
     def start(self) -> None:
         """Start the game."""
@@ -27,46 +33,28 @@ class CarGame:
         if not self._process.is_alive():
             raise RuntimeError("The game is already stopped.")
         self._process.kill()  # not clean, but works like a charm
-        # prepare a restart
-        self._create_shared_variables()
-
-    def _create_shared_variables(self):
-        """Create the process and shared variables."""
-        from ._car_game import game
-
-        self._direction = Value("i", 0)  # -1: left, 0: straight, 1: right
-        self._process = Process(
-            target=game,
-            args=(self._direction,),
-        )
 
     def go_left(self) -> None:
         """Move the player car one lane to the left."""
-        if self._process.is_alive():
-            if self._direction.value == 0:
-                logger.debug("Setting direction to -1.")
-                with self._direction.get_lock():
-                    self._direction.value = -1
-            else:
-                logger.warning(
-                    "Already going %s. Command ignored.", self.direction
-                )
+        if self._direction.value == 0:
+            logger.debug("Setting direction to -1.")
+            with self._direction.get_lock():
+                self._direction.value = -1
         else:
-            logger.warning("The game is not running. Command ignored.")
+            logger.warning(
+                "Already going %s. Command ignored.", self.direction
+            )
 
     def go_right(self) -> None:
         """Move the player car one lane to the right."""
-        if self._process.is_alive():
-            if self._direction.value == 0:
-                logger.debug("Setting direction to 1.")
-                with self._direction.get_lock():
-                    self._direction.value = 1
-            else:
-                logger.warning(
-                    "Already going %s. Command ignored.", self.direction
-                )
+        if self._direction.value == 0:
+            logger.debug("Setting direction to 1.")
+            with self._direction.get_lock():
+                self._direction.value = 1
         else:
-            logger.warning("The game is not running. Command ignored.")
+            logger.warning(
+                "Already going %s. Command ignored.", self.direction
+            )
 
     # -------------------------------------------------------------------------
     @property
