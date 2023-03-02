@@ -109,6 +109,7 @@ class DoubleSpinningWheel:
     def start(self) -> None:
         """Start the visual feedback."""
         if self._status.value == 1:
+            assert self._process.is_alive()
             raise RuntimeError("The feedback is already started.")
 
         with self._status.get_lock():
@@ -118,6 +119,7 @@ class DoubleSpinningWheel:
     def stop(self) -> None:
         """Stop the visual feedback."""
         if self._status.value == 0:
+            assert not self._process.is_alive()
             raise RuntimeError("The feedback is already stopped.")
         with self._status.get_lock():
             self._status.value = 0
