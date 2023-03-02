@@ -115,8 +115,6 @@ class DoubleSpinningWheel:
         with self._status.get_lock():
             self._status.value = 1
         self._process.start()
-        while not self._process.is_alive():
-            pass
 
     def stop(self) -> None:
         """Stop the visual feedback."""

@@ -21,8 +21,6 @@ class CarGame:
         if self._process.is_alive():
             raise RuntimeError("The game is already started.")
         self._process.start()
-        while not self._process.is_alive():
-            pass
 
     def stop(self) -> None:
         """Stop the game and close the game window."""
