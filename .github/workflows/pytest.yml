@@ -41,7 +41,7 @@ jobs:
           python -m pip install --progress-bar off .[test]
       - name: Install Ursina on Linux CIs
         if: "matrix.os == 'ubuntu'"
-        run: python -m pip install ursina
+        run: python -m pip install --progress-bar off ursina
       - name: Display system information
         run: demo-sys_info --developer
       - name: Run pytest # headless via Xvfb on linux
