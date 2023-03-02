@@ -63,12 +63,12 @@ class Player(Entity):
         # handle the changes in direction
         if self.direction.value == 1 and self.pos_idx == len(LANES) - 1:
             # go right a bit, shake, and go back to the far right lane
-            self.go_too_far_right()
+            self.go_far_right()
         elif self.direction.value == 1 and self.x < LANES[-1]:
             self.go_right()
         elif self.direction.value == -1 and self.pos_idx == 0:
             # go left a bit, shake, and go back to the far left lane
-            self.go_too_far_left()
+            self.go_far_left()
         elif self.direction.value == -1 and LANES[0] < self.x:
             self.go_left()
 
@@ -105,7 +105,7 @@ class Player(Entity):
             with self.direction.get_lock():
                 self.direction.value = 0
 
-    def go_too_far_right(self) -> None:
+    def go_far_right(self) -> None:
         """Move the car outside the road and back to the far right lane."""
         if self.hit_edge:
             self.x -= 5 * time.dt
@@ -123,7 +123,7 @@ class Player(Entity):
             with self.direction.get_lock():
                 self.direction.value = 0
 
-    def go_too_far_left(self) -> None:
+    def go_far_left(self) -> None:
         """Move the car outside the road and back to the far left lane."""
         if self.hit_edge:
             self.x += 5 * time.dt
