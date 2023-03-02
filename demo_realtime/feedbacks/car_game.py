@@ -36,29 +36,31 @@ class CarGame:
 
     def go_left(self) -> None:
         """Move the player car one lane to the left."""
-        if not self._process.is_alive():
-            logger.warning("The game is not running. Command ignored.")
-        if self._direction.value == 0:
-            logger.debug("Setting direction to -1.")
-            with self._direction.get_lock():
-                self._direction.value = -1
+        if self._process.is_alive():
+            if self._direction.value == 0:
+                logger.debug("Setting direction to -1.")
+                with self._direction.get_lock():
+                    self._direction.value = -1
+            else:
+                logger.warning(
+                    "Already going %s. Command ignored.", self.direction
+                )
         else:
-            logger.warning(
-                "Already going %s. Command ignored.", self.direction
-            )
+            logger.warning("The game is not running. Command ignored.")
 
     def go_right(self) -> None:
         """Move the player car one lane to the right."""
-        if not self._process.is_alive():
-            logger.warning("The game is not running. Command ignored.")
-        if self._direction.value == 0:
-            logger.debug("Setting direction to 1.")
-            with self._direction.get_lock():
-                self._direction.value = 1
+        if self._process.is_alive():
+            if self._direction.value == 0:
+                logger.debug("Setting direction to 1.")
+                with self._direction.get_lock():
+                    self._direction.value = 1
+            else:
+                logger.warning(
+                    "Already going %s. Command ignored.", self.direction
+                )
         else:
-            logger.warning(
-                "Already going %s. Command ignored.", self.direction
-            )
+            logger.warning("The game is not running. Command ignored.")
 
     # -------------------------------------------------------------------------
     @property
