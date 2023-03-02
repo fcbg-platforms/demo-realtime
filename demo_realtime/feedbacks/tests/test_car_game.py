@@ -22,6 +22,7 @@ def test_car_game(caplog):
     """Test the car game feedback."""
     game = CarGame()
     game.start()
+
     game.go_right()
     assert game.direction == "right"
     caplog.clear()
