@@ -17,6 +17,7 @@ def _requires_module(function: Callable, name: str):
 
 
 requires_psychopy = partial(_requires_module, name="psychopy")
+requires_ursina = partial(_requires_module, name="ursina")
 
 
 def _requires_missing_module(function: Callable, name: str):
@@ -33,3 +34,4 @@ def _requires_missing_module(function: Callable, name: str):
 
 
 requires_missing_psychopy = partial(_requires_missing_module, name="psychopy")
+requires_missing_ursina = partial(_requires_missing_module, name="ursina")

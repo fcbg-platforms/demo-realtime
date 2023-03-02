@@ -41,7 +41,9 @@ class CarGame:
             with self._direction.get_lock():
                 self._direction.value = -1
         else:
-            logger.warning("Already going left. Command ignored.")
+            logger.warning(
+                "Already going %s. Command ignored.", self.direction
+            )
 
     def go_right(self) -> None:
         """Move the player car one lane to the right."""
@@ -50,15 +52,17 @@ class CarGame:
             with self._direction.get_lock():
                 self._direction.value = 1
         else:
-            logger.warning("Already going right. Command ignored.")
+            logger.warning(
+                "Already going %s. Command ignored.", self.direction
+            )
 
     # -------------------------------------------------------------------------
     @property
     def direction(self) -> str:
         """Direction in which the player car is going."""
         mapping = {
-            -1: "Left",
-            0: "Straight",
-            1: "Right",
+            -1: "left",
+            0: "straight",
+            1: "right",
         }
         return mapping[self._direction.value]
