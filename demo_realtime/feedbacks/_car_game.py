@@ -88,6 +88,7 @@ class Player(Entity):
         if np.isclose(self.x, LANES[self.pos_idx + 1], atol=0.15):
             self.pos_idx += 1
             self.x = LANES[self.pos_idx]
+            # reset variables
             with self.direction.get_lock():
                 self.direction.value = 0
 
@@ -97,6 +98,7 @@ class Player(Entity):
         if np.isclose(self.x, LANES[self.pos_idx - 1], atol=0.15):
             self.pos_idx -= 1
             self.x = LANES[self.pos_idx]
+            # reset variables
             with self.direction.get_lock():
                 self.direction.value = 0
 
