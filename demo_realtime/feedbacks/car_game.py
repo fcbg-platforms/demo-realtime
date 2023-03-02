@@ -13,14 +13,8 @@ class CarGame:
 
     def __init__(self) -> None:
         import_optional_dependency("ursina")
-        from ._car_game import game
-
         # prepare shared variables and process to control the game
-        self._direction = Value("i", 0)  # -1: left, 0: straight, 1: right
-        self._process = Process(
-            target=game,
-            args=(self._direction,),
-        )
+        self._create_shared_variables()
 
     def start(self) -> None:
         """Start the game."""
@@ -33,11 +27,14 @@ class CarGame:
         if not self._process.is_alive():
             raise RuntimeError("The game is already stopped.")
         self._process.kill()  # not clean, but works like a charm
-
         # prepare a restart
+        self._create_shared_variables()
+
+    def _create_shared_variables(self):
+        """Create the process and shared variables."""
         from ._car_game import game
 
-        self._direction = Value("i", 0)
+        self._direction = Value("i", 0)  # -1: left, 0: straight, 1: right
         self._process = Process(
             target=game,
             args=(self._direction,),
