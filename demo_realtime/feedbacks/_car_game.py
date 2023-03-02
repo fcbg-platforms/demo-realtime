@@ -77,7 +77,7 @@ class Player(Entity):
             raycast(self.world_position, (0.5, 1, 0), distance=1),
             raycast(self.world_position, (-0.5, 1, 0), distance=1),
             raycast(self.world_position, (0.5, -1, 0), distance=1),
-            raycast(self.world_position, (0.5, -1, 0), distance=1),
+            raycast(self.world_position, (-0.5, -1, 0), distance=1),
         ]
         if any(hit_info.hit for hit_info in hit_infos):
             if hasattr(self, "shake_sequence") and self.shake_sequence:

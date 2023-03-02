@@ -40,7 +40,6 @@ class CarGame:
             args=(self._direction,),
         )
 
-
     def go_left(self) -> None:
         """Move the player car one lane to the left."""
         if self._direction.value == 0:
