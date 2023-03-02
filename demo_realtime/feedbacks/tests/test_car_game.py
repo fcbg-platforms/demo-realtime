@@ -53,3 +53,11 @@ def test_car_game(caplog):
     game.go_right()
     assert "The game is not running." in caplog.text
     caplog.clear()
+
+    game.start()
+    time.sleep(1)
+    assert game.direction == "straight"
+    game.go_right()
+    assert game.direction == "right"
+    assert "Already going right." not in caplog.text
+    game.stop()

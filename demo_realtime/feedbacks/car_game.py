@@ -34,6 +34,15 @@ class CarGame:
             raise RuntimeError("The game is already stopped.")
         self._process.kill()  # not clean, but works like a charm
 
+        # prepare a restart
+        from ._car_game import game
+
+        self._direction = Value("i", 0)
+        self._process = Process(
+            target=game,
+            args=(self._direction,),
+        )
+
     def go_left(self) -> None:
         """Move the player car one lane to the left."""
         if self._process.is_alive():
