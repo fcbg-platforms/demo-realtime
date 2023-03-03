@@ -4,11 +4,11 @@ from typing import Optional, Union
 import numpy as np
 from bsl import StreamReceiver
 
-from .feedbacks import DoubleSpinningWheel
 from .metrics import bandpower
 from .utils._checks import _check_type
 from .utils._docs import fill_doc
 from .utils._logs import set_log_level
+from .visuals import DoubleSpinningWheel
 
 
 @fill_doc

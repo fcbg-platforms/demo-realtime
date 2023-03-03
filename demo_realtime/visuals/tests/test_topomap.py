@@ -8,7 +8,7 @@ from mne import create_info
 from mne.channels import make_standard_montage
 
 from demo_realtime import logger, set_log_level
-from demo_realtime.feedbacks import TopomapMPL
+from demo_realtime.visuals import TopomapMPL
 
 set_log_level("INFO")
 logger.propagate = True

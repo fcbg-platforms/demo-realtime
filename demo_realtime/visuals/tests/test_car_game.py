@@ -3,8 +3,8 @@ import time
 import pytest
 
 from demo_realtime import logger, set_log_level
-from demo_realtime.feedbacks import CarGame
 from demo_realtime.utils._tests import requires_missing_ursina, requires_ursina
+from demo_realtime.visuals import CarGame
 
 set_log_level("WARNING")
 logger.propagate = True

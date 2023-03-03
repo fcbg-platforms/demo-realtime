@@ -88,7 +88,7 @@ include = ['demo_realtime*']
 exclude = ['demo_realtime*tests']
 
 [tool.setuptools.package-data]
-"demo_realtime.feedbacks" = ["resources/*.png"]
+"demo_realtime.visuals" = ["resources/*.png"]
 
 [tool.black]
 line-length = 79

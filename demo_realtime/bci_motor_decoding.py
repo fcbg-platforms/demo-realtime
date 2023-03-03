@@ -11,7 +11,7 @@ except ImportError:
     from importlib_resources import files  # type: ignore
 
 from .utils._checks import _check_type, _ensure_path
-from .utils._imports import _import_optional_dependency
+from .visuals._bci_motor_decoding import Calibration
 
 # psychopy settings
 _SCREEN_SIZE = (1920, 1080)
@@ -45,11 +45,6 @@ def offline_calibration(
         Path where the dataset is recorded. If None, a temporary directory is
         used.
     """
-    _import_optional_dependency("psychopy")
-
-    from psychopy.hardware.keyboard import Keyboard
-    from psychopy.visual import ImageStim, TextStim, Window
-
     _check_type(n_repetition, ("int",), "n_repetition")
     assert 0 < n_repetition  # sanity-check
     _check_type(stream_name, (str,), "stream_name")
@@ -65,61 +60,11 @@ def offline_calibration(
     trigger = SoftwareTrigger(recorder)
 
     # create psychopy window and objects
-    window = Window(
-        size=_SCREEN_SIZE,
-        winType=_WINTYPE,
-        screen=_SCREEN,
-        fullscr=_FULL_SCREEN,
-        allowGUI=_ALLOW_GUI,
-        color=(0, 0, 0),
+    window = Calibration(
+        size=(1920, 1080), screen=1, fullscr=True, allowGUI=False
     )
-
-    keyboard = Keyboard()
-    window.callOnFlip(keyboard.clearEvents, eventType="keyboard")
-    keyboard.stop()
-    keyboard.clearEvents()
-
-    image = files("demo_realtime.feedbacks") / "resources" / "fist-clench.png"
-    assert image.is_file() and image.suffix == ".png"  # sanity-check
-    lfist = ImageStim(
-        window, image=image, size=[0.5, 0.5], pos=[-0.7, 0], ori=-20
-    )
-    rfist = ImageStim(
-        window, image=image, size=[-0.5, 0.5], pos=[0.7, 0], ori=20
-    )
-    image = files("demo_realtime.feedbacks") / "resources" / "hand-open.png"
-    assert image.is_file() and image.suffix == ".png"  # sanity-check
-    lhand = ImageStim(
-        window, image=image, size=[0.6, 0.6], pos=[-0.7, 0], ori=20
-    )
-    rhand = ImageStim(
-        window, image=image, size=[-0.6, 0.6], pos=[0.7, 0], ori=-20
-    )
-
-    instructions = TextStim(
-        win=window,
-        text="Welcome to the game calibration!\n\n"
-        "You will have 3 commands to repeat to calibrate the game:\n"
-        "- Clench the left fist\n- Clench the right fist\n"
-        "- Keep both hands open\n\n"
-        "The cues are randomize.\n You might have to perform the same "
-        "action several times in a row.\n\n"
-        "To start an example, press SPACE.",
-        height=0.04,
-        pos=(0, 0.05),
-    )
-    instructions.setAutoDraw(True)
-    window.flip()
-
-    # wait for SPACE
-    keyboard.start()
-    while True:  # wait for 'space'
-        keys = keyboard.getKeys(keyList=["space"], waitRelease=False)
-        if len(keys) != 0:
-            break
-        window.flip()
-    keyboard.stop()
-    keyboard.clearEvents()
+    window.show_instructions()
+    window.show_examples()
 
     # save the file
     trigger.close()

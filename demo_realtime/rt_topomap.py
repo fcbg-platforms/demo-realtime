@@ -5,11 +5,11 @@ import numpy as np
 from bsl import StreamReceiver
 from mne import create_info
 
-from .feedbacks import TopomapMPL
 from .metrics import bandpower
 from .utils._checks import _check_type
 from .utils._docs import fill_doc
 from .utils._logs import set_log_level
+from .visuals import TopomapMPL
 
 
 @fill_doc

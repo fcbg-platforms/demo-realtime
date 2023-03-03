@@ -208,12 +208,12 @@ def game(direction: Value, enable_ennemies: bool) -> None:
 
     # create entities
     texture = Texture(
-        files("demo_realtime.feedbacks") / "resources" / "road.png"
+        files("demo_realtime.visuals") / "resources" / "road.png"
     )
     Road(model="quad", texture=texture, scale=15, z=1)
     Road(model="quad", texture=texture, scale=15, z=1, y=15)
     texture = Texture(
-        files("demo_realtime.feedbacks") / "resources" / "car-player.png"
+        files("demo_realtime.visuals") / "resources" / "car-player.png"
     )
     Player(
         direction=direction,
@@ -226,7 +226,7 @@ def game(direction: Value, enable_ennemies: bool) -> None:
     )
     # load texture for ennemy cars
     car_enemy_texture = Texture(
-        files("demo_realtime.feedbacks") / "resources" / "car-enemy.png"
+        files("demo_realtime.visuals") / "resources" / "car-enemy.png"
     )
 
     # start the app

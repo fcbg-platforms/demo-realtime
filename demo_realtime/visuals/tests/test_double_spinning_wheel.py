@@ -3,11 +3,11 @@ from pathlib import Path
 import pytest
 
 from demo_realtime import logger, set_log_level
-from demo_realtime.feedbacks import DoubleSpinningWheel
 from demo_realtime.utils._tests import (
     requires_missing_psychopy,
     requires_psychopy,
 )
+from demo_realtime.visuals import DoubleSpinningWheel
 
 set_log_level("INFO")
 logger.propagate = True
