@@ -5,13 +5,16 @@ try:
 except ImportError:
     from importlib_resources import files  # type: ignore
 
+from ..utils._imports import _import_optional_dependency
+from ..utils._logs import logger
+
 
 class Calibration:
     def __init__(self, **kwargs):
         _import_optional_dependency("psychopy")
 
         from psychopy.hardware.keyboard import Keyboard
-        from psychopy.visual import ImageStim, TextStim, Window
+        from psychopy.visual import ImageStim, Window
 
         # prepare psychopy settings
         if "units" not in kwargs:
@@ -53,18 +56,18 @@ class Calibration:
         )
         assert image.is_file() and image.suffix == ".png"  # sanity-check
         self._lfist = ImageStim(
-            window, image=image, size=[0.5, 0.5], pos=[-0.7, 0], ori=-20
+            self._window, image=image, size=[0.5, 0.5], pos=[-0.7, 0], ori=-20
         )
         self._rfist = ImageStim(
-            window, image=image, size=[-0.5, 0.5], pos=[0.7, 0], ori=20
+            self._window, image=image, size=[-0.5, 0.5], pos=[0.7, 0], ori=20
         )
         image = files("demo_realtime.visuals") / "resources" / "hand-open.png"
         assert image.is_file() and image.suffix == ".png"  # sanity-check
         self._lhand = ImageStim(
-            window, image=image, size=[0.6, 0.6], pos=[-0.7, 0], ori=20
+            self._window, image=image, size=[0.6, 0.6], pos=[-0.7, 0], ori=20
         )
         self._rhand = ImageStim(
-            window, image=image, size=[-0.6, 0.6], pos=[0.7, 0], ori=-20
+            self._window, image=image, size=[-0.6, 0.6], pos=[0.7, 0], ori=-20
         )
 
     def show_instructions(self):
