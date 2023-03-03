@@ -5,21 +5,8 @@ from typing import Optional, Union
 from bsl import StreamRecorder
 from bsl.triggers import SoftwareTrigger
 
-try:
-    from importlib.resources import files  # type: ignore
-except ImportError:
-    from importlib_resources import files  # type: ignore
-
 from .utils._checks import _check_type, _ensure_path
 from .visuals._bci_motor_decoding import Calibration
-
-# psychopy settings
-_SCREEN_SIZE = (1920, 1080)
-_WINTYPE = "pyglet"
-_UNITS = "norm"
-_SCREEN = 1
-_FULL_SCREEN = True
-_ALLOW_GUI = False
 
 
 def offline_calibration(
