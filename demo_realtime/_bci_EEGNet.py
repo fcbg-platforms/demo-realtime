@@ -94,7 +94,8 @@ def EEGNet(
         Number of temporal filters to learn.
     D : int
         Number of spatial filters to learn within each temporal convolution.
-    F2 : Number of pointwise filters to learn. Default ``F1 * D``.
+    F2 : int
+        Number of pointwise filters to learn. Default ``F1 * D``.
     norm_rate : float
         Maximum norm value for the incoming weights used to constraint the last
         dense layer.
