@@ -1,11 +1,18 @@
-from tensorflow.keras.models import Model
-from tensorflow.keras.layers import Dense, Activation, Dropout
-from tensorflow.keras.layers import Conv2D, AveragePooling2D
-from tensorflow.keras.layers import SeparableConv2D, DepthwiseConv2D
-from tensorflow.keras.layers import BatchNormalization
-from tensorflow.keras.layers import SpatialDropout2D
-from tensorflow.keras.layers import Input, Flatten
 from tensorflow.keras.constraints import max_norm
+from tensorflow.keras.layers import (
+    Activation,
+    AveragePooling2D,
+    BatchNormalization,
+    Conv2D,
+    Dense,
+    DepthwiseConv2D,
+    Dropout,
+    Flatten,
+    Input,
+    SeparableConv2D,
+    SpatialDropout2D,
+)
+from tensorflow.keras.models import Model
 
 from ..utils._checks import _check_type, _check_value
 
