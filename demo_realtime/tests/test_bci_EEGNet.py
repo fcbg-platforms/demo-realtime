@@ -77,7 +77,7 @@ def test_invalid_arguments():
         )
     with pytest.raises(AssertionError):
         EEGNet(
-            n_classes=-4, n_channels=64, n_samples=128, F1=-8
+            n_classes=4, n_channels=64, n_samples=128, F1=-8
         )
 
     with pytest.raises(TypeError, match="'D' must be"):
@@ -86,7 +86,7 @@ def test_invalid_arguments():
         )
     with pytest.raises(AssertionError):
         EEGNet(
-            n_classes=-4, n_channels=64, n_samples=128, D=-2
+            n_classes=4, n_channels=64, n_samples=128, D=-2
         )
 
     with pytest.raises(TypeError, match="'F2' must be"):
@@ -95,14 +95,14 @@ def test_invalid_arguments():
         )
     with pytest.raises(AssertionError):
         EEGNet(
-            n_classes=-4, n_channels=64, n_samples=128, F2=-16
+            n_classes=4, n_channels=64, n_samples=128, F2=-16
         )
 
     with pytest.raises(TypeError, match="'dropoutType' must be"):
         EEGNet(
-            n_classes=-4, n_channels=64, n_samples=128, dropoutType=Dropout
+            n_classes=4, n_channels=64, n_samples=128, dropoutType=Dropout
         )
     with pytest.raises(ValueError, match="value for the 'dropoutType'"):
         EEGNet(
-            n_classes=-4, n_channels=64, n_samples=128, dropoutType="101"
+            n_classes=4, n_channels=64, n_samples=128, dropoutType="101"
         )
