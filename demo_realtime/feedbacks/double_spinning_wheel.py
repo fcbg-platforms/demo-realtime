@@ -10,7 +10,7 @@ except ImportError:
     from importlib_resources import files  # type: ignore
 
 from ..utils._checks import _check_type
-from ..utils._imports import import_optional_dependency
+from ..utils._imports import _import_optional_dependency
 from ..utils._logs import logger
 
 
@@ -42,7 +42,7 @@ class DoubleSpinningWheel:
         offset: float = 0.5,
         **kwargs,
     ) -> None:
-        import_optional_dependency("psychopy")
+        _import_optional_dependency("psychopy")
 
         # prepare psychopy settings
         if "units" not in kwargs:

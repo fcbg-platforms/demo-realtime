@@ -189,7 +189,7 @@ def add_enemies(texture: Texture) -> None:
     invoke(add_enemies, texture, delay=1)  # call itself to spawn infinitely
 
 
-def game(direction: Value) -> None:
+def game(direction: Value, enable_ennemies: bool) -> None:
     """Launch the game.
 
     Parameters
@@ -197,6 +197,8 @@ def game(direction: Value) -> None:
     direction : Value
         Shared variable used to define if the car is going straight (0),
         left (-1) or right (1).
+    enable_enemies : bool
+        If True, enemy cars will spawn.
     """
     # create application
     app = Ursina()
@@ -228,5 +230,6 @@ def game(direction: Value) -> None:
     )
 
     # start the app
-    add_enemies(car_enemy_texture)
+    if enable_ennemies:
+        add_enemies(car_enemy_texture)
     app.run()

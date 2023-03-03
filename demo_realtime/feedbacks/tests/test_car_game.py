@@ -20,7 +20,7 @@ def test_missing_ursina():
 @requires_ursina
 def test_car_game(caplog):
     """Test the car game feedback."""
-    game = CarGame()
+    game = CarGame(enable_enemies=True)
     game.start()
     time.sleep(4)
     assert game._process.is_alive()
@@ -46,7 +46,7 @@ def test_car_game(caplog):
     game.go_left()
     assert "is not running" in caplog.text
     caplog.clear()
-    game.start()
+    game.start(enable_enemies=False)
     time.sleep(4)
     assert game._process.is_alive()
     game.go_left()

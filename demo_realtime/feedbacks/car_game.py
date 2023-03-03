@@ -1,6 +1,7 @@
 from multiprocessing import Process, Value
 
-from ..utils._imports import import_optional_dependency
+from ..utils._checks import _check_type
+from ..utils._imports import _import_optional_dependency
 from ..utils._logs import logger
 
 
@@ -9,10 +10,17 @@ class CarGame:
 
     The player can move the car to the left or right with `CarGame.go_left` and
     `CarGame.go_right`.
+
+    Parameters
+    ----------
+    enable_enemies : bool
+        If True, enemy cars will spawn.
     """
 
-    def __init__(self) -> None:
-        import_optional_dependency("ursina")
+    def __init__(self, enable_enemies: bool = True) -> None:
+        _import_optional_dependency("ursina")
+        _check_type(enable_enemies, (bool,), "enable_enemies")
+        self._enable_enemies = enable_enemies
         # prepare shared variables and process to control the game
         self._create_shared_variables()
 
@@ -37,7 +45,7 @@ class CarGame:
         self._direction = Value("i", 0)  # -1: left, 0: straight, 1: right
         self._process = Process(
             target=game,
-            args=(self._direction,),
+            args=(self._direction, self._enable_enemies),
         )
 
     def go_left(self) -> None:
