@@ -130,6 +130,7 @@ omit = [
     '**/__init__.py',
     '**/demo_realtime/_version.py',
     '**/demo_realtime/commands/*',
+    '**/demo_realtime/feedbacks/_car_game.py',
     '**/tests/**',
 ]
 
