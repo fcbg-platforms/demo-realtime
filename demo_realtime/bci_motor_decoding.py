@@ -14,7 +14,7 @@ def offline_calibration(
     stream_name: str,
     directory: Optional[Union[str, Path]] = None,
 ):
-    """Gather a dataset of training and validation samples.
+    """Gather a dataset of training and validation epochs.
 
     3 actions (class) are recorded in a randomized order:
         - rest with the hands on the table
