@@ -41,6 +41,7 @@ dependencies = [
     'numpy>=1.21',
     'psutil',
     'stimuli',
+    'tensorflow',
 ]
 
 [project.optional-dependencies]
