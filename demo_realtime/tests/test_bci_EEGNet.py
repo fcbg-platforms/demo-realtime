@@ -1,5 +1,5 @@
 import pytest
-from tensorflow.keras.layer import Dropout
+from tensorflow.keras.layers import Dropout
 from tensorflow.keras.models import Model
 
 from demo_realtime._bci_EEGNet import EEGNet

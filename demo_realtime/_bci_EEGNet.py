@@ -19,6 +19,8 @@ from .utils._checks import _check_type, _check_value
 
 def EEGNet(
     n_classes: int,
+    n_channels: int,
+    n_samples: int,
     dropoutRate: float = 0.5,
     kernelLength: int = 64,
     F1: int = 8,
