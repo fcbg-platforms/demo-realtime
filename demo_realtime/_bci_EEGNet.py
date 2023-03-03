@@ -14,13 +14,11 @@ from tensorflow.keras.layers import (
 )
 from tensorflow.keras.models import Model
 
-from ..utils._checks import _check_type, _check_value
+from .utils._checks import _check_type, _check_value
 
 
 def EEGNet(
     n_classes: int,
-    n_channels: int = 64,
-    n_samples: int = 128,
     dropoutRate: float = 0.5,
     kernelLength: int = 64,
     F1: int = 8,
