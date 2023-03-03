@@ -17,7 +17,7 @@ exclude =
     *.egg-info
 
 per-file-ignores =
-    # __init__.py files are allowed to have unused imports and lines-too-long
+    # __init__.py files are allowed to have unused imports
     */__init__.py:F401
-    */**/__init__.py:F401,E501
+    */**/__init__.py:F401
     demo_realtime/_bci_EEGNet.py:E126,E221
