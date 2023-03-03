@@ -45,7 +45,7 @@ jobs:
       - name: Display system information
         run: demo-sys_info --developer
       - name: Run pytest # headless via Xvfb on linux
-        uses: GabrielBB/xvfb-action@v1.6
+        uses: coactions/setup-xvfb@v1
         with:
           run: pytest demo_realtime --cov=demo_realtime --cov-report=xml --cov-config=pyproject.toml
       - name: Upload to codecov
