@@ -1,4 +1,5 @@
 import time
+from typing import TYPE_CHECKING
 
 try:
     from importlib.resources import files  # type: ignore
@@ -8,13 +9,28 @@ except ImportError:
 from ..utils._imports import _import_optional_dependency
 from ..utils._logs import logger
 
+if TYPE_CHECKING:
+    from psychopy.visual import ImageStim, ShapeStim, Window
+
 
 class Calibration:
-    def __init__(self, **kwargs):
+    """PsychoPy visuals used to calibrate the BCI motor decoding example.
+
+    Parameters
+    ----------
+    **kwargs : dict
+        Additional keyword arguments are provided to `psychopy.visual.Window`.
+        The pre-defined values are:
+        * ``units='norm'``
+        * ``winType="pyglet"``
+        * ``color=(0, 0, 0)``
+    """
+
+    def __init__(self, **kwargs) -> None:
         _import_optional_dependency("psychopy")
 
         from psychopy.hardware.keyboard import Keyboard
-        from psychopy.visual import ImageStim, Window
+        from psychopy.visual import ImageStim, ShapeStim, Window
 
         # prepare psychopy settings
         if "units" not in kwargs:
@@ -69,8 +85,17 @@ class Calibration:
         self._rhand = ImageStim(
             self._window, image=image, size=[-0.6, 0.6], pos=[0.7, 0], ori=-20
         )
+        self._cross = ShapeStim(
+            win=self._window,
+            vertices="cross",
+            units="height",
+            size=(0.05, 0.05),
+            lineColor="white",
+            fillColor="white",
+        )
 
-    def show_instructions(self):
+    def show_instructions(self) -> None:
+        """Display instructions on the window."""
         from psychopy.visual import TextStim
 
         instructions = TextStim(
@@ -100,9 +125,11 @@ class Calibration:
         instructions.setAutoDraw(False)
         self._window.flip()
 
-    def show_examples(self):
+    def show_examples(self) -> None:
+        """Display examples on the window."""
         from psychopy.visual import TextStim
 
+        # left fist
         instructions = TextStim(
             win=self._window,
             text="This is a 'clench the left fist' cue.",
@@ -116,6 +143,21 @@ class Calibration:
         instructions.setAutoDraw(False)
         self._lfist.setAutoDraw(False)
 
+        # inter-trial
+        instructions = TextStim(
+            win=self._window,
+            text="Break between the cues.\n"
+            "Keep your hands open as for the 'hands open' cue.",
+            height=0.04,
+            pos=(0.0, 0.05),
+        )
+        instructions.setAutoDraw(True)
+        self._cross.setAutoDraw(True)
+        time.sleep(2)
+        instructions.setAutoDraw(False)
+        self._cross.setAutoDraw(False)
+
+        # hands open
         instructions = TextStim(
             win=self._window,
             text="This is a 'keep the hands open' cue.",
@@ -131,6 +173,21 @@ class Calibration:
         self._lhand.setAutoDraw(False)
         self._rhand.setAutoDraw(False)
 
+        # inter-trial
+        instructions = TextStim(
+            win=self._window,
+            text="Break between the cues.\n"
+            "Keep your hands open as for the 'hands open' cue.",
+            height=0.04,
+            pos=(0.0, 0.05),
+        )
+        instructions.setAutoDraw(True)
+        self._cross.setAutoDraw(True)
+        time.sleep(2)
+        instructions.setAutoDraw(False)
+        self._cross.setAutoDraw(False)
+
+        # right fist
         instructions = TextStim(
             win=self._window,
             text="This is a 'clench the right fist' cue.",
@@ -144,3 +201,34 @@ class Calibration:
         instructions.setAutoDraw(False)
         self._rfist.setAutoDraw(False)
         self._window.flip()
+
+    # -------------------------------------------------------------------------
+    @property
+    def window(self) -> Window:
+        """The PsychoPy window."""
+        return self._window
+
+    @property
+    def lfist(self) -> ImageStim:
+        """The left fist PsychoPy image."""
+        return self._lfist
+
+    @property
+    def rfist(self) -> ImageStim:
+        """The right fist PsychoPy image."""
+        return self._rfist
+
+    @property
+    def lhand(self) -> ImageStim:
+        """The left hand PsychoPy image."""
+        return self._lhand
+
+    @property
+    def rhand(self) -> ImageStim:
+        """The left hand PsychoPy image."""
+        return self._rhand
+
+    @property
+    def cross(self) -> ShapeStim:
+        """The PsychoPy shape used as a fixation cross."""
+        return self._cross

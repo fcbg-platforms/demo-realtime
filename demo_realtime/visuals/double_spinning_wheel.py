@@ -30,7 +30,7 @@ class DoubleSpinningWheel:
         the screen.
     **kwargs : dict
         Additional keyword arguments are provided to `psychopy.visual.Window`.
-        The already defined values are:
+        The pre-defined values are:
         * ``units='norm'``
         * ``winType="pyglet"``
         * ``color=(-1, -1, -1)``
