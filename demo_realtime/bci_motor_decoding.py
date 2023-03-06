@@ -1,7 +1,9 @@
+import time
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Optional, Union
 
+import numpy as np
 from bsl import StreamRecorder
 from bsl.triggers import SoftwareTrigger
 
@@ -40,19 +42,57 @@ def offline_calibration(
         directory = Path(tempdir.name)
     directory = _ensure_path(directory, must_exist=True)
 
+    # generate random cue order -- 1: left fist, 2: right fist, 3: hands open
+    cues = [1] * n_repetition + [2] * n_repetition + [3] * n_repetition
+    rng = np.random.default_rng()
+    rng.shuffle(cues)
+
     # the current recorder and the associated software trigger will be
     # deprecated in version 1.0 in favor of a safer LabRecorder-based approach.
     recorder = StreamRecorder(directory, stream_name=stream_name)
     recorder.start()
     trigger = SoftwareTrigger(recorder)
 
-    # create psychopy window and objects
-    window = Calibration(
-        size=(1920, 1080), screen=1, fullscr=True, allowGUI=False
-    )
-    window.show_instructions()
-    window.show_examples()
+    try:
+        # create psychopy window and objects
+        window = Calibration(
+            size=(1920, 1080), screen=1, fullscr=True, allowGUI=False
+        )
+        window.show_instructions()
+        window.show_examples()
+        window.cross.setAutoDraw(True)
+        time.sleep(2)
 
-    # save the file
-    trigger.close()
-    recorder.stop()
+        # loop until all cues are exhausted
+        while len(cues) != 0:
+            # handle new cue
+            cue = cues.pop(0)
+            if cue == 1:  # left fist
+                window.lfist.setAutoDraw(True)
+            elif cue == 2:  # right fist
+                window.rfist.setAutoDraw(True)
+            elif cue == 3:  # hands open
+                window.lhand.setAutoDraw(True)
+                window.rhand.setAutoDraw(True)
+            window.window.flip()
+            trigger.signal(cue)
+            time.sleep(2.5)
+
+            # remove cue
+            if cue == 1:  # left fist
+                window.lfist.setAutoDraw(False)
+            elif cue == 2:  # right fist
+                window.rfist.setAutoDraw(False)
+            elif cue == 3:  # hands open
+                window.lhand.setAutoDraw(False)
+                window.rhand.setAutoDraw(False)
+            window.window.flip()
+            time.sleep(1.5)
+
+    except Exception:
+        raise
+    finally:
+        window.close()
+        # save the file
+        trigger.close()
+        recorder.stop()
