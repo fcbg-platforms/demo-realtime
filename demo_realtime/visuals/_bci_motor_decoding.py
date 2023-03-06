@@ -207,6 +207,42 @@ class Calibration:
         self._rfist.setAutoDraw(False)
         self._window.flip()
 
+        # wait for SPACE to continue
+        instructions = TextStim(
+            win=self._window,
+            text="To start, press SPACE.",
+            height=0.04,
+            pos=(0, 0.05),
+        )
+        instructions.setAutoDraw(True)
+        self._keyboard.start()
+        while True:  # wait for 'space'
+            keys = self._keyboard.getKeys(keyList=["space"], waitRelease=False)
+            if len(keys) != 0:
+                break
+            self._window.flip()
+        self._keyboard.stop()
+        self._keyboard.clearEvents()
+        instructions.setAutoDraw(False)
+        self._window.flip()
+
+    def close(self) -> None:
+        """Close the visual window."""
+        try:
+            self._window.flip()  # flush win.callOnFlip() and win.timeOnFlip()
+        except Exception:
+            pass
+        try:
+            self._keyboard.stop()
+            self._keyboard.clearEvents()
+        except Exception:
+            pass
+        self._window.close()
+
+    def __del__(self):
+        """Make sure to close the window and clear the events before del."""
+        self.close()
+
     # -------------------------------------------------------------------------
     @property
     def window(self) -> Window:
