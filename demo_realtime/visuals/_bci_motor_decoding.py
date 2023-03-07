@@ -144,7 +144,7 @@ class Calibration:
         instructions.setAutoDraw(True)
         self._lfist.setAutoDraw(True)
         self._window.flip()
-        time.sleep(2)
+        time.sleep(3)
         instructions.setAutoDraw(False)
         self._lfist.setAutoDraw(False)
 
@@ -154,11 +154,12 @@ class Calibration:
             text="Break between the cues.\n"
             "Keep your hands open as for the 'hands open' cue.",
             height=0.04,
-            pos=(0.0, 0.05),
+            pos=(0.0, 0.2),
         )
         instructions.setAutoDraw(True)
         self._cross.setAutoDraw(True)
-        time.sleep(2)
+        self._window.flip()
+        time.sleep(3)
         instructions.setAutoDraw(False)
         self._cross.setAutoDraw(False)
 
@@ -173,7 +174,7 @@ class Calibration:
         self._lhand.setAutoDraw(True)
         self._rhand.setAutoDraw(True)
         self._window.flip()
-        time.sleep(2)
+        time.sleep(3)
         instructions.setAutoDraw(False)
         self._lhand.setAutoDraw(False)
         self._rhand.setAutoDraw(False)
@@ -184,11 +185,12 @@ class Calibration:
             text="Break between the cues.\n"
             "Keep your hands open as for the 'hands open' cue.",
             height=0.04,
-            pos=(0.0, 0.05),
+            pos=(0.0, 0.2),
         )
         instructions.setAutoDraw(True)
         self._cross.setAutoDraw(True)
-        time.sleep(2)
+        self._window.flip()
+        time.sleep(3)
         instructions.setAutoDraw(False)
         self._cross.setAutoDraw(False)
 
@@ -202,7 +204,7 @@ class Calibration:
         instructions.setAutoDraw(True)
         self._rfist.setAutoDraw(True)
         self._window.flip()
-        time.sleep(2)
+        time.sleep(3)
         instructions.setAutoDraw(False)
         self._rfist.setAutoDraw(False)
         self._window.flip()
