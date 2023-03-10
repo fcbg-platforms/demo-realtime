@@ -21,7 +21,7 @@ from .visuals import CarGame
 from .visuals._bci_motor_decoding import Calibration
 
 if TYPE_CHECKING:
-    from tensorflow.keras import Model
+    from tensorflow.keras.models import Model
 
 
 def offline_calibration(
@@ -294,7 +294,12 @@ def online(stream_name: str, model: Model, duration: int = 60) -> None:
         Fitted EEGNet model.
     %(duration)s
     """
+    _import_optional_dependency("tensorflow")
+
+    from tensorflow.keras.models import Model
+
     _check_type(stream_name, (str,), "stream_name")
+    _check_type(model, (Model,), "model")
     _check_type(duration, ("int"), "duration")
     assert 0 < duration
 
