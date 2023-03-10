@@ -36,7 +36,7 @@ docdict[
     "duration"
 ] = """
 duration : float
-    Duration of the neurofeedback loop."""
+    Duration of the real-time loop."""
 
 # --------------------------------- topomap ----------------------------------
 docdict[

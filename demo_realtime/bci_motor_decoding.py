@@ -5,17 +5,19 @@ from __future__ import annotations
 
 import time
 from pathlib import Path
-from typing import Union, TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 
 import numpy as np
-from bsl import StreamRecorder
+from bsl import StreamReceiver, StreamRecorder
 from bsl.triggers import SoftwareTrigger
 from mne import Epochs, find_events
 from mne.io import read_raw_fif
 
 from .utils._checks import _check_type, _ensure_path
+from .utils._docs import fill_doc
 from .utils._import import _import_optional_dependency
 from .utils._logs import logger
+from .visuals import CarGame
 from .visuals._bci_motor_decoding import Calibration
 
 if TYPE_CHECKING:
@@ -39,8 +41,7 @@ def offline_calibration(
     n_repetition : int
         Number of repetition of each of the 3 actions. e.g. ``10`` will set the
         calibration to measure 10 epochs of each class.
-    stream_name : str
-        Name of the amplifier LSL stream.
+    %(stream_name)s
     directory : path-like
         Path where the dataset is recorded.
 
@@ -125,7 +126,7 @@ def offline_calibration(
 
 def offline_fit(
     fname: Union[str, Path], directory: Union[str, Path] = None
-) -> Model:
+) -> Union[Model, Path]:
     """Fit EEGNet model with the dataset recorded with offline_calibration.
 
     Parameters
@@ -139,6 +140,8 @@ def offline_fit(
     -------
     model : Model
         Fitted EEGNet model.
+    fname : Path
+        Path to the H5 file containing the weights.
     """
     _import_optional_dependency("tensorflow")
 
@@ -251,9 +254,11 @@ def offline_fit(
     logger.info("Number of parameters: %i", model.count_params())
 
     # set a valid path for your system to record model checkpoints
-    fname_chkpoint = f"{time.strftime('%Y%m%d-%H%M%S', time.localtime())}.h5"
+    fname_chkpoint = (
+        directory / f"{time.strftime('%Y%m%d-%H%M%S', time.localtime())}.h5"
+    )
     checkpointer = ModelCheckpoint(
-        filepath=directory / fname_chkpoint,
+        filepath=fname_chkpoint,
         verbose=1,
         save_best_only=True,
     )
@@ -268,11 +273,74 @@ def offline_fit(
     )
 
     # load optimal weights
-    model.load_weights(directory / fname_chkpoint)
+    model.load_weights(fname_chkpoint)
 
     probs = model.predict(X_test)
     preds = probs.argmax(axis=-1)
     acc = np.mean(preds == Y_test.argmax(axis=-1))
     logger.info("Classification accuracy [test]: %f", acc)
 
-    return model
+    return model, fname_chkpoint
+
+
+@fill_doc
+def online(stream_name: str, model: Model, duration: int = 60) -> None:
+    """Run the online BCI-game.
+
+    Parameters
+    ----------
+    %(stream_name)s
+    model : Model
+        Fitted EEGNet model.
+    %(duration)s
+    """
+    _check_type(stream_name, (str,), "stream_name")
+    _check_type(duration, ("int"), "duration")
+    assert 0 < duration
+
+    # create receiver and feedback
+    sr = StreamReceiver(bufsize=1.0, winsize=1.0, stream_name=stream_name)
+    sr.mne_infos[stream_name].set_montage("standard_1020", on_missing="ignore")
+    game = CarGame()
+
+    # wait to fill one buffer
+    sr.acquire()
+    time.sleep(1.0)
+
+    try:
+        game.start()
+        start = time.time()
+        while time.time() - start <= duration:
+            # retrieve data
+            sr.acquire()
+            raw, _ = sr.get_window(return_raw=True)
+            raw.drop_channels(["X1", "X2", "X3", "A2"])
+            raw.filter(
+                l_freq=2.0,
+                h_freq=25.0,
+                method="fir",
+                phase="zero-double",
+                fir_window="hamming",
+                fir_design="firwin",
+                pad="edge",
+            )
+            raw.resample(128)  # shape is now (20, 128)
+
+            # retrieve numpy array and transform to NHWC
+            # (n_trials, n_channels, n_samples, n_kernels)
+            X = raw.get_data() * 1000
+            X = X.reshape(1, X.shape[0], X.shape[1], 1)
+
+            # predict
+            prob = model.predict(X)
+            pred = prob.argmax(axis=-1)[0]
+            logger.info("Predicting %i", pred)
+
+            # do an action based on the prediction
+            pass
+
+    except Exception:
+        raise
+    finally:
+        game.stop()
+        del sr
