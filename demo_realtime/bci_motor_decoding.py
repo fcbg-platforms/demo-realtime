@@ -186,7 +186,7 @@ def offline_fit(
     del epochs
 
     # split the dataset into train/validate/test with equal number of labels
-    # per split.
+    # in each split.
     lfist_idx = np.where(Y == event_id["lfist"])[0]
     rfist_idx = np.where(Y == event_id["rfist"])[0]
     hands_open_idx = np.where(Y == event_id["hands_open"])[0]
