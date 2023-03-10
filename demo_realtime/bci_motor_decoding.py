@@ -337,7 +337,12 @@ def online(stream_name: str, model: Model, duration: int = 60) -> None:
             logger.info("Predicting %i", pred)
 
             # do an action based on the prediction
-            pass
+            if pred == 0:  # turn left
+                game.go_left()
+            elif pred == 1:
+                game.go_right()  # turn right
+            elif pred == 2:
+                pass
 
     except Exception:
         raise
