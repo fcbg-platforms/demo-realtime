@@ -53,8 +53,8 @@ style = [
     'black',
     'codespell',
     'isort',
-    'flake8',
     'pydocstyle[toml]',
+    'ruff',
 ]
 test = [
     'pytest>=4.2',
@@ -97,7 +97,8 @@ include = '\.pyi?$'
 extend-exclude = '''
 (
       __pycache__
-    | \.github
+    | .github
+    | .ruff_cache
     | setup.py
 )
 '''
@@ -117,6 +118,16 @@ ignore-decorators = '(copy_doc|property|.*setter|.*getter|pyqtSlot|Slot)'
 match = '^(?!setup|__init__|test_).*\.py'
 match-dir = '^demo_realtime.*'
 add_ignore = 'D100,D104,D107'
+
+[tool.ruff]
+line-length = 79
+extend-exclude = [
+    "doc",
+    "setup.py",
+]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]
 
 [tool.pytest.ini_options]
 minversion = '6.0'
