@@ -15,7 +15,7 @@ from mne.io import read_raw_fif
 
 from .utils._checks import _check_type, _ensure_path
 from .utils._docs import fill_doc
-from .utils._import import _import_optional_dependency
+from .utils._imports import _import_optional_dependency
 from .utils._logs import logger
 from .visuals import CarGame
 from .visuals._bci_motor_decoding import Calibration
@@ -300,7 +300,7 @@ def online(stream_name: str, model: Model, duration: int = 60) -> None:
 
     _check_type(stream_name, (str,), "stream_name")
     _check_type(model, (Model,), "model")
-    _check_type(duration, ("int"), "duration")
+    _check_type(duration, ("int",), "duration")
     assert 0 < duration
 
     # create receiver and feedback
