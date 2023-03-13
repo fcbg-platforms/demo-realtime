@@ -186,15 +186,13 @@ def offline_fit(
         epochs_list.append(epochs)
     epochs = concatenate_epochs(epochs_list)
     epochs.resample(128)
+    del raw
 
     # extract raw data and labels. The raw data is scaled by 1000 due to
     # scaling sensitivity in deep learning.
     labels = epochs.events[:, -1]
     X = epochs.get_data() * 1000  # shape is (n_trials, n_channels, n_samples)
     Y = labels
-
-    del raw
-    del epochs
 
     # split the dataset into train/validate/test with equal number of labels
     # in each split.
@@ -213,6 +211,7 @@ def offline_fit(
     idx_train = np.hstack(
         (lfist_idx[:n2], rfist_idx[:n2], hands_open_idx[:n2])
     )
+    rng.shuffle(idx_train)
     X_train = X[idx_train, :, :]
     Y_train = Y[idx_train]
 
@@ -221,11 +220,13 @@ def offline_fit(
     idx_val = np.hstack(
         (lfist_idx[n1:n2], rfist_idx[n1:n2], hands_open_idx[n1:n2])
     )
+    rng.shuffle(idx_val)
     X_validate = X[idx_val, :, :]
     Y_validate = Y[idx_val]
 
     n1 = n2
     idx_test = np.hstack((lfist_idx[n1:], rfist_idx[n1:], hands_open_idx[n1:]))
+    rng.shuffle(idx_test)
     X_test = X[idx_test, :, :]
     Y_test = Y[idx_test]
 
@@ -238,7 +239,11 @@ def offline_fit(
     Y_test = np_utils.to_categorical(Y_test - 1)
 
     # convert data to NHWC (n_trials, n_channels, n_samples, n_kernels) format.
-    n_channels, n_samples, n_kernels = 20, 128, 1
+    n_channels, n_samples, n_kernels = (
+        epochs.info["nchan"],
+        epochs.times.size,
+        1,
+    )
     X_train = X_train.reshape(
         X_train.shape[0], n_channels, n_samples, n_kernels
     )
