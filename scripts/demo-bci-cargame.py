@@ -19,7 +19,7 @@ except ImportError:
 set_log_level("INFO")
 
 directory = Path.home() / "Downloads" / "bci"
-fname = offline_calibration(3, "WS-default", directory)
+fname = offline_calibration(10, "WS-default", directory)
 
 raw = read_raw_fif(fname, preload=False)
 raw.drop_channels(["X1", "X2", "X3", "A2"])
@@ -131,7 +131,7 @@ model.fit(
     X_train,
     Y_train,
     batch_size=16,
-    epochs=30,
+    epochs=300,
     verbose=2,
     validation_data=(X_validate, Y_validate),
     callbacks=[checkpointer],
@@ -145,4 +145,4 @@ preds = probs.argmax(axis=-1)
 acc = np.mean(preds == Y_test.argmax(axis=-1))
 logger.info("Classification accuracy [test]: %f", acc)
 
-online("WS-default", model, duration=30)
+online("WS-default", model, duration=300)
