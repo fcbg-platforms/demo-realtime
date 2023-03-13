@@ -10,8 +10,14 @@ from typing import TYPE_CHECKING, Union
 import numpy as np
 from bsl import StreamReceiver, StreamRecorder
 from bsl.triggers import SoftwareTrigger
-from mne import Epochs, find_events, concatenate_epochs
+from mne import (
+    Epochs,
+    concatenate_epochs,
+    find_events,
+    make_fixed_length_epochs,
+)
 from mne.io import read_raw_fif
+from scipy.stats import mode
 
 from .utils._checks import _check_type, _ensure_path
 from .utils._docs import fill_doc
@@ -320,16 +326,17 @@ def online(stream_name: str, model: Model, duration: int = 60) -> None:
     assert 0 < duration
 
     # create receiver and feedback
-    sr = StreamReceiver(bufsize=1.0, winsize=1.0, stream_name=stream_name)
+    sr = StreamReceiver(bufsize=2.0, winsize=2.0, stream_name=stream_name)
     sr.mne_infos[stream_name].set_montage("standard_1020", on_missing="ignore")
     game = CarGame()
 
     # wait to fill one buffer
     sr.acquire()
-    time.sleep(1.0)
+    time.sleep(2.0)
 
     try:
         game.start()
+        time.sleep(2.0)
         start = time.time()
         while time.time() - start <= duration:
             # retrieve data
@@ -345,16 +352,17 @@ def online(stream_name: str, model: Model, duration: int = 60) -> None:
                 fir_design="firwin",
                 pad="edge",
             )
-            raw.resample(128)  # shape is now (20, 128)
+            raw.resample(128)  # shape is now (20, 256)
+            epochs = make_fixed_length_epochs(raw, duration=1.0, overlap=0.9)
 
             # retrieve numpy array and transform to NHWC
             # (n_trials, n_channels, n_samples, n_kernels)
-            X = raw.get_data() * 1000
-            X = X.reshape(1, X.shape[0], X.shape[1], 1)
+            X = epochs.get_data() * 1000
+            X = X.reshape(*X.shape, 1)  # n_kernels = 1
 
             # predict
-            prob = model.predict(X)
-            pred = prob.argmax(axis=-1)[0]
+            prob = model(X, training=False)
+            pred = mode(prob.argmax(axis=-1), keepdims=False)[0]
             logger.info("Predicting %i", pred)
 
             # do an action based on the prediction
@@ -364,6 +372,7 @@ def online(stream_name: str, model: Model, duration: int = 60) -> None:
                 game.go_right()  # turn right
             elif pred == 2:
                 pass
+            time.sleep(0.2)
 
     except Exception:
         raise
