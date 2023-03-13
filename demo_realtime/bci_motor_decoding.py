@@ -362,7 +362,7 @@ def online(stream_name: str, model: Model, duration: int = 60) -> None:
 
             # predict
             prob = model(X, training=False)
-            pred = mode(prob.argmax(axis=-1), keepdims=False)[0]
+            pred = mode(prob.numpy().argmax(axis=-1), keepdims=False)[0]
             logger.info("Predicting %i", pred)
 
             # do an action based on the prediction
@@ -372,7 +372,7 @@ def online(stream_name: str, model: Model, duration: int = 60) -> None:
                 game.go_right()  # turn right
             elif pred == 2:
                 pass
-            time.sleep(0.2)
+            time.sleep(0.5)
 
     except Exception:
         raise
