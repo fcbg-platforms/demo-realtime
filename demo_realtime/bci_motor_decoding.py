@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Union
 import numpy as np
 from bsl import StreamReceiver, StreamRecorder
 from bsl.triggers import SoftwareTrigger
-from mne import Epochs, find_events
+from mne import Epochs, find_events, concatenate_epochs
 from mne.io import read_raw_fif
 
 from .utils._checks import _check_type, _ensure_path
@@ -171,9 +171,20 @@ def offline_fit(
     # create epochs and resample to 128 Hz
     events = find_events(raw, stim_channel="TRIGGER")
     event_id = dict(lfist=1, rfist=2, hands_open=3)
-    epochs = Epochs(
-        raw, events, event_id, tmin=0, tmax=1, baseline=None, preload=True
-    )
+    epochs_list = list()
+    for step in np.arange(0, 1.1, 0.1):
+        epochs = Epochs(
+            raw,
+            events,
+            event_id,
+            tmin=0.5 + step,
+            tmax=1.5 + step,
+            baseline=None,
+            preload=True,
+        )
+        epochs.shift_time(tshift=0, relative=False)
+        epochs_list.append(epochs)
+    epochs = concatenate_epochs(epochs_list)
     epochs.resample(128)
 
     # extract raw data and labels. The raw data is scaled by 1000 due to
