@@ -53,7 +53,6 @@ class Player(Entity):
     def __init__(self, direction: Value, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         # define variables used to control the car position
-        assert direction.value == 0  # sanity-check
         self.direction = direction
         self.hit_edge = False
         self.pos_idx = START_LANE
