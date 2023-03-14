@@ -5,7 +5,8 @@ from __future__ import annotations
 
 import time
 from pathlib import Path
-from typing import TYPE_CHECKING, Union
+from tempfile import TemporaryDirectory
+from typing import TYPE_CHECKING, Optional, Union
 
 import numpy as np
 from bsl import StreamReceiver, StreamRecorder
@@ -131,33 +132,37 @@ def offline_calibration(
 
 
 def offline_fit(
-    fname: Union[str, Path], directory: Union[str, Path] = None
-) -> Union[Model, Path]:
+    fname: Union[str, Path],
+    model: Optional[Union[Model, str, Path]] = None,
+) -> Model:
     """Fit EEGNet model with the dataset recorded with offline_calibration.
 
     Parameters
     ----------
     fname : path-like
         Path to the FIFF recording.
-    directory : path-like
-        Path where the model checkpoints are saved.
+    model : Model | path-like | None
+        If provided, model on which fit is resumed. If None, a new model is
+        created.
 
     Returns
     -------
     model : Model
         Fitted EEGNet model.
-    fname : Path
-        Path to the H5 file containing the weights.
     """
     _import_optional_dependency("tensorflow")
 
-    from tensorflow.keras import utils as np_utils
     from tensorflow.keras.callbacks import ModelCheckpoint
+    from tensorflow.keras.models import Model, load_model
+    from tensorflow.keras.utils import to_categorical
 
     from ._bci_EEGNet import EEGNet
 
     fname = _ensure_path(fname, must_exist=True)
-    directory = _ensure_path(directory, must_exist=True)
+    _check_type(model, (Model, str, Path, None), "model")
+    if isinstance(model, (str, Path)):
+        model = _ensure_path(model, must_exist=True)
+        model = load_model(model)
 
     # load and preprocess dataset
     raw = read_raw_fif(fname, preload=False)
@@ -240,9 +245,9 @@ def offline_fit(
     del n2
 
     # convert labels to one-hot encodings.
-    Y_train = np_utils.to_categorical(Y_train - 1)
-    Y_validate = np_utils.to_categorical(Y_validate - 1)
-    Y_test = np_utils.to_categorical(Y_test - 1)
+    Y_train = to_categorical(Y_train - 1)
+    Y_validate = to_categorical(Y_validate - 1)
+    Y_test = to_categorical(Y_test - 1)
 
     # convert data to NHWC (n_trials, n_channels, n_samples, n_kernels) format.
     n_channels, n_samples, n_kernels = (
@@ -259,25 +264,29 @@ def offline_fit(
     X_test = X_test.reshape(X_test.shape[0], n_channels, n_samples, n_kernels)
 
     # create and fit model
-    model = EEGNet(
-        len(event_id),
-        n_channels,
-        n_samples,
-        dropoutRate=0.5,
-        kernelLength=32,
-        F1=8,
-        D=2,
-        F2=16,
-        dropoutType="Dropout",
-    )
-    model.compile(
-        loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"]
-    )
-    logger.info("Number of parameters: %i", model.count_params())
+    if model is None:
+        model = EEGNet(
+            len(event_id),
+            n_channels,
+            n_samples,
+            dropoutRate=0.5,
+            kernelLength=32,
+            F1=8,
+            D=2,
+            F2=16,
+            dropoutType="Dropout",
+        )
+        model.compile(
+            loss="categorical_crossentropy",
+            optimizer="adam",
+            metrics=["accuracy"],
+        )
+        logger.info("Number of parameters: %i", model.count_params())
 
     # set a valid path for your system to record model checkpoints
+    tempdir = TemporaryDirectory(prefix="tmp_demo-realtime_")
     fname_chkpoint = (
-        directory / f"{time.strftime('%Y%m%d-%H%M%S', time.localtime())}.h5"
+        tempdir / f"{time.strftime('%Y%m%d-%H%M%S', time.localtime())}.h5"
     )
     checkpointer = ModelCheckpoint(
         filepath=fname_chkpoint,
@@ -296,13 +305,14 @@ def offline_fit(
 
     # load optimal weights
     model.load_weights(fname_chkpoint)
+    del tempdir
 
     probs = model.predict(X_test)
     preds = probs.argmax(axis=-1)
     acc = np.mean(preds == Y_test.argmax(axis=-1))
     logger.info("Classification accuracy [test]: %f", acc)
 
-    return model, fname_chkpoint
+    return model
 
 
 @fill_doc

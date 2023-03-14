@@ -1,8 +1,8 @@
 from pathlib import Path
 
 import numpy as np
-from mne.io import read_raw_fif
 from mne import Epochs, concatenate_epochs, find_events
+from mne.io import read_raw_fif
 from tensorflow.keras import utils as np_utils
 from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.models import load_model
