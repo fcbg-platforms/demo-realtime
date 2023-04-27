@@ -70,10 +70,10 @@ full = [
 ]
 
 [project.urls]
-homepage = 'https://github.com/mscheltienne/demo-realtime'
-documentation = 'https://github.com/mscheltienne/demo-realtime'
-source = 'https://github.com/mscheltienne/demo-realtime'
-tracker = 'https://github.com/mscheltienne/demo-realtime/issues'
+homepage = 'https://github.com/fcbg-hnp-meeg/demo-realtime'
+documentation = 'https://github.com/fcbg-hnp-meeg/demo-realtime'
+source = 'https://github.com/fcbg-hnp-meeg/demo-realtime'
+tracker = 'https://github.com/fcbg-hnp-meeg/demo-realtime/issues'
 
 [project.scripts]
 demo-sys_info = 'demo_realtime.commands.sys_info:run'
