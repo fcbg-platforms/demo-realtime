@@ -1,17 +1,21 @@
-from typing import Tuple
+from __future__ import annotations  # c.f. PEP 563, PEP 649
+
+from typing import TYPE_CHECKING
 
 import numpy as np
 from mne.time_frequency import psd_array_multitaper
-from numpy.typing import NDArray
 from scipy.integrate import simps
 from scipy.signal import periodogram, welch
+
+if TYPE_CHECKING:
+    from numpy.typing import NDArray
 
 
 def bandpower(
     data: NDArray[float],
     fs: float,
     method: str,
-    band: Tuple[float, float],
+    band: tuple[float, float],
     relative: bool = True,
     **kwargs,
 ) -> NDArray[float]:

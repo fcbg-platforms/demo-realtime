@@ -1,3 +1,4 @@
+from importlib.resources import files  # type: ignore
 from pathlib import Path
 
 import numpy as np
@@ -9,11 +10,6 @@ from tensorflow.keras.models import load_model
 
 from demo_realtime import logger, set_log_level
 from demo_realtime.bci_motor_decoding import offline_calibration, online
-
-try:
-    from importlib.resources import files  # type: ignore
-except ImportError:
-    from importlib_resources import files  # type: ignore
 
 
 set_log_level("INFO")
@@ -82,9 +78,7 @@ Y_train = Y[idx_train]
 
 n1 = n2
 n2 = n1 + int(0.15 * size)
-idx_val = np.hstack(
-    (lfist_idx[n1:n2], rfist_idx[n1:n2], hands_open_idx[n1:n2])
-)
+idx_val = np.hstack((lfist_idx[n1:n2], rfist_idx[n1:n2], hands_open_idx[n1:n2]))
 rng.shuffle(idx_val)
 X_validate = X[idx_val, :, :]
 Y_validate = Y[idx_val]
@@ -110,16 +104,10 @@ n_channels, n_samples, n_kernels = (
     1,
 )
 X_train = X_train.reshape(X_train.shape[0], n_channels, n_samples, n_kernels)
-X_validate = X_validate.reshape(
-    X_validate.shape[0], n_channels, n_samples, n_kernels
-)
+X_validate = X_validate.reshape(X_validate.shape[0], n_channels, n_samples, n_kernels)
 X_test = X_test.reshape(X_test.shape[0], n_channels, n_samples, n_kernels)
 
-model = (
-    files("demo_realtime")
-    / "resources"
-    / "bci_motor_decoding-model-mscheltienne"
-)
+model = files("demo_realtime") / "resources" / "bci_motor_decoding-model-mscheltienne"
 assert model.exists()  # sanity-check
 model = load_model(model)
 checkpointer = ModelCheckpoint(

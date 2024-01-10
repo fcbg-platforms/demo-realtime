@@ -1,18 +1,11 @@
-# postponed evaluation of annotations, c.f. PEP 563 and PEP 649
-# alternatively, the type hints can be defined as strings which will be
-# evaluated with eval() prior to type checking.
-from __future__ import annotations
+from __future__ import annotations  # c.f. PEP 563, PEP 649
 
 import time
+from importlib.resources import files  # type: ignore
 from typing import TYPE_CHECKING
 
-try:
-    from importlib.resources import files  # type: ignore
-except ImportError:
-    from importlib_resources import files  # type: ignore
-
-from ..utils._imports import _import_optional_dependency
-from ..utils._logs import logger
+from ..utils._imports import import_optional_dependency
+from ..utils.logs import logger
 
 if TYPE_CHECKING:
     from psychopy.visual import ImageStim, ShapeStim, Window
@@ -32,7 +25,7 @@ class Calibration:
     """
 
     def __init__(self, **kwargs) -> None:
-        _import_optional_dependency("psychopy")
+        import_optional_dependency("psychopy")
 
         from psychopy.hardware.keyboard import Keyboard
         from psychopy.visual import ImageStim, ShapeStim, Window
@@ -49,8 +42,7 @@ class Calibration:
             kwargs["winType"] = "pyglet"
         elif kwargs["winType"] != "pyglet":
             logger.warning(
-                "The 'pyglet' window type is recommended above the provided "
-                "'%s'.",
+                "The 'pyglet' window type is recommended above the provided " "'%s'.",
                 kwargs["winType"],
             )
 
@@ -58,23 +50,18 @@ class Calibration:
             kwargs["color"] = (0, 0, 0)
         elif kwargs["color"] != (0, 0, 0):
             logger.warning(
-                "The color '(0, 0, 0)' is recommended above the provided "
-                "'%s'.",
+                "The color '(0, 0, 0)' is recommended above the provided " "'%s'.",
                 kwargs["color"],
             )
 
         # prepare psychopy window and objects
         self._window = Window(**kwargs)
         self._keyboard = Keyboard()
-        self._window.callOnFlip(
-            self._keyboard.clearEvents, eventType="keyboard"
-        )
+        self._window.callOnFlip(self._keyboard.clearEvents, eventType="keyboard")
         self._keyboard.stop()
         self._keyboard.clearEvents()
 
-        image = (
-            files("demo_realtime.visuals") / "resources" / "fist-clench.png"
-        )
+        image = files("demo_realtime.visuals") / "resources" / "fist-clench.png"
         assert image.is_file() and image.suffix == ".png"  # sanity-check
         self._lfist = ImageStim(
             self._window, image=image, size=[0.5, 0.5], pos=[-0.7, 0], ori=-20

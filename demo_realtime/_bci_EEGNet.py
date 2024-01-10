@@ -14,7 +14,7 @@ from tensorflow.keras.layers import (
 )
 from tensorflow.keras.models import Model
 
-from .utils._checks import _check_type, _check_value
+from .utils._checks import check_type, check_value
 
 
 def EEGNet(
@@ -107,25 +107,25 @@ def EEGNet(
     model : Model
         The Keras model.
     """
-    _check_type(n_classes, ("int",), "n_classes")
+    check_type(n_classes, ("int",), "n_classes")
     assert 0 < n_classes  # sanity-check
-    _check_type(n_channels, ("int",), "n_channels")
+    check_type(n_channels, ("int",), "n_channels")
     assert 0 < n_channels  # sanity-check
-    _check_type(n_samples, ("int",), "n_samples")
+    check_type(n_samples, ("int",), "n_samples")
     assert 0 < n_samples  # sanity-check
-    _check_type(dropoutRate, ("numeric",), "dropoutRate")
+    check_type(dropoutRate, ("numeric",), "dropoutRate")
     assert 0 <= dropoutRate <= 1
-    _check_type(kernelLength, ("int",), "kernelLength")
+    check_type(kernelLength, ("int",), "kernelLength")
     assert 0 < kernelLength  # sanity-check
-    _check_type(F1, ("int",), "F1")
+    check_type(F1, ("int",), "F1")
     assert 0 < F1  # sanity-check
-    _check_type(D, ("int",), "D")
+    check_type(D, ("int",), "D")
     assert 0 < D  # sanity-check
-    _check_type(F2, ("int",), "F2")
+    check_type(F2, ("int",), "F2")
     assert 0 < F2  # sanity-check
     dropoutTypes = {"SpatialDropout2D": SpatialDropout2D, "Dropout": Dropout}
-    _check_type(dropoutType, (str,), "dropoutType")
-    _check_value(dropoutType, dropoutTypes, "dropoutType")
+    check_type(dropoutType, (str,), "dropoutType")
+    check_value(dropoutType, dropoutTypes, "dropoutType")
     dropoutType = dropoutTypes[dropoutType]
 
     # fmt: off

@@ -1,17 +1,13 @@
+from importlib.resources import files  # type: ignore
 from multiprocessing import Process, Value
 from pathlib import Path
 
 import numpy as np
 from numpy.typing import NDArray
 
-try:
-    from importlib.resources import files  # type: ignore
-except ImportError:
-    from importlib_resources import files  # type: ignore
-
-from ..utils._checks import _check_type
-from ..utils._imports import _import_optional_dependency
-from ..utils._logs import logger
+from ..utils._checks import check_type
+from ..utils._imports import import_optional_dependency
+from ..utils.logs import logger
 
 
 class DoubleSpinningWheel:
@@ -42,7 +38,7 @@ class DoubleSpinningWheel:
         offset: float = 0.5,
         **kwargs,
     ) -> None:
-        _import_optional_dependency("psychopy")
+        import_optional_dependency("psychopy")
 
         # prepare psychopy settings
         if "units" not in kwargs:
@@ -56,8 +52,7 @@ class DoubleSpinningWheel:
             kwargs["winType"] = "pyglet"
         elif kwargs["winType"] != "pyglet":
             logger.warning(
-                "The 'pyglet' window type is recommended above the provided "
-                "'%s'.",
+                "The 'pyglet' window type is recommended above the provided " "'%s'.",
                 kwargs["winType"],
             )
 
@@ -65,8 +60,7 @@ class DoubleSpinningWheel:
             kwargs["color"] = (-1, -1, -1)
         elif kwargs["color"] != (-1, -1, -1):
             logger.warning(
-                "The color '(-1, -1, -1)' is recommended above the provided "
-                "'%s'.",
+                "The color '(-1, -1, -1)' is recommended above the provided " "'%s'.",
                 kwargs["color"],
             )
 
@@ -78,8 +72,8 @@ class DoubleSpinningWheel:
         self._image = image
 
         # and image settings
-        _check_type(wheel_size, ("numeric",), "wheel_size")
-        _check_type(offset, ("numeric",), "offset")
+        check_type(wheel_size, ("numeric",), "wheel_size")
+        check_type(offset, ("numeric",), "offset")
         for var, name in [(wheel_size, "wheel_size"), (offset, "offset")]:
             if var < -1 or var > 1:
                 logger.warning(
@@ -148,12 +142,8 @@ class DoubleSpinningWheel:
         win = Window(**winkargs)
         # normalize the image size to retain the aspect ratio
         wheel_size = DoubleSpinningWheel._normalize_size(win.size, wheel_size)
-        lwheel = ImageStim(
-            win, image=image, size=wheel_size * [1, 1], pos=[-offset, 0]
-        )
-        rwheel = ImageStim(
-            win, image=image, size=wheel_size * [-1, 1], pos=[offset, 0]
-        )
+        lwheel = ImageStim(win, image=image, size=wheel_size * [1, 1], pos=[-offset, 0])
+        rwheel = ImageStim(win, image=image, size=wheel_size * [-1, 1], pos=[offset, 0])
         lwheel.autoDraw = True
         rwheel.autoDraw = True
         win.flip()

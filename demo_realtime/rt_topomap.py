@@ -1,14 +1,14 @@
 import time
-from typing import Optional, Tuple, Union
+from typing import Optional, Union
 
 import numpy as np
 from bsl import StreamReceiver
 from mne import create_info
 
 from .metrics import bandpower
-from .utils._checks import _check_type
+from .utils._checks import check_type
 from .utils._docs import fill_doc
-from .utils._logs import set_log_level
+from .utils.logs import set_log_level
 from .visuals import TopomapMPL
 
 
@@ -17,7 +17,7 @@ def rt_topomap(
     stream_name: str,
     winsize: float = 3,
     duration: float = 30,
-    figsize: Optional[Tuple[float, float]] = None,
+    figsize: Optional[tuple[float, float]] = None,
     *,
     verbose: Optional[Union[str, int]] = None,
 ):
@@ -36,25 +36,21 @@ def rt_topomap(
     """
     set_log_level(verbose)
     # check inputs
-    _check_type(stream_name, (str,), "stream_name")
-    _check_type(winsize, ("numeric",), "winsize")
+    check_type(stream_name, (str,), "stream_name")
+    check_type(winsize, ("numeric",), "winsize")
     assert 0 < winsize
-    _check_type(duration, ("numeric",), "duration")
+    check_type(duration, ("numeric",), "duration")
     assert 0 < duration
 
     # create receiver and feedback
-    sr = StreamReceiver(
-        bufsize=winsize, winsize=winsize, stream_name=stream_name
-    )
+    sr = StreamReceiver(bufsize=winsize, winsize=winsize, stream_name=stream_name)
 
     # retrieve sampling rate and channels
     fs = sr.streams[stream_name].sample_rate
     ch_names = sr.streams[stream_name].ch_list
     # remove unwanted channels
     ch2remove = ("TRIGGER", "TRG", "X1", "X2", "X3", "A1", "A2")
-    ch_idx = np.array(
-        [k for k, ch in enumerate(ch_names) if ch not in ch2remove]
-    )
+    ch_idx = np.array([k for k, ch in enumerate(ch_names) if ch not in ch2remove])
     # filter channel name list
     ch_names = [ch for ch in ch_names if ch not in ch2remove]
 
@@ -73,9 +69,7 @@ def rt_topomap(
         sr.acquire()
         data, _ = sr.get_window()
         # compute metric
-        metric = bandpower(
-            data[:, ch_idx].T, fs=fs, method="periodogram", band=(8, 13)
-        )
+        metric = bandpower(data[:, ch_idx].T, fs=fs, method="periodogram", band=(8, 13))
         # update feedback
         feedback.update(metric)
 

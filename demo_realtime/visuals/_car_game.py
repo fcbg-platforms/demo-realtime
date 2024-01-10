@@ -1,10 +1,7 @@
-from multiprocessing import Value
-from typing import List
+from __future__ import annotations  # c.f. PEP 563, PEP 649
 
-try:
-    from importlib.resources import files  # type: ignore
-except ImportError:
-    from importlib_resources import files  # type: ignore
+from importlib.resources import files  # type: ignore
+from multiprocessing import Value
 
 import numpy as np
 from ursina import (
@@ -19,7 +16,7 @@ from ursina import (
     time,
 )
 
-LANES: List[float] = [-3.51, -1.17, 1.17, 3.51]
+LANES: list[float] = [-3.51, -1.17, 1.17, 3.51]
 START_LANE: int = 1
 LEFT_EDGE: float = -4.6
 RIGHT_EDGE: float = 4.6
@@ -206,14 +203,10 @@ def game(direction: Value, enable_ennemies: bool) -> None:
     camera.fov = 10
 
     # create entities
-    texture = Texture(
-        files("demo_realtime.visuals") / "resources" / "road.png"
-    )
+    texture = Texture(files("demo_realtime.visuals") / "resources" / "road.png")
     Road(model="quad", texture=texture, scale=15, z=1)
     Road(model="quad", texture=texture, scale=15, z=1, y=15)
-    texture = Texture(
-        files("demo_realtime.visuals") / "resources" / "car-player.png"
-    )
+    texture = Texture(files("demo_realtime.visuals") / "resources" / "car-player.png")
     Player(
         direction=direction,
         model="quad",

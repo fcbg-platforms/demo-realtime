@@ -11,19 +11,14 @@ from typing import TYPE_CHECKING, Optional, Union
 import numpy as np
 from bsl import StreamReceiver, StreamRecorder
 from bsl.triggers import SoftwareTrigger
-from mne import (
-    Epochs,
-    concatenate_epochs,
-    find_events,
-    make_fixed_length_epochs,
-)
+from mne import Epochs, concatenate_epochs, find_events, make_fixed_length_epochs
 from mne.io import read_raw_fif
 from scipy.stats import mode
 
-from .utils._checks import _check_type, _ensure_path
+from .utils._checks import check_type, ensure_path
 from .utils._docs import fill_doc
-from .utils._imports import _import_optional_dependency
-from .utils._logs import logger
+from .utils._imports import import_optional_dependency
+from .utils.logs import logger
 from .visuals import CarGame
 from .visuals._bci_motor_decoding import Calibration
 
@@ -57,10 +52,10 @@ def offline_calibration(
     fname : Path
         Path to the FIFF recording.
     """
-    _check_type(n_repetition, ("int",), "n_repetition")
+    check_type(n_repetition, ("int",), "n_repetition")
     assert 0 < n_repetition  # sanity-check
-    _check_type(stream_name, (str,), "stream_name")
-    directory = _ensure_path(directory, must_exist=True)
+    check_type(stream_name, (str,), "stream_name")
+    directory = ensure_path(directory, must_exist=True)
 
     # generate random cue order -- 1: left fist, 2: right fist, 3: hands open
     cues = [1] * n_repetition + [2] * n_repetition + [3] * n_repetition
@@ -75,9 +70,7 @@ def offline_calibration(
 
     try:
         # create psychopy window and objects
-        window = Calibration(
-            size=(1920, 1080), screen=1, fullscr=True, allowGUI=False
-        )
+        window = Calibration(size=(1920, 1080), screen=1, fullscr=True, allowGUI=False)
         window.show_instructions()
         window.show_examples()
         window.cross.setAutoDraw(True)
@@ -150,7 +143,7 @@ def offline_fit(
     model : Model
         Fitted EEGNet model.
     """
-    _import_optional_dependency("tensorflow")
+    import_optional_dependency("tensorflow")
 
     from tensorflow.keras.callbacks import ModelCheckpoint
     from tensorflow.keras.models import Model, load_model
@@ -158,10 +151,10 @@ def offline_fit(
 
     from ._bci_EEGNet import EEGNet
 
-    fname = _ensure_path(fname, must_exist=True)
-    _check_type(model, (Model, str, Path, None), "model")
+    fname = ensure_path(fname, must_exist=True)
+    check_type(model, (Model, str, Path, None), "model")
     if isinstance(model, (str, Path)):
-        model = _ensure_path(model, must_exist=True)
+        model = ensure_path(model, must_exist=True)
         model = load_model(model)
 
     # load and preprocess dataset
@@ -219,18 +212,14 @@ def offline_fit(
     rng.shuffle(hands_open_idx)
 
     n2 = int(0.7 * size)
-    idx_train = np.hstack(
-        (lfist_idx[:n2], rfist_idx[:n2], hands_open_idx[:n2])
-    )
+    idx_train = np.hstack((lfist_idx[:n2], rfist_idx[:n2], hands_open_idx[:n2]))
     rng.shuffle(idx_train)
     X_train = X[idx_train, :, :]
     Y_train = Y[idx_train]
 
     n1 = n2
     n2 = n1 + int(0.15 * size)
-    idx_val = np.hstack(
-        (lfist_idx[n1:n2], rfist_idx[n1:n2], hands_open_idx[n1:n2])
-    )
+    idx_val = np.hstack((lfist_idx[n1:n2], rfist_idx[n1:n2], hands_open_idx[n1:n2]))
     rng.shuffle(idx_val)
     X_validate = X[idx_val, :, :]
     Y_validate = Y[idx_val]
@@ -255,9 +244,7 @@ def offline_fit(
         epochs.times.size,
         1,
     )
-    X_train = X_train.reshape(
-        X_train.shape[0], n_channels, n_samples, n_kernels
-    )
+    X_train = X_train.reshape(X_train.shape[0], n_channels, n_samples, n_kernels)
     X_validate = X_validate.reshape(
         X_validate.shape[0], n_channels, n_samples, n_kernels
     )
@@ -285,9 +272,7 @@ def offline_fit(
 
     # set a valid path for your system to record model checkpoints
     tempdir = TemporaryDirectory(prefix="tmp_demo-realtime_")
-    fname_chkpoint = (
-        tempdir / f"{time.strftime('%Y%m%d-%H%M%S', time.localtime())}.h5"
-    )
+    fname_chkpoint = tempdir / f"{time.strftime('%Y%m%d-%H%M%S', time.localtime())}.h5"
     checkpointer = ModelCheckpoint(
         filepath=fname_chkpoint,
         verbose=1,
@@ -326,13 +311,13 @@ def online(stream_name: str, model: Model, duration: int = 60) -> None:
         Fitted EEGNet model.
     %(duration)s
     """
-    _import_optional_dependency("tensorflow")
+    import_optional_dependency("tensorflow")
 
     from tensorflow.keras.models import Model
 
-    _check_type(stream_name, (str,), "stream_name")
-    _check_type(model, (Model,), "model")
-    _check_type(duration, ("int",), "duration")
+    check_type(stream_name, (str,), "stream_name")
+    check_type(model, (Model,), "model")
+    check_type(duration, ("int",), "duration")
     assert 0 < duration
 
     # create receiver and feedback

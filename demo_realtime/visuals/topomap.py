@@ -1,15 +1,21 @@
+from __future__ import annotations  # c.f. PEP 563, PEP 649
+
 from abc import ABC, abstractmethod
-from typing import Any, Tuple
+from typing import TYPE_CHECKING
 
 import numpy as np
 from matplotlib import pyplot as plt
 from mne import Info
 from mne.viz import plot_topomap
-from numpy.typing import NDArray
 
-from ..utils._checks import _check_type
+from ..utils._checks import check_type
 from ..utils._docs import copy_doc, fill_doc
-from ..utils._logs import logger
+from ..utils.logs import logger
+
+if TYPE_CHECKING:
+    from typing import Any
+
+    from numpy.typing import NDArray
 
 
 @fill_doc
@@ -50,15 +56,9 @@ class _BaseTopomap(ABC):
         if self._inc == 100:
             logger.info("Vmin/Vmax calibrated!")
         # update vmin/vmax
-        self._vmin = np.percentile(
-            self._vmin_arr[~np.isnan(self._vmin_arr)], 5
-        )
-        self._vmax = np.percentile(
-            self._vmax_arr[~np.isnan(self._vmax_arr)], 95
-        )
-        logger.debug(
-            "%i --Vmin: %.3f -- Vmax: %.3f", self._inc, self._vmin, self._vmax
-        )
+        self._vmin = np.percentile(self._vmin_arr[~np.isnan(self._vmin_arr)], 5)
+        self._vmax = np.percentile(self._vmax_arr[~np.isnan(self._vmax_arr)], 95)
+        logger.debug("%i --Vmin: %.3f -- Vmax: %.3f", self._inc, self._vmin, self._vmax)
 
     @abstractmethod
     def close(self):
@@ -75,7 +75,7 @@ class _BaseTopomap(ABC):
         return self._info
 
     @property
-    def vlim(self) -> Tuple[float, float]:
+    def vlim(self) -> tuple[float, float]:
         """Colormap range."""
         return (self._vmin, self._vmax)
 
@@ -83,7 +83,7 @@ class _BaseTopomap(ABC):
     @staticmethod
     def _check_info(info: Any) -> None:
         """Check that the info instance has a montage."""
-        _check_type(info, (Info,), "info")
+        check_type(info, (Info,), "info")
         if info.get_montage() is None:
             raise ValueError(
                 "The provided info instance 'info' does not have "
@@ -107,14 +107,14 @@ class TopomapMPL(_BaseTopomap):
         self,
         info: Info,
         cmap: str = "Purples",
-        figsize: Tuple[float, float] = (3, 3),
-    ):
+        figsize: tuple[float, float] = (3, 3),
+    ) -> None:
         if plt.get_backend() != "QtAgg":
             plt.switch_backend("QtAgg")
         if not plt.isinteractive():
             plt.ion()  # enable interactive mode
         super().__init__(info)
-        _check_type(cmap, (str,), "cmap")
+        check_type(cmap, (str,), "cmap")
         self._cmap = cmap
         figsize = TopomapMPL._check_figsize(figsize)
         self._fig, self._axes = plt.subplots(1, 1, figsize=figsize)
@@ -174,9 +174,9 @@ class TopomapMPL(_BaseTopomap):
 
     # ------------------------------------------------------------------------
     @staticmethod
-    def _check_figsize(figsize: Any) -> Tuple[float, float]:
+    def _check_figsize(figsize: Any) -> tuple[float, float]:
         """Check the figure size."""
-        _check_type(figsize, (tuple, list), "figsize")
+        check_type(figsize, (tuple, list), "figsize")
         if len(figsize) != 2:
             raise ValueError(
                 "The figure size should be a 2-item tuple "
@@ -184,7 +184,7 @@ class TopomapMPL(_BaseTopomap):
                 "height) in inches."
             )
         for elt in figsize:
-            _check_type(elt, ("numeric",))
+            check_type(elt, ("numeric",))
         if any(elt <= 0 for elt in figsize):
             raise ValueError(
                 "The figure size should be a 2-item tuple of "

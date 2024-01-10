@@ -3,24 +3,14 @@ from pathlib import Path
 import pytest
 
 from demo_realtime import logger, set_log_level
-from demo_realtime.utils._tests import (
-    requires_missing_psychopy,
-    requires_psychopy,
-)
+from demo_realtime.utils._tests import requires_module
 from demo_realtime.visuals import DoubleSpinningWheel
 
 set_log_level("INFO")
 logger.propagate = True
 
 
-@requires_missing_psychopy
-def test_missing_psychopy():
-    """Test error if PsychoPy is missing."""
-    with pytest.raises(ImportError, match="optional dependency 'psychopy'"):
-        DoubleSpinningWheel()
-
-
-@requires_psychopy
+@requires_module("psychopy")
 def test_double_spinning_wheel():
     """Test the double spinning wheel feedback."""
     viz = DoubleSpinningWheel()
@@ -51,7 +41,7 @@ def test_double_spinning_wheel():
     del viz
 
 
-@requires_psychopy
+@requires_module("psychopy")
 def test_invalid_double_spinning_wheel(caplog):
     """Test the double spinning wheel feedback with invalid arguments."""
     with pytest.raises(ValueError, match="should be 'norm'"):

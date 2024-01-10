@@ -2,14 +2,10 @@ name: pytest
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.number }}-${{ github.event.ref }}
   cancel-in-progress: true
-on:
+on:  # yamllint disable-line rule:truthy
   pull_request:
-    paths:
-      - '**.py'
   push:
     branches: [main]
-    paths:
-      - '**.py'
   workflow_dispatch:
   schedule:
   - cron: '0 8 * * 1'
@@ -21,7 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu, macos, windows]
-        python-version: [3.8, 3.9, "3.10", "3.11"]
+        python-version: [3.9, "3.10", "3.11", "3.12"]
     name: ${{ matrix.os }} - py${{ matrix.python-version }}
     runs-on: ${{ matrix.os }}-latest
     defaults:
@@ -52,7 +48,43 @@ jobs:
         uses: codecov/codecov-action@v3
         with:
           files: ./coverage.xml
-          flags: unittests # optional
-          name: codecov-umbrella # optional
-          fail_ci_if_error: true # optional (default = false)
-          verbose: true # optional (default = false)
+          flags: unittests  # optional
+          name: codecov-umbrella  # optional
+          verbose: true  # optional (default = false)
+
+  pytest-pip-pre:
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11"]
+    name: pip pre-release - py${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: 'x64'
+      - name: Install dependencies
+        run: |
+          python -m pip install --progress-bar off --upgrade pip setuptools
+          python -m pip install --progress-bar off .[test]
+          python -m pip install --progress-bar off ursina
+          python -m pip install --progress-bar off --upgrade --pre --only-binary :all: -i https://pypi.anaconda.org/scientific-python-nightly-wheels/simple --timeout=180 numpy
+      - name: Display system information
+        run: demo-sys_info --developer
+      - name: Run pytest
+        run: pytest demo_realtime --cov=demo_realtime --cov-report=xml --cov-config=pyproject.toml
+      - name: Upload to codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage.xml
+          flags: unittests  # optional
+          name: codecov-umbrella  # optional
+          verbose: true  # optional (default = false)

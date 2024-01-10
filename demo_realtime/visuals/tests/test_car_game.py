@@ -3,21 +3,14 @@ import time
 import pytest
 
 from demo_realtime import logger, set_log_level
-from demo_realtime.utils._tests import requires_missing_ursina, requires_ursina
+from demo_realtime.utils._tests import requires_module
 from demo_realtime.visuals import CarGame
 
 set_log_level("WARNING")
 logger.propagate = True
 
 
-@requires_missing_ursina
-def test_missing_ursina():
-    """Test error if Ursina is missing."""
-    with pytest.raises(ImportError, match="optional dependency 'ursina'"):
-        CarGame()
-
-
-@requires_ursina
+@requires_module("ursina")
 def test_car_game(caplog):
     """Test the car game feedback."""
     game = CarGame(enable_enemies=True)

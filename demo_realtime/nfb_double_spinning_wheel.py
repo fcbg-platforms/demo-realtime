@@ -5,9 +5,9 @@ import numpy as np
 from bsl import StreamReceiver
 
 from .metrics import bandpower
-from .utils._checks import _check_type
+from .utils._checks import check_type
 from .utils._docs import fill_doc
-from .utils._logs import set_log_level
+from .utils.logs import set_log_level
 from .visuals import DoubleSpinningWheel
 
 
@@ -33,16 +33,14 @@ def nfb_double_spinning_wheel(
     """
     set_log_level(verbose)
     # check inputs
-    _check_type(stream_name, (str,), "stream_name")
-    _check_type(winsize, ("numeric",), "winsize")
+    check_type(stream_name, (str,), "stream_name")
+    check_type(winsize, ("numeric",), "winsize")
     assert 0 < winsize
-    _check_type(duration, ("numeric",), "duration")
+    check_type(duration, ("numeric",), "duration")
     assert 0 < duration
 
     # create receiver and feedback
-    sr = StreamReceiver(
-        bufsize=winsize, winsize=winsize, stream_name=stream_name
-    )
+    sr = StreamReceiver(bufsize=winsize, winsize=winsize, stream_name=stream_name)
     feedback = DoubleSpinningWheel(size=(800, 800))
 
     # store 100 points to compute percentile for min/max
@@ -65,9 +63,7 @@ def nfb_double_spinning_wheel(
         sr.acquire()
         data, _ = sr.get_window()
         # compute metric
-        metric = bandpower(
-            data[:, ch_idx].T, fs=fs, method="multitaper", band=(8, 13)
-        )
+        metric = bandpower(data[:, ch_idx].T, fs=fs, method="multitaper", band=(8, 13))
         metric = np.average(metric)  # average across selected channels
 
         # store metric

@@ -1,165 +1,181 @@
 [build-system]
-requires = ['setuptools >= 61.0.0']
 build-backend = 'setuptools.build_meta'
+requires = ['setuptools >= 64.0.0']
 
 [project]
-name = 'demo_realtime'
-version = '0.1.0'
-description = 'Demo for realtime projects.'
-readme = 'README.md'
-license = {file = 'LICENSE'}
-requires-python = '>=3.8'
 authors = [
-    {name = 'Mathieu Scheltienne', email = 'mathieu.scheltienne@fcbg.ch'},
-]
-maintainers = [
-    {name = 'Mathieu Scheltienne', email = 'mathieu.scheltienne@fcbg.ch'},
-]
-keywords = [
-    'brain',
-    'neurofeedback',
-    'neuroimaging',
-    'neuroscience',
-    'python',
-    'real-time',
+  {email = 'mathieu.scheltienne@fcbg.ch', name = 'Mathieu Scheltienne'},
 ]
 classifiers = [
-    'Operating System :: Microsoft :: Windows',
-    'Operating System :: Unix',
-    'Operating System :: MacOS',
-    'Programming Language :: Python :: 3 :: Only',
-    'Programming Language :: Python :: 3.8',
-    'Programming Language :: Python :: 3.9',
-    'Programming Language :: Python :: 3.10',
-    'Natural Language :: English',
-    'License :: OSI Approved :: MIT License',
+  'License :: OSI Approved :: MIT License',
+  'Natural Language :: English',
+  'Operating System :: MacOS',
+  'Operating System :: Microsoft :: Windows',
+  'Operating System :: Unix',
+  'Programming Language :: Python :: 3 :: Only',
+  'Programming Language :: Python :: 3.10',
+  'Programming Language :: Python :: 3.11',
+  'Programming Language :: Python :: 3.12',
+  'Programming Language :: Python :: 3.9',
 ]
 dependencies = [
-    'bsl>=0.5.2, <1.0.0',
-    'matplotlib',
-    'mne>=1.2',
-    'numpy>=1.21',
-    'psutil',
-    'stimuli',
-    'tensorflow',
+  'bsl>=0.5.2, <1.0.0',
+  'matplotlib',
+  'mne>=1.6',
+  'numpy>=1.21',
+  'packaging',
+  'psutil',
+  'stimuli',
+  'tensorflow',
 ]
+description = 'Demo for realtime projects.'
+keywords = [
+  'brain',
+  'labstreaminglayer',
+  'lsl',
+  'neurofeedback',
+  'neuroimaging',
+  'neuroscience',
+  'python',
+  'real-time',
+]
+license = {file = 'LICENSE'}
+maintainers = [
+  {email = 'mathieu.scheltienne@fcbg.ch', name = 'Mathieu Scheltienne'},
+]
+name = 'demo_realtime'
+readme = 'README.md'
+requires-python = '>=3.9'
+version = '0.1.0'
 
 [project.optional-dependencies]
-build = [
-    'build',
-    'twine',
-]
-style = [
-    'black',
-    'codespell',
-    'isort',
-    'pydocstyle[toml]',
-    'ruff',
-]
-test = [
-    'pytest>=4.2',
-    'pytest-cov',
-]
 all = [
-    'demo_realtime[build]',
-    'demo_realtime[style]',
-    'demo_realtime[test]',
+  'demo_realtime[build]',
+  'demo_realtime[stubs]',
+  'demo_realtime[style]',
+  'demo_realtime[test]',
+]
+build = [
+  'build',
+  'twine',
 ]
 full = [
-    'demo_realtime[all]',
+  'demo_realtime[all]',
+]
+stubs = [
+  'isort',
+  'mypy',
+  'ruff>=0.1.8',
+]
+style = [
+  'codespell[toml]>=2.2.4',
+  'isort',
+  'pydocstyle[toml]',
+  'ruff>=0.1.8',
+  'toml-sort',
+  'yamllint',
+]
+test = [
+  'pytest-cov',
+  'pytest-timeout',
+  'pytest>=6.0',
 ]
 
+[project.scripts]
+demo-nfb = 'demo_realtime.commands.demo_nfb:run'
+demo-sys_info = 'demo_realtime.commands.sys_info:run'
+demo-topomap = 'demo_realtime.commands.demo_topomap:run'
+
 [project.urls]
-homepage = 'https://github.com/fcbg-hnp-meeg/demo-realtime'
 documentation = 'https://github.com/fcbg-hnp-meeg/demo-realtime'
+homepage = 'https://github.com/fcbg-hnp-meeg/demo-realtime'
 source = 'https://github.com/fcbg-hnp-meeg/demo-realtime'
 tracker = 'https://github.com/fcbg-hnp-meeg/demo-realtime/issues'
 
-[project.scripts]
-demo-sys_info = 'demo_realtime.commands.sys_info:run'
-demo-nfb = 'demo_realtime.commands.demo_nfb:run'
-demo-topomap = 'demo_realtime.commands.demo_topomap:run'
+[tool.codespell]
+check-filenames = true
+check-hidden = true
+ignore-words = '.codespellignore'
+skip = 'build,.git,.mypy_cache,.pytest_cache'
+
+[tool.coverage.report]
+exclude_lines = [
+  'if __name__ == .__main__.:',
+  'if TYPE_CHECKING:',
+  'pragma: no cover',
+]
+precision = 2
+
+[tool.coverage.run]
+branch = true
+concurrency = [
+  'multiprocessing',
+]
+cover_pylib = false
+omit = [
+  '**/__init__.py',
+  '**/conftest.py',
+  '**/demo_realtime/_version.py',
+  '**/demo_realtime/commands/*',
+  '**/demo_realtime/resources/*',
+  '**/demo_realtime/visuals/resources/*',
+  '**/template/utils/_fixes.py',
+  '**/tests/**',
+]
+parallel = true
+
+[tool.isort]
+extend_skip_glob = [
+  'demo_realtime/resources',
+  'demo_realtime/visuals/resources',
+  'setup.py',
+]
+line_length = 88
+multi_line_output = 3
+profile = 'black'
+py_version = 39
+
+[tool.pydocstyle]
+add_ignore = 'D100,D104,D107'
+convention = 'numpy'
+ignore-decorators = '(copy_doc|property|.*setter|.*getter|pyqtSlot|Slot)'
+match = '^(?!setup|__init__|test_).*\.py'
+match-dir = '^demo_realtime.*'
+
+[tool.pytest.ini_options]
+addopts = '--durations 20 --junit-xml=junit-results.xml --verbose'
+minversion = '6.0'
+
+[tool.ruff]
+extend-exclude = [
+  'demo_realtime/resources',
+  'demo_realtime/visuals/resources',
+  'doc',
+  'setup.py',
+]
+line-length = 88
+select = ["E", "F", "W"]
+target-version = 'py39'
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff.per-file-ignores]
+'*.pyi' = ['E501']
+'__init__.py' = ['F401']
 
 [tool.setuptools]
 include-package-data = false
-
-[tool.setuptools.packages.find]
-include = ['demo_realtime*']
-exclude = ['demo_realtime*tests']
 
 [tool.setuptools.package-data]
 'demo_realtime' = ['resources/*']
 'demo_realtime.visuals' = ['resources/*.png']
 
-[tool.black]
-line-length = 79
-target-version = ['py38']
-include = '\.pyi?$'
-extend-exclude = '''
-(
-      __pycache__
-    | .github
-    | .ruff_cache
-    | setup.py
-    | demo_realtime/resources
-    | demo_realtime/visuals/resources
-)
-'''
+[tool.setuptools.packages.find]
+exclude = ['demo_realtime*tests']
+include = ['demo_realtime*']
 
-[tool.isort]
-profile = 'black'
-multi_line_output = 3
-line_length = 79
-py_version = 38
-extend_skip_glob = [
-    'demo_realtime/resources',
-    'demo_realtime/visuals/resources',
-    'setup.py',
-]
-
-[tool.pydocstyle]
-convention = 'numpy'
-ignore-decorators = '(copy_doc|property|.*setter|.*getter|pyqtSlot|Slot)'
-match = '^(?!setup|__init__|test_).*\.py'
-match-dir = '^demo_realtime.*'
-add_ignore = 'D100,D104,D107'
-
-[tool.ruff]
-line-length = 79
-extend-exclude = [
-    'demo_realtime/resources',
-    'demo_realtime/visuals/resources',
-    'doc',
-    'setup.py',
-]
-
-[tool.ruff.per-file-ignores]
-'__init__.py' = ['F401']
-
-[tool.pytest.ini_options]
-minversion = '6.0'
-addopts = '--durations 20 --junit-xml=junit-results.xml --verbose'
-filterwarnings = []
-
-[tool.coverage.run]
-branch = true
-cover_pylib = false
-concurrency = [
-    'multiprocessing',
-]
-parallel = true
-omit = [
-    '**/__init__.py',
-    '**/demo_realtime/_version.py',
-    '**/demo_realtime/commands/*',
-    '**/demo_realtime/resources/*',
-    '**/demo_realtime/visuals/resources/*',
-    '**/tests/**',
-]
-
-[tool.coverage.report]
-exclude_lines = [
-    'pragma: no cover',
-    'if __name__ == .__main__.:',
-]
-precision = 2
+[tool.tomlsort]
+all = true
+ignore_case = true
+trailing_comma_inline_array = true

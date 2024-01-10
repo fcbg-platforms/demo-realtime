@@ -4,58 +4,77 @@ Inspired from mne: https://mne.tools/stable/index.html
 Inspired from mne.utils.docs.py by Eric Larson <larson.eric.d@gmail.com>
 """
 
+from __future__ import annotations  # c.f. PEP 563, PEP 649
+
 import sys
-from typing import Callable, Dict, List
+from typing import TYPE_CHECKING
 
-# ------------------------- Documentation dictionary -------------------------
-docdict: Dict[str, str] = dict()
+if TYPE_CHECKING:
+    from typing import Any, Callable
 
-# ---------------------------------- verbose ---------------------------------
-docdict[
-    "verbose"
-] = """
-verbose : int | str | bool | None
-    Sets the verbosity level. The verbosity increases gradually between
-    "CRITICAL", "ERROR", "WARNING", "INFO" and "DEBUG".
-    If None is provided, the verbosity is set to "WARNING".
-    If a bool is provided, the verbosity is set to "WARNING" for False and to
-    "INFO" for True."""
+# -- Documentation dictionary ----------------------------------------------------------
+docdict: dict[str, str] = dict()
 
-# ---------------------------------- stream ----------------------------------
-docdict[
-    "stream_name"
-] = """
-stream_name : str
-    The name of the LSL stream to connect to."""
-docdict[
-    "winsize"
-] = """
-winsize : float
-    Duration of an acquisition window."""
-docdict[
-    "duration"
-] = """
+# -- A ---------------------------------------------------------------------------------
+# -- B ---------------------------------------------------------------------------------
+# -- C ---------------------------------------------------------------------------------
+# -- D ---------------------------------------------------------------------------------
+docdict["duration"] = """
 duration : float
     Duration of the real-time loop."""
 
-# --------------------------------- topomap ----------------------------------
-docdict[
-    "info"
-] = """
-info : Info
-    MNE Info instance with a montage."""
-docdict[
-    "figsize"
-] = """
+# -- E ---------------------------------------------------------------------------------
+# -- F ---------------------------------------------------------------------------------
+docdict["figsize"] = """
 figsize : tuple
     2-sequence tuple defining the matplotlib figure size as (width, height)
     in inches."""
 
-# ------------------------- Documentation functions --------------------------
-docdict_indented: Dict[int, Dict[str, str]] = dict()
+# -- G ---------------------------------------------------------------------------------
+# -- H ---------------------------------------------------------------------------------
+# -- I ---------------------------------------------------------------------------------
+docdict["info"] = """
+info : Info
+    MNE Info instance with a montage."""
+
+# -- J ---------------------------------------------------------------------------------
+# -- K ---------------------------------------------------------------------------------
+# -- L ---------------------------------------------------------------------------------
+# -- M ---------------------------------------------------------------------------------
+# -- N ---------------------------------------------------------------------------------
+# -- O ---------------------------------------------------------------------------------
+# -- P ---------------------------------------------------------------------------------
+# -- Q ---------------------------------------------------------------------------------
+# -- R ---------------------------------------------------------------------------------
+# -- S ---------------------------------------------------------------------------------
+docdict["stream_name"] = """
+stream_name : str
+    The name of the LSL stream to connect to."""
+
+# -- T ---------------------------------------------------------------------------------
+# -- U ---------------------------------------------------------------------------------
+# -- V ---------------------------------------------------------------------------------
+docdict["verbose"] = """
+verbose : int | str | bool | None
+    Sets the verbosity level. The verbosity increases gradually between ``"CRITICAL"``,
+    ``"ERROR"``, ``"WARNING"``, ``"INFO"`` and ``"DEBUG"``. If None is provided, the
+    verbosity is set to ``"WARNING"``. If a bool is provided, the verbosity is set to
+    ``"WARNING"`` for False and to ``"INFO"`` for True."""
+
+# -- W ---------------------------------------------------------------------------------
+docdict["winsize"] = """
+winsize : float
+    Duration of an acquisition window."""
+
+# -- X ---------------------------------------------------------------------------------
+# -- Y ---------------------------------------------------------------------------------
+# -- Z ---------------------------------------------------------------------------------
+
+# -- Documentation functions -----------------------------------------------------------
+docdict_indented: dict[int, dict[str, str]] = dict()
 
 
-def fill_doc(f: Callable) -> Callable:
+def fill_doc(f: Callable[..., Any]) -> Callable[..., Any]:
     """Fill a docstring with docdict entries.
 
     Parameters
@@ -98,19 +117,19 @@ def fill_doc(f: Callable) -> Callable:
     return f
 
 
-def _indentcount_lines(lines: List[str]) -> int:
+def _indentcount_lines(lines: list[str]) -> int:
     """Minimum indent for all lines in line list.
 
-    >>> lines = [' one', '  two', '   three']
+    >>> lines = [" one", "  two", "   three"]
     >>> indentcount_lines(lines)
     1
     >>> lines = []
     >>> indentcount_lines(lines)
     0
-    >>> lines = [' one']
+    >>> lines = [" one"]
     >>> indentcount_lines(lines)
     1
-    >>> indentcount_lines(['    '])
+    >>> indentcount_lines(["    "])
     0
     """
     indent = sys.maxsize
@@ -123,14 +142,14 @@ def _indentcount_lines(lines: List[str]) -> int:
     return indent
 
 
-def copy_doc(source: Callable) -> Callable:
+def copy_doc(source: Callable[..., Any]) -> Callable[..., Any]:
     """Copy the docstring from another function (decorator).
 
-    The docstring of the source function is prepepended to the docstring of the
-    function wrapped by this decorator.
+    The docstring of the source function is prepepended to the docstring of the function
+    wrapped by this decorator.
 
-    This is useful when inheriting from a class and overloading a method. This
-    decorator can be used to copy the docstring of the original method.
+    This is useful when inheriting from a class and overloading a method. This decorator
+    can be used to copy the docstring of the original method.
 
     Parameters
     ----------
@@ -151,17 +170,17 @@ def copy_doc(source: Callable) -> Callable:
     >>> class B(A):
     ...     @copy_doc(A.m1)
     ...     def m1():
-    ...         ''' this gets appended'''
+    ...         '''this gets appended'''
     ...         pass
     >>> print(B.m1.__doc__)
     Docstring for m1 this gets appended
     """
 
-    def wrapper(func):
+    def wrapper(func: Callable[..., Any]) -> Callable[..., Any]:
         if source.__doc__ is None or len(source.__doc__) == 0:
             raise RuntimeError(
-                f"The docstring from {source.__name__} could not be copied "
-                "because it was empty."
+                f"The docstring from {source.__name__} could not be copied because it "
+                "was empty."
             )
         doc = source.__doc__
         if func.__doc__ is not None:

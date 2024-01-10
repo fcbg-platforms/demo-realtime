@@ -1,8 +1,8 @@
 from multiprocessing import Process, Value
 
-from ..utils._checks import _check_type
-from ..utils._imports import _import_optional_dependency
-from ..utils._logs import logger
+from ..utils._checks import check_type
+from ..utils._imports import import_optional_dependency
+from ..utils.logs import logger
 
 
 class CarGame:
@@ -18,8 +18,8 @@ class CarGame:
     """
 
     def __init__(self, enable_enemies: bool = True) -> None:
-        _import_optional_dependency("ursina")
-        _check_type(enable_enemies, (bool,), "enable_enemies")
+        import_optional_dependency("ursina")
+        check_type(enable_enemies, (bool,), "enable_enemies")
         self._enable_enemies = enable_enemies
         # prepare shared variables and process to control the game
         self._create_shared_variables()
@@ -56,9 +56,7 @@ class CarGame:
                 with self._direction.get_lock():
                     self._direction.value = -1
             else:
-                logger.warning(
-                    "Already going %s. Command ignored.", self.direction
-                )
+                logger.warning("Already going %s. Command ignored.", self.direction)
         else:
             logger.warning("The game is not running. Command ignored.")
 
@@ -70,9 +68,7 @@ class CarGame:
                 with self._direction.get_lock():
                     self._direction.value = 1
             else:
-                logger.warning(
-                    "Already going %s. Command ignored.", self.direction
-                )
+                logger.warning("Already going %s. Command ignored.", self.direction)
         else:
             logger.warning("The game is not running. Command ignored.")
 
