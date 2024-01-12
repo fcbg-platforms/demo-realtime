@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 from mne.time_frequency import psd_array_multitaper
-from scipy.integrate import simps
+from scipy.integrate import simpson
 from scipy.signal import periodogram, welch
 
 if TYPE_CHECKING:
@@ -71,6 +71,6 @@ def bandpower(
     ), "The 'band' argument must be defined as (low, high) (in Hz)."
     freq_res = freqs[1] - freqs[0]
     idx_band = np.logical_and(freqs >= band[0], freqs <= band[1])
-    bandpower = simps(psd[:, idx_band], dx=freq_res)
-    bandpower = bandpower / simps(psd, dx=freq_res) if relative else bandpower
+    bandpower = simpson(psd[:, idx_band], dx=freq_res)
+    bandpower = bandpower / simpson(psd, dx=freq_res) if relative else bandpower
     return bandpower
