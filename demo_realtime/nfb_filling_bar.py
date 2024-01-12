@@ -4,7 +4,7 @@ import time
 from typing import TYPE_CHECKING
 
 import numpy as np
-from bsl import StreamReceiver
+from mne_lsl.stream import StreamLSL
 
 from .metrics import bandpower
 from .utils._checks import check_type
@@ -49,7 +49,9 @@ def nfb_filling_bar(
     assert 0 < duration
 
     # create receiver and feedback
-    sr = StreamReceiver(bufsize=winsize, winsize=winsize, stream_name=stream_name)
+    stream = StreamLSL(bufsize=winsize, name=stream_name)
+    stream.connect()
+    stream.pick(["O1", "O2"])
     feedback = FillingBar(window_size=(1280, 720))
     feedback.draw_background("lightgrey")
     feedback.putBar(400, 50, 5, "black", "teal", axis=1)  # empty bar
@@ -58,23 +60,17 @@ def nfb_filling_bar(
     metrics = np.ones(100) * np.nan
     inc = 0
 
-    # retrieve sampling rate and channels
-    fs = sr.streams[stream_name].sample_rate
-    ch_names = sr.streams[stream_name].ch_list
-    ch_idx = [k for k, ch in enumerate(ch_names) if ch in ("O1", "O2")]
-    assert len(ch_idx) == 2
-
     # wait to fill one buffer
     time.sleep(winsize)
 
     # main loop
     start = time.time()
     while time.time() - start <= duration:
-        # retrieve data
-        sr.acquire()
-        data, _ = sr.get_window()
+        data, _ = stream.get_data()
         # compute metric
-        metric = bandpower(data[:, ch_idx].T, fs=fs, method="multitaper", band=(8, 13))
+        metric = bandpower(
+            data, fs=stream.info["sfreq"], method="multitaper", band=(8, 13)
+        )
         metric = np.average(metric)  # average across selected channels
 
         # store metric
