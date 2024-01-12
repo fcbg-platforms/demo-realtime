@@ -5,22 +5,24 @@ import pytest
 
 from demo_realtime.metrics import bandpower
 
-# generate fake signal with known frequency content @ 8 Hz and 20 Hz
-rng = np.random.default_rng(seed=101)
-fs = 1000
-n_channels = 5
-times = np.arange(0, 4, 1 / fs)
-sources = np.vstack(
-    (np.sin(8 * 2 * np.pi * times), np.sin(20 * 2 * np.pi * times))
-)
-weights = rng.uniform(low=0.5, high=4, size=(n_channels, 2))
-data = weights @ sources
-data += rng.normal(loc=np.mean(data), scale=np.std(data) / 3, size=data.shape)
+
+@pytest.fixture(scope="module")
+def dataset(rng):
+    """Generate fake signal with known frequency content @ 8 Hz and 20 Hz."""
+    fs = 1000
+    n_channels = 5
+    times = np.arange(0, 4, 1 / fs)
+    sources = np.vstack((np.sin(8 * 2 * np.pi * times), np.sin(20 * 2 * np.pi * times)))
+    weights = rng.uniform(low=0.5, high=4, size=(n_channels, 2))
+    data = weights @ sources
+    data += rng.normal(loc=np.mean(data), scale=np.std(data) / 3, size=data.shape)
+    return data, n_channels, fs
 
 
 @pytest.mark.parametrize("method", ("periodogram", "welch", "multitaper"))
-def test_relative_bandpower(method):
+def test_relative_bandpower(dataset, method):
     """Test the relative bandpower."""
+    data, n_channels, fs = dataset
     kwargs = dict(nperseg=fs) if method == "welch" else dict()
     bp = bandpower(data, fs, method, band=(0, 500), relative=True, **kwargs)
     assert np.allclose(bp, np.ones(n_channels))
@@ -31,8 +33,9 @@ def test_relative_bandpower(method):
 
 
 @pytest.mark.parametrize("method", ("periodogram", "welch", "multitaper"))
-def test_absolute_bandpower(method):
+def test_absolute_bandpower(dataset, method):
     """Test dB set to True."""
+    data, n_channels, fs = dataset
     kwargs = dict(nperseg=fs) if method == "welch" else dict()
     bp1 = bandpower(data, fs, method, band=(7, 9), relative=True, **kwargs)
     bp2 = bandpower(data, fs, method, band=(19, 21), relative=True, **kwargs)
@@ -43,8 +46,9 @@ def test_absolute_bandpower(method):
     assert np.allclose(ratio1, ratio2)
 
 
-def test_invalid():
+def test_invalid(dataset, rng):
     """Test invalid inputs."""
+    data, _, fs = dataset
     with pytest.raises(AssertionError, match="must be a 2D array"):
         bandpower(rng.random((3, 1000, 2)), 100, "periodogram", band=(0, 500))
     with pytest.raises(RuntimeError, match="'101' is not supported."):

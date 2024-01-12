@@ -107,21 +107,21 @@ def EEGNet(
     model : Model
         The Keras model.
     """
-    check_type(n_classes, ("int",), "n_classes")
+    check_type(n_classes, ("int-like",), "n_classes")
     assert 0 < n_classes  # sanity-check
-    check_type(n_channels, ("int",), "n_channels")
+    check_type(n_channels, ("int-like",), "n_channels")
     assert 0 < n_channels  # sanity-check
-    check_type(n_samples, ("int",), "n_samples")
+    check_type(n_samples, ("int-like",), "n_samples")
     assert 0 < n_samples  # sanity-check
     check_type(dropoutRate, ("numeric",), "dropoutRate")
     assert 0 <= dropoutRate <= 1
-    check_type(kernelLength, ("int",), "kernelLength")
+    check_type(kernelLength, ("int-like",), "kernelLength")
     assert 0 < kernelLength  # sanity-check
-    check_type(F1, ("int",), "F1")
+    check_type(F1, ("int-like",), "F1")
     assert 0 < F1  # sanity-check
-    check_type(D, ("int",), "D")
+    check_type(D, ("int-like",), "D")
     assert 0 < D  # sanity-check
-    check_type(F2, ("int",), "F2")
+    check_type(F2, ("int-like",), "F2")
     assert 0 < F2  # sanity-check
     dropoutTypes = {"SpatialDropout2D": SpatialDropout2D, "Dropout": Dropout}
     check_type(dropoutType, (str,), "dropoutType")

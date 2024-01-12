@@ -1,11 +1,11 @@
 from __future__ import annotations  # c.f. PEP 563, PEP 649
 
 import time
-from importlib.resources import files  # type: ignore
+from importlib.resources import files
 from typing import TYPE_CHECKING
+from warnings import warn
 
 from ..utils._imports import import_optional_dependency
-from ..utils.logs import logger
 
 if TYPE_CHECKING:
     from psychopy.visual import ImageStim, ShapeStim, Window
@@ -35,23 +35,26 @@ class Calibration:
             kwargs["units"] = "norm"
         elif kwargs["units"] != "norm":
             raise ValueError(
-                f"The unit used should be 'norm'. Provided {kwargs['units']} "
-                "is not supported."
+                f"The unit used should be 'norm'. Provided {kwargs['units']} is not "
+                "supported."
             )
         if "winType" not in kwargs:
             kwargs["winType"] = "pyglet"
         elif kwargs["winType"] != "pyglet":
-            logger.warning(
-                "The 'pyglet' window type is recommended above the provided " "'%s'.",
-                kwargs["winType"],
+            warn(
+                "The 'pyglet' window type is recommended above the provided "
+                f"'{kwargs['winType']}'.",
+                RuntimeWarning,
+                stacklevel=2,
             )
-
         if "color" not in kwargs:
             kwargs["color"] = (0, 0, 0)
         elif kwargs["color"] != (0, 0, 0):
-            logger.warning(
-                "The color '(0, 0, 0)' is recommended above the provided " "'%s'.",
-                kwargs["color"],
+            warn(
+                "The color '(0, 0, 0)' is recommended above the provided "
+                f"'{kwargs['color']}'.",
+                RuntimeWarning,
+                stacklevel=2,
             )
 
         # prepare psychopy window and objects

@@ -44,9 +44,7 @@ def run():
         nargs=2,
         help="figure size for the matplotlib backend.",
     )
-    parser.add_argument(
-        "--verbose", help="enable debug logs.", action="store_true"
-    )
+    parser.add_argument("--verbose", help="enable debug logs.", action="store_true")
     args = parser.parse_args()
 
     stream_name = args.stream_name

@@ -1,6 +1,5 @@
 from platform import system
 
-import numpy as np
 import pytest
 from matplotlib import pyplot as plt
 from matplotlib.axes import Axes
@@ -18,12 +17,11 @@ logger.propagate = True
     system() == "Linux",
     reason="Interactive QtAgg backend not supported in Linux CIs.",
 )
-def test_topomap():
+def test_topomap(rng):
     """Test the topographic map feedback."""
     montage = make_standard_montage("biosemi32")
     info = create_info(montage.ch_names, sfreq=1, ch_types="eeg")
     info.set_montage("biosemi32")
-    rng = np.random.default_rng(seed=101)
 
     viz = TopomapMPL(info)
     viz.update(rng.random(size=len(info.ch_names)))

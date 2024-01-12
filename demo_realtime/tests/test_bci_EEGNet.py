@@ -7,9 +7,7 @@ from demo_realtime._bci_EEGNet import EEGNet
 
 def test_EEGNet():
     """Test the creation of the EEGNet model."""
-    model = EEGNet(
-        n_classes=4, n_channels=64, n_samples=128, dropoutType="Dropout"
-    )
+    model = EEGNet(n_classes=4, n_channels=64, n_samples=128, dropoutType="Dropout")
     assert isinstance(model, Model)
     model = EEGNet(
         n_classes=4,
@@ -23,9 +21,7 @@ def test_EEGNet():
 def test_invalid_arguments():
     """Test the creation of the EEGNet model with invalid arguments."""
     with pytest.raises(TypeError, match="'n_classes' must be"):
-        EEGNet(
-            n_classes=4.0, n_channels=64, n_samples=128, dropoutType="Dropout"
-        )
+        EEGNet(n_classes=4.0, n_channels=64, n_samples=128, dropoutType="Dropout")
     with pytest.raises(AssertionError):
         EEGNet(
             n_classes=-4,
@@ -34,9 +30,7 @@ def test_invalid_arguments():
         )
 
     with pytest.raises(TypeError, match="'n_channels' must be"):
-        EEGNet(
-            n_classes=4, n_channels=64.0, n_samples=128, dropoutType="Dropout"
-        )
+        EEGNet(n_classes=4, n_channels=64.0, n_samples=128, dropoutType="Dropout")
     with pytest.raises(AssertionError):
         EEGNet(
             n_classes=4,
@@ -45,9 +39,7 @@ def test_invalid_arguments():
         )
 
     with pytest.raises(TypeError, match="'n_samples' must be"):
-        EEGNet(
-            n_classes=4, n_channels=64, n_samples=128.0, dropoutType="Dropout"
-        )
+        EEGNet(n_classes=4, n_channels=64, n_samples=128.0, dropoutType="Dropout")
     with pytest.raises(AssertionError):
         EEGNet(
             n_classes=4,

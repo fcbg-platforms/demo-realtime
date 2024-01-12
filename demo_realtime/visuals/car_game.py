@@ -1,15 +1,22 @@
 from multiprocessing import Process, Value
+from warnings import warn
 
 from ..utils._checks import check_type
 from ..utils._imports import import_optional_dependency
 from ..utils.logs import logger
 
+_DIRECTION_MAPPING = {
+    -1: "left",
+    0: "straight",
+    1: "right",
+}
+_DIRECTION_MAPPING_INV = {value: key for key, value in _DIRECTION_MAPPING.items()}
+
 
 class CarGame:
     """A simple 4-lane car game where the player has to dodge traffic.
 
-    The player can move the car to the left or right with `CarGame.go_left` and
-    `CarGame.go_right`.
+    The player can move the car to the left or right with :meth:`CarGame.go_direction`.
 
     Parameters
     ----------
@@ -48,37 +55,34 @@ class CarGame:
             args=(self._direction, self._enable_enemies),
         )
 
-    def go_left(self) -> None:
-        """Move the player car one lane to the left."""
+    def go_direction(self, direction: str) -> None:
+        """Move the player car in a given direction."""
+        try:
+            direction_int = _DIRECTION_MAPPING_INV[direction]
+        except KeyError:
+            raise RuntimeError(f"The provided 'direction' {direction} is not valid.")
         if self._process.is_alive():
             if self._direction.value == 0:
-                logger.debug("Setting direction to -1.")
+                logger.debug(
+                    "Setting direction to %s (code: %i).", direction, direction_int
+                )
                 with self._direction.get_lock():
-                    self._direction.value = -1
+                    self._direction.value = direction_int
             else:
-                logger.warning("Already going %s. Command ignored.", self.direction)
+                warn(
+                    f"Already going {self.direction}. Command '{direction}' ignored.",
+                    RuntimeWarning,
+                    stacklevel=2,
+                )
         else:
-            logger.warning("The game is not running. Command ignored.")
-
-    def go_right(self) -> None:
-        """Move the player car one lane to the right."""
-        if self._process.is_alive():
-            if self._direction.value == 0:
-                logger.debug("Setting direction to 1.")
-                with self._direction.get_lock():
-                    self._direction.value = 1
-            else:
-                logger.warning("Already going %s. Command ignored.", self.direction)
-        else:
-            logger.warning("The game is not running. Command ignored.")
+            warn(
+                f"The game is not running. Command '{direction}' ignored.",
+                RuntimeWarning,
+                stacklevel=2,
+            )
 
     # -------------------------------------------------------------------------
     @property
     def direction(self) -> str:
         """Direction in which the player car is going."""
-        mapping = {
-            -1: "left",
-            0: "straight",
-            1: "right",
-        }
-        return mapping[self._direction.value]
+        return _DIRECTION_MAPPING[self._direction.value]

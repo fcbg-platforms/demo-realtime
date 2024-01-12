@@ -2,6 +2,7 @@ from __future__ import annotations  # c.f. PEP 563, PEP 649
 
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
+from warnings import warn
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -13,7 +14,7 @@ from ..utils._docs import copy_doc, fill_doc
 from ..utils.logs import logger
 
 if TYPE_CHECKING:
-    from typing import Any
+    from typing import Any, Union
 
     from numpy.typing import NDArray
 
@@ -86,8 +87,7 @@ class _BaseTopomap(ABC):
         check_type(info, (Info,), "info")
         if info.get_montage() is None:
             raise ValueError(
-                "The provided info instance 'info' does not have "
-                "a DigMontage attached."
+                "The provided info instance 'info' does not have a DigMontage attached."
             )
 
 
@@ -107,7 +107,7 @@ class TopomapMPL(_BaseTopomap):
         self,
         info: Info,
         cmap: str = "Purples",
-        figsize: tuple[float, float] = (3, 3),
+        figsize: Union[tuple[float, float], list[float]] = (3, 3),
     ) -> None:
         if plt.get_backend() != "QtAgg":
             plt.switch_backend("QtAgg")
@@ -179,27 +179,27 @@ class TopomapMPL(_BaseTopomap):
         check_type(figsize, (tuple, list), "figsize")
         if len(figsize) != 2:
             raise ValueError(
-                "The figure size should be a 2-item tuple "
-                "defining the matplotlib figure size (width, "
-                "height) in inches."
+                "The figure size should be a 2-item tuple defining the matplotlib "
+                "figure size (width, height) in inches."
             )
         for elt in figsize:
             check_type(elt, ("numeric",))
         if any(elt <= 0 for elt in figsize):
             raise ValueError(
-                "The figure size should be a 2-item tuple of "
-                "strictly positive numbers."
+                "The figure size should be a 2-item tuple of strictly positive numbers."
             )
         if figsize[0] != figsize[1]:
-            logger.warning(
-                "Topographic maps are best displayed in a square "
-                "axes, define with a figsize (width, height) with "
-                "width = height."
+            warn(
+                "Topographic maps are best displayed in a square axes, define with a "
+                "figsize (width, height) with width = height.",
+                RuntimeWarning,
+                stacklevel=2,
             )
         if any(5 < elt for elt in figsize):
-            logger.warning(
-                "Large figsize will increase the render time and "
-                "slow down the online loop, which can create "
-                "stuttering."
+            warn(
+                "Large figsize will increase the render time and slow down the online "
+                "loop, which can create stuttering.",
+                RuntimeWarning,
+                stacklevel=2,
             )
         return tuple(figsize)

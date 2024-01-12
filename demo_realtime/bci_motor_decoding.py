@@ -1,12 +1,9 @@
-# postponed evaluation of annotations, c.f. PEP 563 and PEP 649
-# alternatively, the type hints can be defined as strings which will be
-# evaluated with eval() prior to type checking.
-from __future__ import annotations
+from __future__ import annotations  # c.f. PEP 563, PEP 649
 
 import time
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING
 
 import numpy as np
 from bsl import StreamReceiver, StreamRecorder
@@ -23,6 +20,8 @@ from .visuals import CarGame
 from .visuals._bci_motor_decoding import Calibration
 
 if TYPE_CHECKING:
+    from typing import Optional, Union
+
     from tensorflow.keras.models import Model
 
 
@@ -52,7 +51,7 @@ def offline_calibration(
     fname : Path
         Path to the FIFF recording.
     """
-    check_type(n_repetition, ("int",), "n_repetition")
+    check_type(n_repetition, ("int-like",), "n_repetition")
     assert 0 < n_repetition  # sanity-check
     check_type(stream_name, (str,), "stream_name")
     directory = ensure_path(directory, must_exist=True)
@@ -135,8 +134,7 @@ def offline_fit(
     fname : path-like
         Path to the FIFF recording.
     model : Model | path-like | None
-        If provided, model on which fit is resumed. If None, a new model is
-        created.
+        If provided, model on which fit is resumed. If None, a new model is created.
 
     Returns
     -------
@@ -192,14 +190,14 @@ def offline_fit(
     epochs.resample(128)
     del raw
 
-    # extract raw data and labels. The raw data is scaled by 1000 due to
-    # scaling sensitivity in deep learning.
+    # extract raw data and labels. The raw data is scaled by 1000 due to scaling
+    # sensitivity in deep learning.
     labels = epochs.events[:, -1]
     X = epochs.get_data() * 1000  # shape is (n_trials, n_channels, n_samples)
     Y = labels
 
-    # split the dataset into train/validate/test with equal number of labels
-    # in each split.
+    # split the dataset into train/validate/test with equal number of labels in each
+    # split.
     lfist_idx = np.where(Y == event_id["lfist"])[0]
     rfist_idx = np.where(Y == event_id["rfist"])[0]
     hands_open_idx = np.where(Y == event_id["hands_open"])[0]
@@ -317,7 +315,7 @@ def online(stream_name: str, model: Model, duration: int = 60) -> None:
 
     check_type(stream_name, (str,), "stream_name")
     check_type(model, (Model,), "model")
-    check_type(duration, ("int",), "duration")
+    check_type(duration, ("int-like",), "duration")
     assert 0 < duration
 
     # create receiver and feedback
@@ -362,9 +360,9 @@ def online(stream_name: str, model: Model, duration: int = 60) -> None:
 
             # do an action based on the prediction
             if pred == 0:  # turn left
-                game.go_left()
+                game.go_direction("left")
             elif pred == 1:
-                game.go_right()  # turn right
+                game.go_direction("right")
             elif pred == 2:
                 pass
             time.sleep(0.5)

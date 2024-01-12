@@ -45,9 +45,7 @@ def run():
         help="use a double spinning wheel feedback.",
         action="store_true",
     )
-    parser.add_argument(
-        "--verbose", help="enable debug logs.", action="store_true"
-    )
+    parser.add_argument("--verbose", help="enable debug logs.", action="store_true")
     args = parser.parse_args()
 
     if (args.bar and args.wheel) or (not args.bar and not args.wheel):

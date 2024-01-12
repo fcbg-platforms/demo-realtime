@@ -1,5 +1,7 @@
+from __future__ import annotations  # c.f. PEP 563, PEP 649
+
 import time
-from typing import Optional, Union
+from typing import TYPE_CHECKING
 
 import numpy as np
 from bsl import StreamReceiver
@@ -8,10 +10,14 @@ from stimuli.visuals import FillingBar
 from .metrics import bandpower
 from .utils._checks import check_type
 from .utils._docs import fill_doc
-from .utils.logs import set_log_level
+from .utils.logs import verbose
+
+if TYPE_CHECKING:
+    from typing import Optional, Union
 
 
 @fill_doc
+@verbose
 def nfb_filling_bar(
     stream_name: str,
     winsize: float = 3,
@@ -31,7 +37,6 @@ def nfb_filling_bar(
     %(duration)s
     %(verbose)s
     """
-    set_log_level(verbose)
     # check inputs
     check_type(stream_name, (str,), "stream_name")
     check_type(winsize, ("numeric",), "winsize")

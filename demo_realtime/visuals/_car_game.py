@@ -1,6 +1,6 @@
 from __future__ import annotations  # c.f. PEP 563, PEP 649
 
-from importlib.resources import files  # type: ignore
+from importlib.resources import files
 from multiprocessing import Value
 
 import numpy as np
@@ -28,9 +28,9 @@ class Road(Entity):
     def update(self) -> None:
         """Update the position of the piece of road.
 
-        2 pieces are used to simulate the movement sof the car along the road.
-        The 2 pieces of road are constantly moving down until they exit the
-        screen, at which point the road exiting the screen is brought back up.
+        2 pieces are used to simulate the movement sof the car along the road. The 2
+        pieces of road are constantly moving down until they exit the screen, at which
+        point the road exiting the screen is brought back up.
         """
         self.y -= 6 * time.dt
         if self.y < -15:
@@ -43,8 +43,8 @@ class Player(Entity):
     Parameters
     ----------
     direction : Value
-        Shared variable used to define if the car is going straight (0),
-        left (-1) or right (1).
+        Shared variable used to define if the car is going straight (0), left (-1) or
+        right (1).
     """
 
     def __init__(self, direction: Value, *args, **kwargs) -> None:
@@ -150,8 +150,8 @@ class Enemy(Entity):
     def update(self) -> None:
         """Update the position of the ennemies.
 
-        The traffic has 2 ways, ennemies on the positive x are going up while
-        ennemies on the negative x are going down.
+        The traffic has 2 ways, ennemies on the positive x are going up while ennemies
+        on the negative x are going down.
         """
         if self.x < 0:
             self.y -= 8 * time.dt
@@ -191,14 +191,13 @@ def game(direction: Value, enable_ennemies: bool) -> None:
     Parameters
     ----------
     direction : Value
-        Shared variable used to define if the car is going straight (0),
-        left (-1) or right (1).
+        Shared variable used to define if the car is going straight (0), left (-1) or
+        right (1).
     enable_enemies : bool
         If True, enemy cars will spawn.
     """
-    # create application
+    # create application and set camera angle and FOV
     app = Ursina()
-    # set camera angle and FOV
     camera.orthographic = True
     camera.fov = 10
 
