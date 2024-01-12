@@ -1,3 +1,4 @@
+import os
 from platform import system
 
 import pytest
@@ -14,7 +15,7 @@ logger.propagate = True
 
 
 @pytest.mark.skipif(
-    system() == "Linux",
+    system() == "Linux" and os.getenv("GITHUB_ACTIONS", "") == "true",
     reason="Interactive QtAgg backend not supported in Linux CIs.",
 )
 def test_topomap(rng):
@@ -35,10 +36,10 @@ def test_topomap(rng):
 
 
 @pytest.mark.skipif(
-    system() == "Linux",
+    system() == "Linux" and os.getenv("GITHUB_ACTIONS", "") == "true",
     reason="Interactive QtAgg backend not supported in Linux CIs.",
 )
-def test_invalid_topomap(caplog):
+def test_invalid_topomap():
     """Test the topographic map feedback with invalid arguments."""
     montage = make_standard_montage("biosemi32")
     info = create_info(montage.ch_names, sfreq=1, ch_types="eeg")
@@ -54,12 +55,9 @@ def test_invalid_topomap(caplog):
     with pytest.raises(ValueError, match="strictly positive"):
         TopomapMPL(info, figsize=(-101, 101))
 
-    caplog.clear()
-    viz = TopomapMPL(info, figsize=(2, 3))
-    assert "square" in caplog.text
+    with pytest.warns(RuntimeWarning, match="displayed in a square"):
+        viz = TopomapMPL(info, figsize=(2, 3))
     del viz
-    caplog.clear()
-    viz = TopomapMPL(info, figsize=(101, 101))
-    assert "Large figsize" in caplog.text
+    with pytest.warns(RuntimeWarning, match="Large figsize"):
+        viz = TopomapMPL(info, figsize=(101, 101))
     del viz
-    caplog.clear()

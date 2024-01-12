@@ -19,7 +19,7 @@ classifiers = [
   'Programming Language :: Python :: 3.9',
 ]
 dependencies = [
-  'bsl>=0.5.2, <1.0.0',
+  'bsl==0.5.2',
   'matplotlib',
   'mne>=1.6',
   'numpy>=1.21',

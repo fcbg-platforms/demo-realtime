@@ -50,8 +50,8 @@ def run():
 
     if (args.bar and args.wheel) or (not args.bar and not args.wheel):
         raise RuntimeError(
-            "One and only one of the flag '--bar' or '--wheel' must be "
-            "provided to chose between the 2 possible feedbacks."
+            "One and only one of the flag '--bar' or '--wheel' must be provided to "
+            "chose between the 2 possible feedbacks."
         )
 
     stream_name = args.stream_name

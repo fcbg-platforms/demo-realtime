@@ -14,7 +14,7 @@ from ..utils._docs import copy_doc, fill_doc
 from ..utils.logs import logger
 
 if TYPE_CHECKING:
-    from typing import Any, Union
+    from typing import Any, Optional, Union
 
     from numpy.typing import NDArray
 
@@ -107,7 +107,7 @@ class TopomapMPL(_BaseTopomap):
         self,
         info: Info,
         cmap: str = "Purples",
-        figsize: Union[tuple[float, float], list[float]] = (3, 3),
+        figsize: Optional[Union[tuple[float, float], list[float]]] = None,
     ) -> None:
         if plt.get_backend() != "QtAgg":
             plt.switch_backend("QtAgg")
@@ -176,6 +176,8 @@ class TopomapMPL(_BaseTopomap):
     @staticmethod
     def _check_figsize(figsize: Any) -> tuple[float, float]:
         """Check the figure size."""
+        if figsize is None:
+            return (3, 3)
         check_type(figsize, (tuple, list), "figsize")
         if len(figsize) != 2:
             raise ValueError(

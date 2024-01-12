@@ -2,6 +2,7 @@ import argparse
 
 from bsl import set_log_level as bsl_set_log_level
 from bsl.utils.lsl import search_lsl
+from mne import set_log_level as mne_set_log_level
 
 from .. import rt_topomap
 
@@ -9,6 +10,7 @@ from .. import rt_topomap
 def run():
     """Run 'demo-topomap' command."""
     bsl_set_log_level("INFO")
+    mne_set_log_level("INFO")
 
     parser = argparse.ArgumentParser(
         prog="demo-topomap",

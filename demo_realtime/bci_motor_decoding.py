@@ -360,10 +360,13 @@ def online(stream_name: str, model: Model, duration: int = 60) -> None:
 
             # do an action based on the prediction
             if pred == 0:  # turn left
+                logger.debug("Prediction: going left.")
                 game.go_direction("left")
             elif pred == 1:
+                logger.debug("Prediction: going right.")
                 game.go_direction("right")
             elif pred == 2:
+                logger.debug("Prediction: going straight.")
                 pass
             time.sleep(0.5)
 

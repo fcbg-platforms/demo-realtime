@@ -63,9 +63,6 @@ class CarGame:
             raise RuntimeError(f"The provided 'direction' {direction} is not valid.")
         if self._process.is_alive():
             if self._direction.value == 0:
-                logger.debug(
-                    "Setting direction to %s (code: %i).", direction, direction_int
-                )
                 with self._direction.get_lock():
                     self._direction.value = direction_int
             else:
