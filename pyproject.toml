@@ -22,6 +22,7 @@ dependencies = [
   'bsl==0.5.2',
   'matplotlib',
   'mne>=1.6',
+  'mne-lsl',
   'numpy>=1.21',
   'packaging',
   'psutil',
