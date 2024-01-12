@@ -1,20 +1,5 @@
-from tensorflow.keras.constraints import max_norm
-from tensorflow.keras.layers import (
-    Activation,
-    AveragePooling2D,
-    BatchNormalization,
-    Conv2D,
-    Dense,
-    DepthwiseConv2D,
-    Dropout,
-    Flatten,
-    Input,
-    SeparableConv2D,
-    SpatialDropout2D,
-)
-from tensorflow.keras.models import Model
-
 from .utils._checks import check_type, check_value
+from .utils._imports import import_optional_dependency
 
 
 def EEGNet(
@@ -107,6 +92,24 @@ def EEGNet(
     model : Model
         The Keras model.
     """
+    import_optional_dependency("tensorflow")
+
+    from tensorflow.keras.constraints import max_norm
+    from tensorflow.keras.layers import (
+        Activation,
+        AveragePooling2D,
+        BatchNormalization,
+        Conv2D,
+        Dense,
+        DepthwiseConv2D,
+        Dropout,
+        Flatten,
+        Input,
+        SeparableConv2D,
+        SpatialDropout2D,
+    )
+    from tensorflow.keras.models import Model
+
     check_type(n_classes, ("int-like",), "n_classes")
     assert 0 < n_classes  # sanity-check
     check_type(n_channels, ("int-like",), "n_channels")
