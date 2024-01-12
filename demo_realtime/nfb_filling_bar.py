@@ -5,11 +5,11 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 from bsl import StreamReceiver
-from stimuli.visuals import FillingBar
 
 from .metrics import bandpower
 from .utils._checks import check_type
 from .utils._docs import fill_doc
+from .utils._imports import import_optional_dependency
 from .utils.logs import verbose
 
 if TYPE_CHECKING:
@@ -37,6 +37,10 @@ def nfb_filling_bar(
     %(duration)s
     %(verbose)s
     """
+    import_optional_dependency("stimuli")
+
+    from stimuli.visuals import FillingBar
+
     # check inputs
     check_type(stream_name, (str,), "stream_name")
     check_type(winsize, ("numeric",), "winsize")
