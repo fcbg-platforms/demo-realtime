@@ -148,6 +148,7 @@ minversion = '6.0'
 
 [tool.ruff]
 extend-exclude = [
+  '*.pyi',
   'demo_realtime/resources',
   'demo_realtime/visuals/resources',
   'doc',
@@ -164,7 +165,6 @@ target-version = 'py39'
 docstring-code-format = true
 
 [tool.ruff.per-file-ignores]
-'*.pyi' = ['E501']
 '__init__.py' = ['F401']
 
 [tool.setuptools]
