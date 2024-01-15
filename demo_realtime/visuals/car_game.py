@@ -3,7 +3,6 @@ from warnings import warn
 
 from ..utils._checks import check_type
 from ..utils._imports import import_optional_dependency
-from ..utils.logs import logger
 
 _DIRECTION_MAPPING = {
     -1: "left",
