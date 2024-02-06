@@ -8,7 +8,7 @@ on:  # yamllint disable-line rule:truthy
     branches: [main]
   workflow_dispatch:
   schedule:
-  - cron: '0 8 * * 1'
+    - cron: '0 8 * * 1'
 
 jobs:
   pytest:
@@ -55,16 +55,17 @@ jobs:
           python -m pip install --progress-bar off .[test]
       - name: Display system information
         run: demo-sys_info --developer
-      - name: Run pytest # headless via Xvfb on linux
+      - name: Run pytest  # headless via Xvfb on linux
         uses: coactions/setup-xvfb@v1
         with:
           run: pytest demo_realtime --cov=demo_realtime --cov-report=xml --cov-config=pyproject.toml
       - name: Upload to codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           files: ./coverage.xml
           flags: unittests  # optional
           name: codecov-umbrella  # optional
+          token: ${{ secrets.CODECOV_TOKEN }}
           verbose: true  # optional (default = false)
 
   pytest-pip-pre:
@@ -105,9 +106,10 @@ jobs:
       - name: Run pytest
         run: pytest demo_realtime --cov=demo_realtime --cov-report=xml --cov-config=pyproject.toml
       - name: Upload to codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           files: ./coverage.xml
           flags: unittests  # optional
           name: codecov-umbrella  # optional
+          token: ${{ secrets.CODECOV_TOKEN }}
           verbose: true  # optional (default = false)

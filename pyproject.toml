@@ -65,6 +65,7 @@ stubs = [
   'isort',
   'mypy',
   'ruff>=0.1.8',
+  'ursina',
 ]
 style = [
   'codespell[toml]>=2.2.4',
