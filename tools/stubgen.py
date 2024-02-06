@@ -5,10 +5,10 @@ from importlib import import_module
 from pathlib import Path
 
 import isort
-import template
+import demo_realtime
 from mypy import stubgen
 
-directory = Path(template.__file__).parent
+directory = Path(demo_realtime.__file__).parent
 # remove existing stub files
 for file in directory.rglob("*.pyi"):
     file.unlink()
