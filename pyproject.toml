@@ -21,7 +21,7 @@ classifiers = [
 dependencies = [
   'bsl==0.5.2',
   'matplotlib',
-  'mne-lsl',
+  'mne-lsl>=1.2',
   'mne>=1.6',
   'numpy>=1.21',
   'packaging',

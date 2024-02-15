@@ -3,9 +3,7 @@ from __future__ import annotations  # c.f. PEP 563, PEP 649
 import time
 from typing import TYPE_CHECKING
 
-import numpy as np
-from bsl import StreamReceiver
-from mne import create_info
+from mne_lsl.stream import StreamLSL as Stream
 
 from .metrics import bandpower
 from .utils._checks import check_type
@@ -48,21 +46,12 @@ def rt_topomap(
     assert 0 < duration
 
     # create receiver and feedback
-    sr = StreamReceiver(bufsize=winsize, winsize=winsize, stream_name=stream_name)
-
-    # retrieve sampling rate and channels
-    fs = sr.streams[stream_name].sample_rate
-    ch_names = sr.streams[stream_name].ch_list
-    # remove unwanted channels
-    ch2remove = ("TRIGGER", "TRG", "X1", "X2", "X3", "A1", "A2")
-    ch_idx = np.array([k for k, ch in enumerate(ch_names) if ch not in ch2remove])
-    # filter channel name list
-    ch_names = [ch for ch in ch_names if ch not in ch2remove]
+    stream = Stream(bufsize=winsize, name=stream_name).connect()
+    stream.drop_channels(("TRIGGER", "TRG", "X1", "X2", "X3", "A1", "A2"))
+    stream.set_montage("standard_1020")
 
     # create feedback
-    info = create_info(ch_names=ch_names, sfreq=fs, ch_types="eeg")
-    info.set_montage("standard_1020")
-    feedback = TopomapMPL(info, "Purples", figsize)
+    feedback = TopomapMPL(stream.info, "Purples", figsize)
 
     # wait to fill one buffer
     time.sleep(winsize)
@@ -70,11 +59,11 @@ def rt_topomap(
     # main loop
     start = time.time()
     while time.time() - start <= duration:
-        # retrieve data
-        sr.acquire()
-        data, _ = sr.get_window()
+        data, _ = stream.get_data()
         # compute metric
-        metric = bandpower(data[:, ch_idx].T, fs=fs, method="periodogram", band=(8, 13))
+        metric = bandpower(
+            data, fs=stream.info["sfreq"], method="periodogram", band=(8, 13)
+        )
         # update feedback
         feedback.update(metric)
 

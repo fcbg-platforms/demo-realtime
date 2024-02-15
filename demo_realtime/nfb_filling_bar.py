@@ -49,9 +49,8 @@ def nfb_filling_bar(
     assert 0 < duration
 
     # create receiver and feedback
-    stream = StreamLSL(bufsize=winsize, name=stream_name)
-    stream.connect()
-    stream.pick(["O1", "O2"])
+    stream = StreamLSL(bufsize=winsize, name=stream_name).connect()
+    stream.pick(("O1", "O2"))
     feedback = FillingBar(window_size=(1280, 720))
     feedback.draw_background("lightgrey")
     feedback.putBar(400, 50, 5, "black", "teal", axis=1)  # empty bar
