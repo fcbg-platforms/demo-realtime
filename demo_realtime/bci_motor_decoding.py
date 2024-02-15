@@ -6,10 +6,11 @@ from tempfile import TemporaryDirectory
 from typing import TYPE_CHECKING
 
 import numpy as np
-from bsl import StreamReceiver, StreamRecorder
+from bsl import StreamRecorder
 from bsl.triggers import SoftwareTrigger
 from mne import Epochs, concatenate_epochs, find_events, make_fixed_length_epochs
-from mne.io import read_raw_fif
+from mne.io import RawArray, read_raw_fif
+from mne_lsl.stream import StreamLSL as Stream
 from scipy.stats import mode
 
 from .utils._checks import check_type, ensure_path
@@ -319,12 +320,12 @@ def online(stream_name: str, model: Model, duration: int = 60) -> None:
     assert 0 < duration
 
     # create receiver and feedback
-    sr = StreamReceiver(bufsize=2.0, winsize=2.0, stream_name=stream_name)
-    sr.mne_infos[stream_name].set_montage("standard_1020", on_missing="ignore")
+    stream = Stream(bufsize=2.0, name=stream_name).connect()
+    stream.drop_channels(["X1", "X2", "X3", "A2"])
+    stream.set_montage("standard_1020", on_missing="ignore")
     game = CarGame()
 
     # wait to fill one buffer
-    sr.acquire()
     time.sleep(2.0)
 
     try:
@@ -333,9 +334,8 @@ def online(stream_name: str, model: Model, duration: int = 60) -> None:
         start = time.time()
         while time.time() - start <= duration:
             # retrieve data
-            sr.acquire()
-            raw, _ = sr.get_window(return_raw=True)
-            raw.drop_channels(["X1", "X2", "X3", "A2"])
+            data, _ = stream.get_data()
+            raw = RawArray(data, stream.info)
             raw.filter(
                 l_freq=2.0,
                 h_freq=25.0,
@@ -374,4 +374,4 @@ def online(stream_name: str, model: Model, duration: int = 60) -> None:
         raise
     finally:
         game.stop()
-        del sr
+        del stream
