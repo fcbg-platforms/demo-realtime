@@ -67,10 +67,11 @@ def offline_calibration(
     recorder = StreamRecorder(directory, stream_name=stream_name)
     recorder.start()
     trigger = SoftwareTrigger(recorder)
+    # create psychopy window
+    window = Calibration(size=(1920, 1080), screen=1, fullscr=True, allowGUI=False)
 
     try:
         # create psychopy window and objects
-        window = Calibration(size=(1920, 1080), screen=1, fullscr=True, allowGUI=False)
         window.show_instructions()
         window.show_examples()
         window.cross.setAutoDraw(True)
