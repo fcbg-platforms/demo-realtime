@@ -103,7 +103,7 @@ def offline_calibration(
             time.sleep(1.5)
 
         # reconstruct fname from the 'eve_file' because BSL does not update the
-        # property recorder.fname in versions prior to 1.0.
+        # property recorder.fname
         fname = (
             directory
             / "fif"

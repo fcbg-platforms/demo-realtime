@@ -49,10 +49,15 @@ version = '0.1.0'
 
 [project.optional-dependencies]
 all = [
+  'demo_realtime[bci]',
   'demo_realtime[build]',
   'demo_realtime[stubs]',
   'demo_realtime[style]',
   'demo_realtime[test]',
+]
+bci = [
+  'scikit-learn>=1.4.0',
+  'tensorflow; python_version <= "3.11"',
 ]
 build = [
   'build',
