@@ -127,7 +127,7 @@ class DoubleSpinningWheel:
 
     def __del__(self):
         """Make sure to stop the feedback and close the window before del."""
-        if self._status.value == 1:
+        if hasattr(self, "_status") and self._status.value == 1:
             self.stop()
 
     # -------------------------------------------------------------------------
