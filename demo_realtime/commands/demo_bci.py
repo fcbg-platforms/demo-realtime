@@ -1,16 +1,13 @@
 import argparse
 from tempfile import TemporaryDirectory
 
-from bsl import set_log_level as bsl_set_log_level
-from bsl.utils.lsl import search_lsl
+from mne_lsl.lsl import resolve_streams
 
 from ..bci import calibration, fit_EEGNet, online
 
 
 def run():
     """Run 'demo-bci' command."""
-    bsl_set_log_level("INFO")
-
     parser = argparse.ArgumentParser(
         prog="demo-nfb",
         description="Start a demo of a neurofeedback system.",
@@ -43,11 +40,17 @@ def run():
 
     stream_name = args.stream_name
     if stream_name is None:
-        stream_name = search_lsl(ignore_markers=True, timeout=3)
+        streams = resolve_streams(timeout=3)
+        streams = [stream for stream in streams if stream.sfreq != 0]
+        if len(streams) != 1:
+            raise RuntimeError(
+                "Multiple streams found. Please provide the stream name explicitly."
+            )
+        stream_name = streams[0].name
 
     directory = TemporaryDirectory(prefix="tmp_demo-realtime_")
-    fname = calibration(10, stream_name, directory)
+    fname = calibration(10, stream_name, directory.name)
     input(">>> Press ENTER to continue..")
-    model = fit_EEGNet(fname, stream_name)
+    model = fit_EEGNet(fname)
     input(">>> Press ENTER to continue..")
     online("WS-default", model, duration=args.duration)

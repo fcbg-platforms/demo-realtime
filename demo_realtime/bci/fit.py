@@ -1,6 +1,7 @@
 from __future__ import annotations  # c.f. PEP 563, PEP 649
 
 import time
+from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import TYPE_CHECKING
 
@@ -13,8 +14,6 @@ from ..utils.logs import logger
 from ._config import EVENT_ID
 
 if TYPE_CHECKING:
-    from pathlib import Path
-
     from mne import BaseEpochs
     from numpy.typing import NDArray
     from tensorflow.keras.models import Model
@@ -223,7 +222,9 @@ def _fit_EEGNet(
 
     # set a valid path for your system to record model checkpoints
     tempdir = TemporaryDirectory(prefix="tmp_demo-realtime_")
-    fname_chkpoint = tempdir / f"{time.strftime('%Y%m%d-%H%M%S', time.localtime())}.h5"
+    fname_chkpoint = str(
+        Path(tempdir.name) / f"{time.strftime('%Y%m%d-%H%M%S', time.localtime())}.h5"
+    )
     checkpointer = ModelCheckpoint(
         filepath=fname_chkpoint,
         verbose=1,
