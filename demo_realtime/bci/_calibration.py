@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 
 @fill_doc
-def offline_calibration(
+def calibration(
     n_repetition: int,
     stream_name: str,
     directory: str | Path = None,

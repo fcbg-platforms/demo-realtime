@@ -5,8 +5,9 @@ from importlib import import_module
 from pathlib import Path
 
 import isort
-import demo_realtime
 from mypy import stubgen
+
+import demo_realtime
 
 directory = Path(demo_realtime.__file__).parent
 # remove existing stub files

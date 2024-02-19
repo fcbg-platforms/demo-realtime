@@ -1,7 +1,7 @@
 from __future__ import annotations
-from re import X  # c.f. PEP 563, PEP 649
 
 import time
+from re import X  # c.f. PEP 563, PEP 649
 from tempfile import TemporaryDirectory
 from typing import TYPE_CHECKING
 
@@ -250,4 +250,25 @@ def _fit_EEGNet(
     preds = probs.argmax(axis=-1)
     acc = np.mean(preds == Y_test.argmax(axis=-1))
     logger.info("Classification accuracy [test]: %f", acc)
+    return model
+
+
+def fit_EEGNet(fname: str | Path) -> Model:
+    """Fit EEGNet model with the dataset recorded in the calibration.
+
+    Parameters
+    ----------
+    fname : path-like
+        Path to the FIFF recording.
+
+    Returns
+    -------
+    model : Model
+        Fitted EEGNet model.
+    """
+    epochs = _load_dataset(fname)
+    X_train, Y_train, X_validate, Y_validate, X_test, Y_test = _get_data_and_labels(
+        epochs
+    )
+    model = _fit_EEGNet(None, X_train, Y_train, X_validate, Y_validate, X_test, Y_test)
     return model
