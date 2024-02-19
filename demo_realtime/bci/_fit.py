@@ -111,7 +111,7 @@ def _get_data_and_labels(
     hands_open_idx = np.where(Y == _EVENT_ID["hands_open"])[0]
     assert lfist_idx.size == rfist_idx.size == hands_open_idx.size
     size = lfist_idx.size
-    # shufle events to avoid selecting all the events at the beginning or end of the
+    # shuffle events to avoid selecting all the events at the beginning or end of the
     # dataset
     rng = np.random.default_rng()
     rng.shuffle(lfist_idx)

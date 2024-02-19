@@ -104,7 +104,7 @@ tracker = 'https://github.com/fcbg-hnp-meeg/demo-realtime/issues'
 check-filenames = true
 check-hidden = true
 ignore-words = '.codespellignore'
-skip = 'build,.git,.mypy_cache,.pytest_cache'
+skip = 'build,.git,.mypy_cache,.pytest_cache,*.pb'
 
 [tool.coverage.report]
 exclude_lines = [
