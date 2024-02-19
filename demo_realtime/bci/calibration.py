@@ -21,6 +21,8 @@ def calibration(
     n_repetition: int,
     stream_name: str,
     directory: str | Path = None,
+    *,
+    skip_instructions: bool = False,
 ) -> Path:
     """Gather a dataset of training and validation epochs.
 
@@ -37,6 +39,8 @@ def calibration(
     %(stream_name)s
     directory : path-like
         Path where the dataset is recorded.
+    skip_instructions : bool
+        If True, instrutions and examples are skipped.
 
     Returns
     -------
@@ -67,9 +71,11 @@ def calibration(
 
     try:
         # create psychopy window and objects
-        window.show_instructions()
-        window.show_examples()
+        if not skip_instructions:
+            window.show_instructions()
+            window.show_examples()
         window.cross.setAutoDraw(True)
+        window.window.flip()
         wait(2)
 
         # loop until all cues are exhausted

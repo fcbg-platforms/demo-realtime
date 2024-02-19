@@ -29,6 +29,11 @@ def run():
         default=10,
     )
     parser.add_argument(
+        "--skip_instructions",
+        help="skip calibration instructions/examples.",
+        action="store_true",
+    )
+    parser.add_argument(
         "-d",
         "--duration",
         type=float,
@@ -50,7 +55,9 @@ def run():
         stream_name = streams[0].name
 
     directory = TemporaryDirectory(prefix="tmp_demo-realtime_")
-    fname = calibration(10, stream_name, directory.name)
+    fname = calibration(
+        10, stream_name, directory.name, skip_instructions=args.skip_instructions
+    )
     input(">>> Press ENTER to continue..")
     model = fit_EEGNet(fname)
     input(">>> Press ENTER to continue..")
