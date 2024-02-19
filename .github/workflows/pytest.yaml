@@ -224,7 +224,7 @@ jobs:
       matrix:
         python-version: ["3.10"]
     name: pip ursina - py${{ matrix.python-version }}
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     defaults:
       run:
         shell: bash
@@ -236,14 +236,10 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           architecture: 'x64'
-      - name: Install linux dependencies
+      - name: Install liblsl
         run: |
-          curl -L https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-jammy_amd64.deb -o liblsl-1.16.2-jammy_amd64.deb
-          sudo apt update
-          sudo apt install -y libpugixml-dev qtbase5-dev qt5-qmake
-          sudo apt install -y ./liblsl-1.16.2-jammy_amd64.deb
-      - name: Setup headless display
-        uses: pyvista/setup-headless-display-action@main
+          brew update
+          brew install labstreaminglayer/tap/lsl
       - name: Install dependencies
         run: |
           python -m pip install --progress-bar off --upgrade pip setuptools
