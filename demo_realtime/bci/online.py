@@ -7,7 +7,6 @@ import numpy as np
 from mne import make_fixed_length_epochs
 from mne.io import RawArray
 from mne_lsl.stream import StreamLSL as Stream
-from scipy.stats import mode
 
 from ..utils._checks import check_type
 from ..utils._docs import fill_doc
@@ -75,7 +74,7 @@ def online(stream_name: str, model: Model, duration: int = 60) -> None:
 
             # predict
             pred = model(X, training=False).numpy().argmax(axis=-1)
-            # apply a runing mean to smooth the predictions
+            # apply a running mean to smooth the predictions
             N = 3  # window size for the running mean
             pred = np.convolve(pred, np.ones(N) / N, mode="valid")
             # we should have 9 prediction values based on the number of epochs and on
