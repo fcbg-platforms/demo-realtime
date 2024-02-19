@@ -153,14 +153,14 @@ jobs:
         run: |
           python -m pip install --progress-bar off --upgrade pip setuptools
           python -m pip install --progress-bar off .[test]
-          readonly wx_name="wxPython-4.2.1-cp310-cpcp310-linux_x86_64.whl"
+          readonly wx_name="wxPython-4.2.1-cp310-cp310-linux_x86_64.whl"
           curl https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04/${wx_name} -o ${wx_name}
           python -m pip install --progress-bar off ${wx_name}
           python -m pip install --progress-bar off psychopy psychtoolbox
       - name: Display system information
         run: demo-sys_info --developer
       - name: Run pytest
-        run: pytest demo_realtime/visuals/tests/test_double_spinning_wheel --cov=demo_realtime/visuals/tests/test_double_spinning_wheel --cov-report=xml --cov-config=pyproject.toml
+        run: pytest demo_realtime/visuals/tests/test_double_spinning_wheel.py --cov=demo_realtime/visuals --cov-report=xml --cov-config=pyproject.toml
       - name: Upload to codecov
         uses: codecov/codecov-action@v4
         with:
@@ -207,7 +207,7 @@ jobs:
       - name: Display system information
         run: demo-sys_info --developer
       - name: Run pytest
-        run: pytest demo_realtime/bci/tests/test_bci_EEGNet --cov=demo_realtime/bci/tests/test_bci_EEGNet --cov-report=xml --cov-config=pyproject.toml
+        run: pytest demo_realtime/bci/tests/test_bci_EEGNet.py --cov=demo_realtime/bci --cov-report=xml --cov-config=pyproject.toml
       - name: Upload to codecov
         uses: codecov/codecov-action@v4
         with:
@@ -254,7 +254,7 @@ jobs:
       - name: Display system information
         run: demo-sys_info --developer
       - name: Run pytest
-        run: pytest demo_realtime/visuals/tests/test_car_game --cov=demo_realtime/visuals/tests/test_car_game --cov-report=xml --cov-config=pyproject.toml
+        run: pytest demo_realtime/visuals/tests/test_car_game.py --cov=demo_realtime/visuals --cov-report=xml --cov-config=pyproject.toml
       - name: Upload to codecov
         uses: codecov/codecov-action@v4
         with:
