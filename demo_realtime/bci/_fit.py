@@ -10,6 +10,7 @@ from mne.io import read_raw_fif
 
 from ..utils._checks import check_type, ensure_path
 from ..utils.logs import logger
+from ._config import EVENT_ID
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -17,9 +18,6 @@ if TYPE_CHECKING:
     from mne import BaseEpochs
     from numpy.typing import NDArray
     from tensorflow.keras.models import Model
-
-
-_EVENT_ID: dict[str, int] = dict(lfist=1, rfist=2, hands_open=3)
 
 
 def _load_dataset(fname: str | Path) -> BaseEpochs:
@@ -56,7 +54,7 @@ def _load_dataset(fname: str | Path) -> BaseEpochs:
         epochs = Epochs(
             raw,
             events,
-            _EVENT_ID,
+            EVENT_ID,
             tmin=0.5 + step,
             tmax=1.5 + step,
             baseline=None,
@@ -106,9 +104,9 @@ def _get_data(
     Y = epochs.events[:, -1]
     del epochs
     # split the dataset into train/validate/test
-    lfist_idx = np.where(Y == _EVENT_ID["lfist"])[0]
-    rfist_idx = np.where(Y == _EVENT_ID["rfist"])[0]
-    hands_open_idx = np.where(Y == _EVENT_ID["hands_open"])[0]
+    lfist_idx = np.where(Y == EVENT_ID["lfist"])[0]
+    rfist_idx = np.where(Y == EVENT_ID["rfist"])[0]
+    hands_open_idx = np.where(Y == EVENT_ID["hands_open"])[0]
     assert lfist_idx.size == rfist_idx.size == hands_open_idx.size
     size = lfist_idx.size
     # shuffle events to avoid selecting all the events at the beginning or end of the
@@ -206,7 +204,7 @@ def _fit_EEGNet(
     # create and fit model
     if model is None:
         model = EEGNet(
-            len(_EVENT_ID),
+            len(EVENT_ID),
             n_channels,
             n_samples,
             dropoutRate=0.5,

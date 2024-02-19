@@ -10,6 +10,7 @@ from ..utils._checks import check_type, ensure_path
 from ..utils._docs import fill_doc
 from ..utils._imports import import_optional_dependency
 from ..visuals._bci_motor_decoding import Calibration
+from ._config import EVENT_ID
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -52,7 +53,9 @@ def calibration(
     directory = ensure_path(directory, must_exist=True)
 
     # generate random cue order -- 1: left fist, 2: right fist, 3: hands open
-    cues = [1] * n_repetition + [2] * n_repetition + [3] * n_repetition
+    assert len(EVENT_ID) == 3
+    assert sorted(EVENT_ID.values()) == [1, 2, 3]
+    cues = list(EVENT_ID.values()) * n_repetition
     rng = np.random.default_rng()
     rng.shuffle(cues)
     # create recorder and trigger
