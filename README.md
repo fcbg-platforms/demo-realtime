@@ -7,7 +7,7 @@
 
 This repository can be installed via `pip` with `pip install git+https://github.com/fcbg-hnp-meeg/demo-realtime`.
 
-It implements simple real-time demonstration using [BSL](https://bsl-tools.github.io/).
+It implements simple real-time demonstration using [MNE-LSL](https://mne.tools/mne-lsl).
 
 # Example
 
