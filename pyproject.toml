@@ -127,7 +127,7 @@ omit = [
   '**/demo_realtime/commands/*',
   '**/demo_realtime/resources/*',
   '**/demo_realtime/visuals/resources/*',
-  '**/template/utils/_fixes.py',
+  '**/demo_realtime/utils/_fixes.py',
   '**/tests/**',
 ]
 parallel = true
