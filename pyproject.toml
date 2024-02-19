@@ -89,6 +89,7 @@ test = [
 ]
 
 [project.scripts]
+demo-bci = 'demo_realtime.commands.demo_bci:run'
 demo-nfb = 'demo_realtime.commands.demo_nfb:run'
 demo-sys_info = 'demo_realtime.commands.sys_info:run'
 demo-topomap = 'demo_realtime.commands.demo_topomap:run'

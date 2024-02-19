@@ -1,7 +1,6 @@
-from __future__ import annotations
+from __future__ import annotations  # c.f. PEP 563, PEP 649
 
 import time
-from re import X  # c.f. PEP 563, PEP 649
 from tempfile import TemporaryDirectory
 from typing import TYPE_CHECKING
 
