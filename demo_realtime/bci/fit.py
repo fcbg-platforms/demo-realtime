@@ -54,6 +54,7 @@ def _load_dataset(fname: str | Path) -> BaseEpochs:
             raw,
             events,
             EVENT_ID,
+            picks="eeg",
             tmin=0.5 + step,
             tmax=1.5 + step,
             baseline=None,

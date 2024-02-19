@@ -40,8 +40,8 @@ def online(stream_name: str, model: Model, duration: int = 60) -> None:
 
     # create receiver and feedback
     stream = Stream(bufsize=2.0, name=stream_name).connect()
-    stream.drop_channels(["X1", "X2", "X3", "A2"])
-    stream.set_montage("standard_1020", on_missing="ignore")
+    stream.drop_channels(["X1", "X2", "X3", "A2", "TRG"])
+    stream.set_montage("standard_1020")
     game = CarGame()
 
     # wait to fill one buffer
@@ -87,7 +87,6 @@ def online(stream_name: str, model: Model, duration: int = 60) -> None:
             elif pred == 2:
                 logger.debug("Prediction: going straight.")
                 pass
-            time.sleep(0.5)
 
     except Exception:
         raise
