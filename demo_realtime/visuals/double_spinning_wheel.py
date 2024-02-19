@@ -77,8 +77,8 @@ class DoubleSpinningWheel:
         for var, name in [(wheel_size, "wheel_size"), (offset, "offset")]:
             if var < -1 or var > 1:
                 warn(
-                    f"Normalized {name} should be in the range (-1, 1). Values outside "
-                    "this range might yield an image outside of the window.",
+                    f"Normalized '{name}' should be in the range (-1, 1). Values "
+                    "outside this range might yield an image outside of the window.",
                     RuntimeWarning,
                     stacklevel=2,
                 )

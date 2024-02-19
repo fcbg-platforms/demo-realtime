@@ -40,20 +40,17 @@ def test_double_spinning_wheel():
     del viz
 
 
-def test_invalid_double_spinning_wheel(caplog):
+def test_invalid_double_spinning_wheel():
     """Test the double spinning wheel feedback with invalid arguments."""
     pytest.importorskip("psychopy")
     with pytest.raises(ValueError, match="should be 'norm'"):
         DoubleSpinningWheel(units="101")
 
-    caplog.clear()
-    viz = DoubleSpinningWheel(winType="101")
-    assert "'pyglet' window type is recommended" in caplog.text
+    with pytest.warns(RuntimeWarning, match="'pyglet' window type is recommended"):
+        viz = DoubleSpinningWheel(winType="101")
     del viz
-    caplog.clear()
-    viz = DoubleSpinningWheel(color=(0, 0, 0))
-    assert "is recommended" in caplog.text
-    caplog.clear()
+    with pytest.warns(RuntimeWarning, match="'(-1, -1, -1)' is recommended"):
+        viz = DoubleSpinningWheel(color="101")
     del viz
 
     with pytest.raises(TypeError, match="must be an instance of"):
@@ -61,12 +58,9 @@ def test_invalid_double_spinning_wheel(caplog):
     with pytest.raises(TypeError, match="must be an instance of"):
         DoubleSpinningWheel(offset="101")
 
-    caplog.clear()
-    viz = DoubleSpinningWheel(wheel_size=101)
-    assert "size should be" in caplog.text
-    caplog.clear()
+    with pytest.warns(RuntimeWarning, match="'wheel_size' should be in the range"):
+        viz = DoubleSpinningWheel(wheel_size=101)
     del viz
-    viz = DoubleSpinningWheel(offset=101)
-    assert "offset should be" in caplog.text
-    caplog.clear()
+    with pytest.warns(RuntimeWarning, match="'offset' should be in the range"):
+        viz = DoubleSpinningWheel(offset=101)
     del viz
