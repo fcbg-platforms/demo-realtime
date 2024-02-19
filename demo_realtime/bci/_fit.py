@@ -69,7 +69,7 @@ def _load_dataset(fname: str | Path) -> BaseEpochs:
     return epochs
 
 
-def _get_data_and_labels(
+def _get_data(
     epochs: BaseEpochs,
 ) -> tuple[
     NDArray[np.float64],
@@ -266,8 +266,6 @@ def fit_EEGNet(fname: str | Path) -> Model:
         Fitted EEGNet model.
     """
     epochs = _load_dataset(fname)
-    X_train, Y_train, X_validate, Y_validate, X_test, Y_test = _get_data_and_labels(
-        epochs
-    )
+    X_train, Y_train, X_validate, Y_validate, X_test, Y_test = _get_data(epochs)
     model = _fit_EEGNet(None, X_train, Y_train, X_validate, Y_validate, X_test, Y_test)
     return model
