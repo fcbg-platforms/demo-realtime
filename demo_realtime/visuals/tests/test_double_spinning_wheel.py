@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 
 import pytest
@@ -49,7 +50,7 @@ def test_invalid_double_spinning_wheel():
     with pytest.warns(RuntimeWarning, match="'pyglet' window type is recommended"):
         viz = DoubleSpinningWheel(winType="101")
     del viz
-    with pytest.warns(RuntimeWarning, match="'(-1, -1, -1)' is recommended"):
+    with pytest.warns(RuntimeWarning, match=re.escape("'(-1, -1, -1)' is recommended")):
         viz = DoubleSpinningWheel(color="101")
     del viz
 
