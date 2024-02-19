@@ -1,4 +1,4 @@
-from . import bci_motor_decoding  # noqa: F401
+from . import bci  # noqa: F401
 from . import metrics  # noqa: F401
 from . import utils  # noqa: F401
 from . import visuals  # noqa: F401

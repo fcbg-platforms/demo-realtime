@@ -13,12 +13,12 @@ from mne.io import RawArray, read_raw_fif
 from mne_lsl.stream import StreamLSL as Stream
 from scipy.stats import mode
 
-from .utils._checks import check_type, ensure_path
-from .utils._docs import fill_doc
-from .utils._imports import import_optional_dependency
-from .utils.logs import logger
-from .visuals import CarGame
-from .visuals._bci_motor_decoding import Calibration
+from ..utils._checks import check_type, ensure_path
+from ..utils._docs import fill_doc
+from ..utils._imports import import_optional_dependency
+from ..utils.logs import logger
+from ..visuals import CarGame
+from ..visuals._bci_motor_decoding import Calibration
 
 if TYPE_CHECKING:
     from tensorflow.keras.models import Model

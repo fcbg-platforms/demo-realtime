@@ -9,7 +9,7 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.models import load_model
 
 from demo_realtime import logger, set_log_level
-from demo_realtime.bci_motor_decoding import offline_calibration, online
+from demo_realtime.bci.bci_motor_decoding import offline_calibration, online
 
 
 set_log_level("INFO")

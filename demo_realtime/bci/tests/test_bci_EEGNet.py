@@ -1,6 +1,6 @@
 import pytest
 
-from demo_realtime._bci_EEGNet import EEGNet
+from demo_realtime.bci._bci_EEGNet import EEGNet
 from demo_realtime.utils._tests import requires_module
 
 

@@ -1,5 +1,5 @@
-from .utils._checks import check_type, check_value
-from .utils._imports import import_optional_dependency
+from ..utils._checks import check_type, check_value
+from ..utils._imports import import_optional_dependency
 
 
 def EEGNet(
