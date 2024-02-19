@@ -13,9 +13,6 @@ def pytest_configure(config: Config) -> None:
     """Configure pytest options."""
     warnings_lines = r"""
     error::
-    # numpy deprecations in psychopy c.f. https://github.com/psychopy/psychopy/pull/6247
-    ignore:.*Ensure you extract a single element from your array.*:DeprecationWarning
-    ignore:`alltrue` is deprecated.*:DeprecationWarning
     """
     for warning_line in warnings_lines.split("\n"):
         warning_line = warning_line.strip()

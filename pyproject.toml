@@ -56,7 +56,7 @@ all = [
   'demo_realtime[test]',
 ]
 bci = [
-  'psychopy',
+  'psychopy @ git+https://github.com/psychopy/psychopy',
   'scikit-learn>=1.4.0',
   'tensorflow; python_version <= "3.11"',
 ]
