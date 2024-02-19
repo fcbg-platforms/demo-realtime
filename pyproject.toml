@@ -126,8 +126,8 @@ omit = [
   '**/demo_realtime/_version.py',
   '**/demo_realtime/commands/*',
   '**/demo_realtime/resources/*',
-  '**/demo_realtime/visuals/resources/*',
   '**/demo_realtime/utils/_fixes.py',
+  '**/demo_realtime/visuals/resources/*',
   '**/tests/**',
 ]
 parallel = true
