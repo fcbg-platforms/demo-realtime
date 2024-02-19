@@ -9,9 +9,9 @@ set_log_level("INFO")
 logger.propagate = True
 
 
-@pytest.importorskip("psychopy")
 def test_double_spinning_wheel():
     """Test the double spinning wheel feedback."""
+    pytest.importorskip("psychopy")
     viz = DoubleSpinningWheel()
     assert isinstance(viz.image, Path)
     assert viz._status.value == 0
@@ -40,9 +40,9 @@ def test_double_spinning_wheel():
     del viz
 
 
-@pytest.importorskip("psychopy")
 def test_invalid_double_spinning_wheel(caplog):
     """Test the double spinning wheel feedback with invalid arguments."""
+    pytest.importorskip("psychopy")
     with pytest.raises(ValueError, match="should be 'norm'"):
         DoubleSpinningWheel(units="101")
 

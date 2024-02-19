@@ -3,9 +3,10 @@ import pytest
 from demo_realtime.bci._bci_EEGNet import EEGNet
 
 
-@pytest.importorskip("tensorflow")
 def test_EEGNet():
     """Test the creation of the EEGNet model."""
+    pytest.importorskip("tensorflow")
+
     from tensorflow.keras.models import Model
 
     model = EEGNet(n_classes=4, n_channels=64, n_samples=128, dropoutType="Dropout")
@@ -19,9 +20,10 @@ def test_EEGNet():
     assert isinstance(model, Model)
 
 
-@pytest.importorskip("tensorflow")
 def test_invalid_arguments():
     """Test the creation of the EEGNet model with invalid arguments."""
+    pytest.importorskip("tensorflow")
+
     from tensorflow.keras.layers import Dropout
 
     with pytest.raises(TypeError, match="'n_classes' must be"):

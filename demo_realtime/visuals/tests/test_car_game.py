@@ -5,9 +5,9 @@ import pytest
 from demo_realtime.visuals import CarGame
 
 
-@pytest.importorskip("ursina")
 def test_car_game():
     """Test the car game feedback."""
+    pytest.importorskip("ursina")
     game = CarGame(enable_enemies=True)
     game.start()
     time.sleep(4)
