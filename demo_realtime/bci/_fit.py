@@ -1,18 +1,23 @@
-from __future__ import annotations  # c.f. PEP 563, PEP 649
+from __future__ import annotations
+from re import X  # c.f. PEP 563, PEP 649
 
+import time
+from tempfile import TemporaryDirectory
 from typing import TYPE_CHECKING
 
 import numpy as np
 from mne import Epochs, concatenate_epochs, find_events
 from mne.io import read_raw_fif
 
-from ..utils._checks import ensure_path
+from ..utils._checks import check_type, ensure_path
+from ..utils.logs import logger
 
 if TYPE_CHECKING:
     from pathlib import Path
 
     from mne import BaseEpochs
     from numpy.typing import NDArray
+    from tensorflow.keras.models import Model
 
 
 _EVENT_ID: dict[str, int] = dict(lfist=1, rfist=2, hands_open=3)
@@ -29,8 +34,7 @@ def _load_dataset(fname: str | Path) -> BaseEpochs:
     Returns
     -------
     epochs : Epochs
-        Epochs filtered and resampled for the 3 events, 'lfist', 'rfist' and
-        'hands_open'.
+        Epochs preprocessed for the 3 events, 'lfist', 'rfist' and 'hands_open'.
     """
     fname = ensure_path(fname, must_exist=True)
     raw = read_raw_fif(fname, preload=False)
@@ -76,11 +80,32 @@ def _get_data_and_labels(
     NDArray[np.float64],
     NDArray[np.int64],
 ]:
-    """Extract labels and dataset from the epochs."""
+    """Extract labels and dataset from the epochs.
+
+    Parameters
+    ----------
+    epochs : Epochs
+        Epochs preprocessed for the 3 events, 'lfist', 'rfist' and 'hands_open'.
+
+    Returns
+    -------
+    X_train : array of shape (n_trials, n_channels, n_samples)
+        Training dataset.
+    Y_train : array of shape (n_trials,)
+        Training labels.
+    X_validate : array of shape (n_trials, n_channels, n_samples)
+        Validation dataset.
+    Y_validate : array of shape (n_trials,)
+        Validation labels.
+    X_test : array of shape (n_trials, n_channels, n_samples)
+        Test dataset.
+    Y_test : array of shape (n_trials,)
+        Test labels.
+    """
     # the raw data is scaled by 1000 due to scaling sensitivity in deep learning
-    labels = epochs.events[:, -1]
     X = epochs.get_data() * 1000  # shape is (n_trials, n_channels, n_samples)
-    Y = labels
+    Y = epochs.events[:, -1]
+    del epochs
     # split the dataset into train/validate/test
     lfist_idx = np.where(Y == _EVENT_ID["lfist"])[0]
     rfist_idx = np.where(Y == _EVENT_ID["rfist"])[0]
@@ -116,3 +141,113 @@ def _get_data_and_labels(
     assert idx_train.size + idx_val.size + idx_test.size == 3 * size
     assert np.unique(np.hstack((idx_train, idx_val, idx_test))).size == 3 * size
     return X_train, Y_train, X_validate, Y_validate, X_test, Y_test
+
+
+def _fit_EEGNet(
+    model: Model | str | Path | None,
+    X_train: NDArray[np.float64],
+    Y_train: NDArray[np.int64],
+    X_validate: NDArray[np.float64],
+    Y_validate: NDArray[np.int64],
+    X_test: NDArray[np.float64],
+    Y_test: NDArray[np.int64],
+) -> Model:
+    """Fit EEGNet model with the dataset recorded with offline_calibration.
+
+    Parameters
+    ----------
+    model : Model | path-like | None
+        If provided, model on which fit is resumed. If None, a new model is created.
+    X_train : array of shape (n_trials, n_channels, n_samples)
+        Training dataset.
+    Y_train : array of shape (n_trials,)
+        Training labels.
+    X_validate : array of shape (n_trials, n_channels, n_samples)
+        Validation dataset.
+    Y_validate : array of shape (n_trials,)
+        Validation labels.
+    X_test : array of shape (n_trials, n_channels, n_samples)
+        Test dataset.
+    Y_test : array of shape (n_trials,)
+        Test labels.
+
+    Returns
+    -------
+    model : Model
+        Fitted EEGNet model.
+    """
+    from tensorflow.keras.callbacks import ModelCheckpoint
+    from tensorflow.keras.models import Model, load_model
+    from tensorflow.keras.utils import to_categorical
+
+    from ._bci_EEGNet import EEGNet
+
+    check_type(model, (Model, str, Path, None), "model")
+    if isinstance(model, (str, Path)):
+        model = ensure_path(model, must_exist=True)
+        model = load_model(model)
+
+    # convert labels to one-hot encodings.
+    Y_train = to_categorical(Y_train - 1)
+    Y_validate = to_categorical(Y_validate - 1)
+    Y_test = to_categorical(Y_test - 1)
+
+    # convert data to NHWC (n_trials, n_channels, n_samples, n_kernels) format.
+    assert X_train.shape[1] == X_validate.shape[1] == X_test.shape[1]
+    assert X_train.shape[2] == X_validate.shape[2] == X_test.shape[2]
+    n_channels = X_train.shape[1]
+    n_samples = X_train.shape[2]
+    n_kernels = 1
+    X_train = X_train.reshape(X_train.shape[0], n_channels, n_samples, n_kernels)
+    X_validate = X_validate.reshape(
+        X_validate.shape[0], n_channels, n_samples, n_kernels
+    )
+    X_test = X_test.reshape(X_test.shape[0], n_channels, n_samples, n_kernels)
+
+    # create and fit model
+    if model is None:
+        model = EEGNet(
+            len(_EVENT_ID),
+            n_channels,
+            n_samples,
+            dropoutRate=0.5,
+            kernelLength=32,
+            F1=8,
+            D=2,
+            F2=16,
+            dropoutType="Dropout",
+        )
+        model.compile(
+            loss="categorical_crossentropy",
+            optimizer="adam",
+            metrics=["accuracy"],
+        )
+        logger.info("Number of parameters: %i", model.count_params())
+
+    # set a valid path for your system to record model checkpoints
+    tempdir = TemporaryDirectory(prefix="tmp_demo-realtime_")
+    fname_chkpoint = tempdir / f"{time.strftime('%Y%m%d-%H%M%S', time.localtime())}.h5"
+    checkpointer = ModelCheckpoint(
+        filepath=fname_chkpoint,
+        verbose=1,
+        save_best_only=True,
+    )
+    model.fit(
+        X_train,
+        Y_train,
+        batch_size=16,
+        epochs=300,
+        verbose=2,
+        validation_data=(X_validate, Y_validate),
+        callbacks=[checkpointer],
+    )
+
+    # load optimal weights
+    model.load_weights(fname_chkpoint)
+    del tempdir
+
+    probs = model.predict(X_test)
+    preds = probs.argmax(axis=-1)
+    acc = np.mean(preds == Y_test.argmax(axis=-1))
+    logger.info("Classification accuracy [test]: %f", acc)
+    return model
