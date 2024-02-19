@@ -1,10 +1,9 @@
 import pytest
 
 from demo_realtime.bci._bci_EEGNet import EEGNet
-from demo_realtime.utils._tests import requires_module
 
 
-@requires_module("tensorflow")
+@pytest.importorskip("tensorflow")
 def test_EEGNet():
     """Test the creation of the EEGNet model."""
     from tensorflow.keras.models import Model
@@ -20,7 +19,7 @@ def test_EEGNet():
     assert isinstance(model, Model)
 
 
-@requires_module("tensorflow")
+@pytest.importorskip("tensorflow")
 def test_invalid_arguments():
     """Test the creation of the EEGNet model with invalid arguments."""
     from tensorflow.keras.layers import Dropout

@@ -2,11 +2,10 @@ import time
 
 import pytest
 
-from demo_realtime.utils._tests import requires_module
 from demo_realtime.visuals import CarGame
 
 
-@requires_module("ursina")
+@pytest.importorskip("ursina")
 def test_car_game():
     """Test the car game feedback."""
     game = CarGame(enable_enemies=True)

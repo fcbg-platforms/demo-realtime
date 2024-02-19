@@ -3,14 +3,13 @@ from pathlib import Path
 import pytest
 
 from demo_realtime import logger, set_log_level
-from demo_realtime.utils._tests import requires_module
 from demo_realtime.visuals import DoubleSpinningWheel
 
 set_log_level("INFO")
 logger.propagate = True
 
 
-@requires_module("psychopy")
+@pytest.importorskip("psychopy")
 def test_double_spinning_wheel():
     """Test the double spinning wheel feedback."""
     viz = DoubleSpinningWheel()
@@ -41,7 +40,7 @@ def test_double_spinning_wheel():
     del viz
 
 
-@requires_module("psychopy")
+@pytest.importorskip("psychopy")
 def test_invalid_double_spinning_wheel(caplog):
     """Test the double spinning wheel feedback with invalid arguments."""
     with pytest.raises(ValueError, match="should be 'norm'"):
