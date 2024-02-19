@@ -3,6 +3,7 @@ from __future__ import annotations  # c.f. PEP 563, PEP 649
 import time
 from typing import TYPE_CHECKING
 
+import numpy as np
 from mne import make_fixed_length_epochs
 from mne.io import RawArray
 from mne_lsl.stream import StreamLSL as Stream
@@ -73,9 +74,21 @@ def online(stream_name: str, model: Model, duration: int = 60) -> None:
             X = X.reshape(*X.shape, 1)  # n_kernels = 1
 
             # predict
-            prob = model(X, training=False)
-            pred = mode(prob.numpy().argmax(axis=-1), keepdims=False)[0]
-            logger.info("Predicting %i", pred)
+            pred = model(X, training=False).numpy().argmax(axis=-1)
+            # apply a runing mean to smooth the predictions
+            N = 3  # window size for the running mean
+            pred = np.convolve(pred, np.ones(N) / N, mode="valid")
+            # we should have 9 prediction values based on the number of epochs and on
+            # the convolution parameters, let's assume that an action is requested if
+            # the 2 last predictions are identical and if they are integers (i.e. not
+            # part of a transition between 2 states).
+            if all(p.is_integer() for p in pred[-2:]) and pred[-1] == pred[-2]:
+                pred = pred[-1]
+                logger.info("Predicting %i", pred)
+            else:
+                logger.debug("Predictions after smoothing: %s", pred)
+                logger.info("No new prediction.")
+                continue
 
             # do an action based on the prediction
             if pred == 0:  # turn left
