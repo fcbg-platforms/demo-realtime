@@ -3,6 +3,7 @@ from tempfile import TemporaryDirectory
 
 from mne_lsl.lsl import resolve_streams
 
+from .. import set_log_level
 from ..bci import calibration, fit_EEGNet, online
 
 
@@ -37,7 +38,7 @@ def run():
     )
     parser.add_argument("--verbose", help="enable debug logs.", action="store_true")
     args = parser.parse_args()
-
+    set_log_level("DEBUG" if args.verbose else "INFO")
     stream_name = args.stream_name
     if stream_name is None:
         streams = resolve_streams(timeout=3)
