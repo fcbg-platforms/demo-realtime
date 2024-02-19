@@ -21,15 +21,13 @@ from .visuals import CarGame
 from .visuals._bci_motor_decoding import Calibration
 
 if TYPE_CHECKING:
-    from typing import Optional, Union
-
     from tensorflow.keras.models import Model
 
 
 def offline_calibration(
     n_repetition: int,
     stream_name: str,
-    directory: Union[str, Path] = None,
+    directory: str | Path = None,
 ) -> Path:
     """Gather a dataset of training and validation epochs.
 
@@ -126,8 +124,8 @@ def offline_calibration(
 
 
 def offline_fit(
-    fname: Union[str, Path],
-    model: Optional[Union[Model, str, Path]] = None,
+    fname: str | Path,
+    model: Model | str | Path | None = None,
 ) -> Model:
     """Fit EEGNet model with the dataset recorded with offline_calibration.
 

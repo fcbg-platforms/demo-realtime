@@ -13,10 +13,10 @@ import numpy as np
 from ._docs import fill_doc
 
 if TYPE_CHECKING:
-    from typing import Any, Optional, Union
+    from typing import Any
 
 
-def ensure_int(item: Any, item_name: Optional[str] = None) -> int:
+def ensure_int(item: Any, item_name: str | None = None) -> int:
     """Ensure a variable is an integer.
 
     Parameters
@@ -72,7 +72,7 @@ _types = {
 }
 
 
-def check_type(item: Any, types: tuple, item_name: Optional[str] = None) -> None:
+def check_type(item: Any, types: tuple, item_name: str | None = None) -> None:
     """Check that item is an instance of types.
 
     Parameters
@@ -127,9 +127,9 @@ def check_type(item: Any, types: tuple, item_name: Optional[str] = None) -> None
 
 def check_value(
     item: Any,
-    allowed_values: Union[tuple, dict[Any, Any]],
-    item_name: Optional[str] = None,
-    extra: Optional[str] = None,
+    allowed_values: tuple[Any, ...] | dict[Any, Any],
+    item_name: str | None = None,
+    extra: str | None = None,
 ) -> None:
     """Check the value of a parameter against a list of valid options.
 

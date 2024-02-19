@@ -137,8 +137,7 @@ class Player(Entity):
     def safe_shake(self, *args, **kwargs) -> None:
         """Shake the player car if it's not already shaking."""
         if hasattr(self, "shake_sequence") and self.shake_sequence:
-            finished = getattr(getattr(self, "shake_sequence"), "finished")
-            if finished:
+            if self.shake_sequence.finished:
                 self.shake(*args, **kwargs)
         else:
             self.shake(*args, **kwargs)

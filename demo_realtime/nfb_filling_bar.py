@@ -1,7 +1,4 @@
-from __future__ import annotations  # c.f. PEP 563, PEP 649
-
 import time
-from typing import TYPE_CHECKING
 
 import numpy as np
 from mne_lsl.stream import StreamLSL
@@ -12,9 +9,6 @@ from .utils._docs import fill_doc
 from .utils._imports import import_optional_dependency
 from .utils.logs import verbose
 
-if TYPE_CHECKING:
-    from typing import Optional, Union
-
 
 @fill_doc
 @verbose
@@ -23,7 +17,7 @@ def nfb_filling_bar(
     winsize: float = 3,
     duration: float = 30,
     *,
-    verbose: Optional[Union[str, int]] = None,
+    verbose: bool | str | int | None = None,
 ) -> None:
     """Real-time neurofeedback loop using a feedback horizontal filling bar.
 

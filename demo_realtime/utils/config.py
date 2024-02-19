@@ -12,10 +12,10 @@ from packaging.requirements import Requirement
 from ._checks import check_type
 
 if TYPE_CHECKING:
-    from typing import IO, Callable, Optional
+    from typing import IO, Callable
 
 
-def sys_info(fid: Optional[IO] = None, developer: bool = False):
+def sys_info(fid: IO | None = None, developer: bool = False):
     """Print the system information for debugging.
 
     Parameters

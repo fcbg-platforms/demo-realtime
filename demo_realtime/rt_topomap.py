@@ -1,7 +1,4 @@
-from __future__ import annotations  # c.f. PEP 563, PEP 649
-
 import time
-from typing import TYPE_CHECKING
 
 from mne_lsl.stream import StreamLSL as Stream
 
@@ -11,9 +8,6 @@ from .utils._docs import fill_doc
 from .utils.logs import verbose
 from .visuals import TopomapMPL
 
-if TYPE_CHECKING:
-    from typing import Optional, Union
-
 
 @fill_doc
 @verbose
@@ -21,9 +15,9 @@ def rt_topomap(
     stream_name: str,
     winsize: float = 3,
     duration: float = 30,
-    figsize: Optional[tuple[float, float]] = None,
+    figsize: tuple[float, float] | None = None,
     *,
-    verbose: Optional[Union[str, int]] = None,
+    verbose: bool | str | int | None = None,
 ):
     """Real-time topographic feedback loop.
 

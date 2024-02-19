@@ -14,7 +14,7 @@ from ..utils._docs import copy_doc, fill_doc
 from ..utils.logs import logger
 
 if TYPE_CHECKING:
-    from typing import Any, Optional, Union
+    from typing import Any
 
     from numpy.typing import NDArray
 
@@ -107,7 +107,7 @@ class TopomapMPL(_BaseTopomap):
         self,
         info: Info,
         cmap: str = "Purples",
-        figsize: Optional[Union[tuple[float, float], list[float]]] = None,
+        figsize: tuple[float, float] | list[float] | None = None,
     ) -> None:
         if plt.get_backend() != "QtAgg":
             plt.switch_backend("QtAgg")
