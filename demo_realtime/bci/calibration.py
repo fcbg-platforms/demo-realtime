@@ -40,7 +40,7 @@ def calibration(
     directory : path-like
         Path where the dataset is recorded.
     skip_instructions : bool
-        If True, instrutions and examples are skipped.
+        If True, instructions and examples are skipped.
 
     Returns
     -------
