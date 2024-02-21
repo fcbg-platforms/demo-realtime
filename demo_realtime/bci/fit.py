@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 import numpy as np
 from mne import Epochs, concatenate_epochs, find_events
 from mne.io import read_raw_fif
+from mne.preprocessing import compute_current_source_density
 
 from ..utils._checks import check_type, ensure_path
 from ..utils.logs import logger
@@ -30,7 +31,7 @@ def _load_dataset(fname: str | Path) -> BaseEpochs:
     Returns
     -------
     epochs : Epochs
-        Epochs preprocessed for the 3 events, 'lfist', 'rfist' and 'hands_open'.
+        Epochs preprocessed for the 2 events, 'lfist' and 'rfist'.
     """
     fname = ensure_path(fname, must_exist=True)
     raw = read_raw_fif(fname, preload=False)
@@ -61,6 +62,7 @@ def _load_dataset(fname: str | Path) -> BaseEpochs:
         epochs_list.append(epochs)
     epochs = concatenate_epochs(epochs_list)
     epochs.resample(128)
+    epochs = compute_current_source_density(epochs)
     return epochs
 
 
@@ -79,7 +81,7 @@ def _get_data(
     Parameters
     ----------
     epochs : Epochs
-        Epochs preprocessed for the 3 events, 'lfist', 'rfist' and 'hands_open'.
+        Epochs preprocessed for the 2 events, 'lfist' and 'rfist'.
 
     Returns
     -------
@@ -103,37 +105,35 @@ def _get_data(
     # split the dataset into train/validate/test
     lfist_idx = np.where(Y == EVENT_ID["lfist"])[0]
     rfist_idx = np.where(Y == EVENT_ID["rfist"])[0]
-    hands_open_idx = np.where(Y == EVENT_ID["hands_open"])[0]
-    assert lfist_idx.size == rfist_idx.size == hands_open_idx.size
+    assert lfist_idx.size == rfist_idx.size
     size = lfist_idx.size
     # shuffle events to avoid selecting all the events at the beginning or end of the
     # dataset
     rng = np.random.default_rng()
     rng.shuffle(lfist_idx)
     rng.shuffle(rfist_idx)
-    rng.shuffle(hands_open_idx)
     # use 70% events for training, 15% for validation and 15% for test.
-    # shuffle the indices again to shuffle the left/right/hands-open events from the
-    # horizontal stack.
+    # shuffle the indices again to shuffle the left/right events from the horizontal
+    # stack.
     n2 = int(0.7 * size)
-    idx_train = np.hstack((lfist_idx[:n2], rfist_idx[:n2], hands_open_idx[:n2]))
+    idx_train = np.hstack((lfist_idx[:n2], rfist_idx[:n2]))
     rng.shuffle(idx_train)
     X_train = X[idx_train, :, :]
     Y_train = Y[idx_train]
     n1 = n2
     n2 = n1 + int(0.15 * size)
-    idx_val = np.hstack((lfist_idx[n1:n2], rfist_idx[n1:n2], hands_open_idx[n1:n2]))
+    idx_val = np.hstack((lfist_idx[n1:n2], rfist_idx[n1:n2]))
     rng.shuffle(idx_val)
     X_validate = X[idx_val, :, :]
     Y_validate = Y[idx_val]
     n1 = n2
-    idx_test = np.hstack((lfist_idx[n1:], rfist_idx[n1:], hands_open_idx[n1:]))
+    idx_test = np.hstack((lfist_idx[n1:], rfist_idx[n1:]))
     rng.shuffle(idx_test)
     X_test = X[idx_test, :, :]
     Y_test = Y[idx_test]
     # sanity-checks
-    assert idx_train.size + idx_val.size + idx_test.size == 3 * size
-    assert np.unique(np.hstack((idx_train, idx_val, idx_test))).size == 3 * size
+    assert idx_train.size + idx_val.size + idx_test.size == 2 * size
+    assert np.unique(np.hstack((idx_train, idx_val, idx_test))).size == 2 * size
     return X_train, Y_train, X_validate, Y_validate, X_test, Y_test
 
 

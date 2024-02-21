@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 import numpy as np
 from mne import make_fixed_length_epochs
 from mne.io import RawArray
+from mne.preprocessing import compute_current_source_density
 from mne_lsl.stream import StreamLSL as Stream
 from scipy.signal import butter, sosfilt, sosfilt_zi
 
@@ -65,11 +66,15 @@ def online(stream_name: str, model: Model, duration: int = 60) -> None:
             # filter data
             if zi is None:
                 zi = zi_coeff * np.mean(data, axis=1)
+                zi = np.swapaxes(zi, 1, 2)
             data, zi = sosfilt(sos, data, zi=zi)
             # create epochs
             raw = RawArray(data, stream.info)
             raw.resample(128)  # shape is now (20, 256)
-            epochs = make_fixed_length_epochs(raw, duration=1.0, overlap=0.9)
+            epochs = make_fixed_length_epochs(
+                raw, duration=1.0, overlap=0.9, preload=True
+            )
+            epochs = compute_current_source_density(epochs)
 
             # retrieve numpy array and transform to NHWC
             # (n_trials, n_channels, n_samples, n_kernels)
@@ -79,14 +84,17 @@ def online(stream_name: str, model: Model, duration: int = 60) -> None:
             # predict
             pred = model(X, training=False).numpy().argmax(axis=-1)
             # apply a running mean to smooth the predictions
-            N = 3  # window size for the running mean
+            N = 4  # window size for the running mean
             pred = np.convolve(pred, np.ones(N) / N, mode="valid")
             logger.debug("Predictions after smoothing: %s", pred)
-            # we should have 9 prediction values based on the number of epochs and on
+            # we should have 8 prediction values based on the number of epochs and on
             # the convolution parameters, let's assume that an action is requested if
-            # the 2 last predictions are identical and if they are integers (i.e. not
+            # the 3 last predictions are identical and if they are integers (i.e. not
             # part of a transition between 2 states).
-            if all(p.is_integer() for p in pred[-2:]) and pred[-1] == pred[-2]:
+            if (
+                all(p.is_integer() for p in pred[-3:])
+                and pred[-1] == pred[-2] == pred[-3]
+            ):
                 pred = pred[-1]
                 logger.info("Predicting %i", pred)
             else:
@@ -100,9 +108,6 @@ def online(stream_name: str, model: Model, duration: int = 60) -> None:
             elif pred == 1:
                 logger.debug("Prediction: going right.")
                 game.go_direction("right")
-            elif pred == 2:
-                logger.debug("Prediction: going straight.")
-                pass
 
     except Exception:
         raise
