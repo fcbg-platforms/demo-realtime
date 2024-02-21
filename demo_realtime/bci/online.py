@@ -7,6 +7,7 @@ import numpy as np
 from mne import make_fixed_length_epochs
 from mne.io import RawArray
 from mne_lsl.stream import StreamLSL as Stream
+from scipy.signal import butter, sosfilt, sosfilt_zi
 
 from ..utils._checks import check_type
 from ..utils._docs import fill_doc
@@ -40,12 +41,19 @@ def online(stream_name: str, model: Model, duration: int = 60) -> None:
 
     # create receiver and feedback
     stream = Stream(bufsize=2.0, name=stream_name).connect()
-    stream.drop_channels(["X1", "X2", "X3", "A2", "TRG"])
+    stream.pick(["P3", "C3", "F3", "Fz", "F4", "C4", "P4", "Cz", "Pz"])
     stream.set_montage("standard_1020")
     game = CarGame()
 
     # wait to fill one buffer
     time.sleep(2.0)
+
+    # filter parameters
+    bp_low = 2 / (0.5 * stream.info["sfreq"])
+    bp_high = 25 / (0.5 * stream.info["sfreq"])
+    sos = butter(4, [bp_low, bp_high], btype="band", output="sos")
+    zi_coeff = sosfilt_zi(sos).reshape((sos.shape[0], 2, 1))
+    zi = None
 
     try:
         game.start()
@@ -54,16 +62,12 @@ def online(stream_name: str, model: Model, duration: int = 60) -> None:
         while time.time() - start <= duration:
             # retrieve data
             data, _ = stream.get_data()
+            # filter data
+            if zi is None:
+                zi = zi_coeff * np.mean(data, axis=1)
+            data, zi = sosfilt(sos, data, zi=zi)
+            # create epochs
             raw = RawArray(data, stream.info)
-            raw.filter(
-                l_freq=2.0,
-                h_freq=25.0,
-                method="fir",
-                phase="zero-double",
-                fir_window="hamming",
-                fir_design="firwin",
-                pad="edge",
-            )
             raw.resample(128)  # shape is now (20, 256)
             epochs = make_fixed_length_epochs(raw, duration=1.0, overlap=0.9)
 

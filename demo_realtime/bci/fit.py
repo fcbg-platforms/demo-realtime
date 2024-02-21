@@ -34,17 +34,14 @@ def _load_dataset(fname: str | Path) -> BaseEpochs:
     """
     fname = ensure_path(fname, must_exist=True)
     raw = read_raw_fif(fname, preload=False)
-    raw.drop_channels(["X1", "X2", "X3", "A2"])
+    raw.pick(["TRIGGER", "P3", "C3", "F3", "Fz", "F4", "C4", "P4", "Cz", "Pz"])
     raw.load_data()
     raw.set_montage("standard_1020")
     raw.filter(
         l_freq=2.0,
         h_freq=25.0,
-        method="fir",
-        phase="zero-double",
-        fir_window="hamming",
-        fir_design="firwin",
-        pad="edge",
+        method="iir",  # 4th order butterworth
+        phase="forward",  # causal IIR filter
     )
     # create epochs and resample to 128 Hz
     events = find_events(raw, stim_channel="TRIGGER")
