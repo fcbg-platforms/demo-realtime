@@ -67,18 +67,18 @@ class Calibration:
         image = files("demo_realtime.visuals") / "resources" / "fist-clench.png"
         assert image.is_file() and image.suffix == ".png"  # sanity-check
         self._lfist = ImageStim(
-            self._window, image=image, size=[0.5, 0.5], pos=[-0.7, 0], ori=-20
+            self._window, image=image, size=[0.2, 0.2], pos=[-0.15, 0], ori=-20
         )
         self._rfist = ImageStim(
-            self._window, image=image, size=[-0.5, 0.5], pos=[0.7, 0], ori=20
+            self._window, image=image, size=[-0.2, 0.2], pos=[0.15, 0], ori=20
         )
         image = files("demo_realtime.visuals") / "resources" / "hand-open.png"
         assert image.is_file() and image.suffix == ".png"  # sanity-check
         self._lhand = ImageStim(
-            self._window, image=image, size=[0.6, 0.6], pos=[-0.7, 0], ori=20
+            self._window, image=image, size=[0.2, 0.2], pos=[-0.15, 0], ori=20
         )
         self._rhand = ImageStim(
-            self._window, image=image, size=[-0.6, 0.6], pos=[0.7, 0], ori=-20
+            self._window, image=image, size=[-0.2, 0.2], pos=[0.15, 0], ori=-20
         )
         self._cross = ShapeStim(
             win=self._window,

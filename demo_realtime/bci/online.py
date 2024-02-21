@@ -77,6 +77,7 @@ def online(stream_name: str, model: Model, duration: int = 60) -> None:
             # apply a running mean to smooth the predictions
             N = 3  # window size for the running mean
             pred = np.convolve(pred, np.ones(N) / N, mode="valid")
+            logger.debug("Predictions after smoothing: %s", pred)
             # we should have 9 prediction values based on the number of epochs and on
             # the convolution parameters, let's assume that an action is requested if
             # the 2 last predictions are identical and if they are integers (i.e. not
@@ -85,7 +86,6 @@ def online(stream_name: str, model: Model, duration: int = 60) -> None:
                 pred = pred[-1]
                 logger.info("Predicting %i", pred)
             else:
-                logger.debug("Predictions after smoothing: %s", pred)
                 logger.info("No new prediction.")
                 continue
 
