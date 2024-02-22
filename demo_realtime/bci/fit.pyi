@@ -21,7 +21,7 @@ def _load_dataset(fname: str | Path) -> BaseEpochs:
     Returns
     -------
     epochs : Epochs
-        Epochs preprocessed for the 3 events, 'lfist', 'rfist' and 'hands_open'.
+        Epochs preprocessed for the 2 events, 'lfist' and 'rfist'.
     """
 
 def _get_data(
@@ -39,7 +39,7 @@ def _get_data(
     Parameters
     ----------
     epochs : Epochs
-        Epochs preprocessed for the 3 events, 'lfist', 'rfist' and 'hands_open'.
+        Epochs preprocessed for the 2 events, 'lfist' and 'rfist'.
 
     Returns
     -------
