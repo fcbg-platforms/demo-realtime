@@ -1,15 +1,15 @@
 import argparse
 
-from bsl import set_log_level as bsl_set_log_level
-from bsl.utils.lsl import search_lsl
 from mne import set_log_level as mne_set_log_level
+from mne_lsl import set_log_level as mne_lsl_set_log_level
+from mne_lsl.lsl import resolve_streams
 
 from .. import rt_topomap
 
 
 def run():
     """Run 'demo-topomap' command."""
-    bsl_set_log_level("INFO")
+    mne_lsl_set_log_level("INFO")
     mne_set_log_level("INFO")
 
     parser = argparse.ArgumentParser(
@@ -51,7 +51,9 @@ def run():
 
     stream_name = args.stream_name
     if stream_name is None:
-        stream_name = search_lsl(ignore_markers=True, timeout=3)
+        streams = [stream.name for stream in resolve_streams() if stream.stype == "EEG"]
+        assert len(streams) == 1
+        stream_name = streams[0]
     rt_topomap(
         stream_name,
         args.winsize,

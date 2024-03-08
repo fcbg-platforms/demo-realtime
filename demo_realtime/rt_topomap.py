@@ -41,7 +41,7 @@ def rt_topomap(
 
     # create receiver and feedback
     stream = Stream(bufsize=winsize, name=stream_name).connect()
-    stream.drop_channels(("TRIGGER", "TRG", "X1", "X2", "X3", "A1", "A2"))
+    stream.drop_channels(("TRG", "X1", "X2", "X3", "A2"))
     stream.set_montage("standard_1020")
 
     # create feedback

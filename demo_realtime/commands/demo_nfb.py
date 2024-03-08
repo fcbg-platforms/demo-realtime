@@ -1,14 +1,14 @@
 import argparse
 
-from bsl import set_log_level as bsl_set_log_level
-from bsl.utils.lsl import search_lsl
+from mne_lsl import set_log_level as mne_lsl_set_log_level
+from mne_lsl.lsl import resolve_streams
 
 from .. import nfb_double_spinning_wheel, nfb_filling_bar
 
 
 def run():
     """Run 'demo-nfb' command."""
-    bsl_set_log_level("INFO")
+    mne_lsl_set_log_level("INFO")
 
     parser = argparse.ArgumentParser(
         prog="demo-nfb",
@@ -56,7 +56,9 @@ def run():
 
     stream_name = args.stream_name
     if stream_name is None:
-        stream_name = search_lsl(ignore_markers=True, timeout=3)
+        streams = [stream.name for stream in resolve_streams() if stream.stype == "EEG"]
+        assert len(streams) == 1
+        stream_name = streams[0]
 
     if args.bar:
         function = nfb_filling_bar
