@@ -84,7 +84,7 @@ style = [
 test = [
   'pytest-cov',
   'pytest-timeout',
-  'pytest>=6.0',
+  'pytest>=8.0',
   'tensorflow; python_version <= "3.11"',
 ]
 
@@ -152,7 +152,7 @@ match-dir = '^demo_realtime.*'
 
 [tool.pytest.ini_options]
 addopts = '--durations 20 --junit-xml=junit-results.xml --verbose'
-minversion = '6.0'
+minversion = '8.0'
 
 [tool.ruff]
 extend-exclude = [
