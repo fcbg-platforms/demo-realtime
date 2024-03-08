@@ -43,7 +43,7 @@ def online(stream_name: str, model: Model, duration: int = 60) -> None:
     stream = Stream(bufsize=2.0, name=stream_name).connect()
     stream.pick(["P3", "C3", "F3", "Fz", "F4", "C4", "P4", "Cz", "Pz"])
     stream.set_montage("standard_1020")
-    stream.filter(2, 25)
+    stream.filter(2, 25, picks="data")
     game = CarGame()
     # wait to fill one buffer
     time.sleep(2.0)
