@@ -51,6 +51,7 @@ version = '0.1.0'
 all = [
   'demo_realtime[bci]',
   'demo_realtime[build]',
+  'demo_realtime[nfb]',
   'demo_realtime[stubs]',
   'demo_realtime[style]',
   'demo_realtime[test]',
@@ -66,6 +67,10 @@ build = [
 ]
 full = [
   'demo_realtime[all]',
+]
+nfb = [
+  'psychopy @ git+https://github.com/psychopy/psychopy',
+  'stimuli',
 ]
 stubs = [
   'isort',
