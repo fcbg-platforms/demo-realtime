@@ -8,7 +8,6 @@ from mne import make_fixed_length_epochs
 from mne.io import RawArray
 from mne.preprocessing import compute_current_source_density
 from mne_lsl.stream import StreamLSL as Stream
-from scipy.signal import butter, sosfilt, sosfilt_zi
 
 from ..utils._checks import check_type
 from ..utils._docs import fill_doc
@@ -44,17 +43,10 @@ def online(stream_name: str, model: Model, duration: int = 60) -> None:
     stream = Stream(bufsize=2.0, name=stream_name).connect()
     stream.pick(["P3", "C3", "F3", "Fz", "F4", "C4", "P4", "Cz", "Pz"])
     stream.set_montage("standard_1020")
+    stream.filter(2, 25)
     game = CarGame()
-
     # wait to fill one buffer
     time.sleep(2.0)
-
-    # filter parameters
-    bp_low = 2 / (0.5 * stream.info["sfreq"])
-    bp_high = 25 / (0.5 * stream.info["sfreq"])
-    sos = butter(4, [bp_low, bp_high], btype="band", output="sos")
-    zi_coeff = sosfilt_zi(sos).reshape((sos.shape[0], 2, 1))
-    zi = None
 
     try:
         game.start()
@@ -63,11 +55,6 @@ def online(stream_name: str, model: Model, duration: int = 60) -> None:
         while time.time() - start <= duration:
             # retrieve data
             data, _ = stream.get_data()
-            # filter data
-            if zi is None:
-                zi = zi_coeff * np.mean(data, axis=1)
-                zi = np.swapaxes(zi, 1, 2)
-            data, zi = sosfilt(sos, data, zi=zi)
             # create epochs
             raw = RawArray(data, stream.info)
             raw.resample(128)  # shape is now (20, 256)
