@@ -138,7 +138,6 @@ def EEGNet(
                        F1,
                        (1, kernelLength),
                        padding="same",
-                       input_shape=(n_channels, n_samples, 1),
                        use_bias=False,
                    )(input1)
     block1       = BatchNormalization()(block1)
