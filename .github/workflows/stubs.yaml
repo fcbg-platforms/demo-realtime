@@ -22,7 +22,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: 3.11
-          architecture: 'x64'
       - name: Install liblsl (linux)
         run: |
           curl -L https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-jammy_amd64.deb -o liblsl-1.16.2-jammy_amd64.deb

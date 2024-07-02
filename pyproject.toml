@@ -26,6 +26,7 @@ dependencies = [
   'numpy>=1.21',
   'packaging',
   'psutil',
+  'scipy',
 ]
 description = 'Demo for realtime projects.'
 keywords = [

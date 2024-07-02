@@ -60,6 +60,8 @@ def rt_topomap(
         )
         # update feedback
         feedback.update(metric)
+        # give time to other concurrent threads
+        time.sleep(0.02)
 
     # close the feedback window
     feedback.close()
