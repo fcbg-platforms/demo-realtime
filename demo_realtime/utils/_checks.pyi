@@ -53,7 +53,7 @@ def check_type(item: Any, types: tuple, item_name: str | None = None) -> None:
 
 def check_value(
     item: Any,
-    allowed_values: tuple[Any, ...] | dict[Any, Any],
+    allowed_values: tuple | dict[Any, Any],
     item_name: str | None = None,
     extra: str | None = None,
 ) -> None:
