@@ -73,15 +73,12 @@ nfb = [
   'stimuli',
 ]
 stubs = [
-  'isort',
   'mypy',
   'ruff>=0.1.8',
   'ursina',
 ]
 style = [
   'codespell[toml]>=2.2.4',
-  'isort',
-  'pydocstyle[toml]',
   'ruff>=0.1.8',
   'toml-sort',
   'yamllint',
