@@ -57,7 +57,7 @@ all = [
   'demo_realtime[test]',
 ]
 bci = [
-  'psychopy @ git+https://github.com/psychopy/psychopy',
+  'psychopy',
   'scikit-learn>=1.4.0',
   'tensorflow; python_version <= "3.11"',
 ]
@@ -69,7 +69,7 @@ full = [
   'demo_realtime[all]',
 ]
 nfb = [
-  'psychopy @ git+https://github.com/psychopy/psychopy',
+  'psychopy',
   'stimuli',
 ]
 stubs = [
