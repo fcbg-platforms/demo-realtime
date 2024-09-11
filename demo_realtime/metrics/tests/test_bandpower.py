@@ -19,7 +19,7 @@ def dataset(rng):
     return data, n_channels, fs
 
 
-@pytest.mark.parametrize("method", ("periodogram", "welch", "multitaper"))
+@pytest.mark.parametrize("method", ["periodogram", "welch", "multitaper"])
 def test_relative_bandpower(dataset, method):
     """Test the relative bandpower."""
     data, n_channels, fs = dataset
@@ -32,7 +32,7 @@ def test_relative_bandpower(dataset, method):
     assert np.allclose(bp1 + bp2, np.ones(n_channels), atol=0.3)
 
 
-@pytest.mark.parametrize("method", ("periodogram", "welch", "multitaper"))
+@pytest.mark.parametrize("method", ["periodogram", "welch", "multitaper"])
 def test_absolute_bandpower(dataset, method):
     """Test dB set to True."""
     data, n_channels, fs = dataset

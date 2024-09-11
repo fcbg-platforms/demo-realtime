@@ -177,7 +177,7 @@ def _fit_EEGNet(
     from ._bci_EEGNet import EEGNet
 
     check_type(model, (Model, str, Path, None), "model")
-    if isinstance(model, (str, Path)):
+    if isinstance(model, (str | Path)):
         model = ensure_path(model, must_exist=True)
         model = load_model(model)
 

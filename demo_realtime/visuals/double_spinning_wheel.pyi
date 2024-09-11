@@ -74,7 +74,8 @@ class DoubleSpinningWheel:
     def image(self) -> Path:
         """Path to the image of the wheel displayed.
 
-        :type: :class:`~pathlib.Path`"""
+        :type: :class:`~pathlib.Path`
+        """
 
     @property
     def offset(self) -> float:

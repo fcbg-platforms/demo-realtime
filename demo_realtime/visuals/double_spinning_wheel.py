@@ -69,7 +69,8 @@ class DoubleSpinningWheel:
 
         # store image path
         image = files("demo_realtime.visuals") / "resources" / "wheel.png"
-        assert image.is_file() and image.suffix == ".png"  # sanity-check
+        assert image.is_file()
+        assert image.suffix == ".png"
         self._image = image
         # and image settings
         check_type(wheel_size, ("numeric",), "wheel_size")
@@ -194,7 +195,8 @@ class DoubleSpinningWheel:
     def image(self) -> Path:
         """Path to the image of the wheel displayed.
 
-        :type: :class:`~pathlib.Path`"""
+        :type: :class:`~pathlib.Path`
+        """
         return self._image
 
     @property

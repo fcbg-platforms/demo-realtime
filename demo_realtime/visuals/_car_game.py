@@ -170,7 +170,8 @@ def add_enemies(texture: Texture) -> None:
     texture : Texture
         Loaded texture of the ennemies car.
     """
-    x = np.random.choice(LANES)
+    rng = np.random.default_rng()
+    x = rng.choice(LANES)
     Enemy(
         model="quad",
         texture=texture,

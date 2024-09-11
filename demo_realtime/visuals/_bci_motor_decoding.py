@@ -65,7 +65,8 @@ class Calibration:
         self._keyboard.clearEvents()
 
         image = files("demo_realtime.visuals") / "resources" / "fist-clench.png"
-        assert image.is_file() and image.suffix == ".png"  # sanity-check
+        assert image.is_file()
+        assert image.suffix == ".png"
         self._lfist = ImageStim(
             self._window, image=image, size=[0.2, 0.2], pos=[-0.15, 0], ori=-20
         )
@@ -73,7 +74,8 @@ class Calibration:
             self._window, image=image, size=[-0.2, 0.2], pos=[0.15, 0], ori=20
         )
         image = files("demo_realtime.visuals") / "resources" / "hand-open.png"
-        assert image.is_file() and image.suffix == ".png"  # sanity-check
+        assert image.is_file()
+        assert image.suffix == ".png"
         self._lhand = ImageStim(
             self._window, image=image, size=[0.2, 0.2], pos=[-0.15, 0], ori=20
         )
