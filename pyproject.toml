@@ -101,10 +101,10 @@ demo-sys_info = 'demo_realtime.commands.sys_info:run'
 demo-topomap = 'demo_realtime.commands.demo_topomap:run'
 
 [project.urls]
-documentation = 'https://github.com/fcbg-hnp-meeg/demo-realtime'
-homepage = 'https://github.com/fcbg-hnp-meeg/demo-realtime'
-source = 'https://github.com/fcbg-hnp-meeg/demo-realtime'
-tracker = 'https://github.com/fcbg-hnp-meeg/demo-realtime/issues'
+documentation = 'https://github.com/fcbg-platforms/demo-realtime'
+homepage = 'https://github.com/fcbg-platforms/demo-realtime'
+source = 'https://github.com/fcbg-platforms/demo-realtime'
+tracker = 'https://github.com/fcbg-platforms/demo-realtime/issues'
 
 [tool.codespell]
 check-filenames = true
