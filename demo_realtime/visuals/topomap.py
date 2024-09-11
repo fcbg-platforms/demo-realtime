@@ -1,4 +1,4 @@
-from __future__ import annotations  # c.f. PEP 563, PEP 649
+from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
@@ -64,7 +64,6 @@ class _BaseTopomap(ABC):
     @abstractmethod
     def close(self):
         """Close the topographic map feedback window."""
-        pass
 
     # ------------------------------------------------------------------------
     @property

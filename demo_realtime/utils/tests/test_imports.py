@@ -1,5 +1,3 @@
-"""Test _imports.py"""
-
 import pytest
 
 from .._imports import import_optional_dependency

@@ -4,13 +4,14 @@ Inspired from mne: https://mne.tools/stable/index.html
 Inspired from mne.utils.docs.py by Eric Larson <larson.eric.d@gmail.com>
 """
 
-from __future__ import annotations  # c.f. PEP 563, PEP 649
+from __future__ import annotations
 
 import sys
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from typing import Any, Callable
+    from collections.abc import Callable
+    from typing import Any
 
 # -- Documentation dictionary ----------------------------------------------------------
 docdict: dict[str, str] = dict()

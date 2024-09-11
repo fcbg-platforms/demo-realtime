@@ -1,3 +1,3 @@
 """Metrics module."""
 
-from .bandpower import bandpower  # noqa: F401
+from .bandpower import bandpower

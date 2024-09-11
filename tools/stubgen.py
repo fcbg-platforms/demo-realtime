@@ -4,7 +4,6 @@ import sys
 from importlib import import_module
 from pathlib import Path
 
-import isort
 from mypy import stubgen
 
 import demo_realtime
@@ -18,7 +17,7 @@ files = [
     str(file.as_posix())
     for file in directory.rglob("*.py")
     if file.parent.name not in ("commands", "tests")
-    and file.name not in ("conftest.py", "_tests.py", "_version.py")
+    and file.name not in ("conftest.py", "_version.py")
 ]
 stubgen.main(
     [
@@ -32,8 +31,7 @@ stubgen.main(
     ]
 )
 stubs = list(directory.rglob("*.pyi"))
-config = str((directory.parent / "pyproject.toml"))
-config_isort = isort.settings.Config(config)
+config = str(directory.parent / "pyproject.toml")
 
 # expand docstrings and inject into stub files
 for stub in stubs:
@@ -43,7 +41,7 @@ for stub in stubs:
     objects = [
         node
         for node in module_ast.body
-        if isinstance(node, (ast.ClassDef, ast.FunctionDef))
+        if isinstance(node, (ast.ClassDef | ast.FunctionDef))
     ]
     for node in objects:
         docstring = getattr(module, node.name).__doc__
@@ -59,9 +57,12 @@ for stub in stubs:
                 method.body[0].value.value = docstring
     unparsed = ast.unparse(module_ast)
     stub.write_text(unparsed, encoding="utf-8")
-    # sort imports
-    isort.file(stub, config=config_isort)
 
 # run ruff to improve stub style
+execution = subprocess.run(
+    ["ruff", "check", str(directory), "--fix", "--unsafe-fixes", "--config", config]
+)
+if execution.returncode:
+    sys.exit(execution.returncode)
 execution = subprocess.run(["ruff", "format", str(directory), "--config", config])
 sys.exit(execution.returncode)

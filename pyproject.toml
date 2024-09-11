@@ -16,7 +16,6 @@ classifiers = [
   'Programming Language :: Python :: 3.10',
   'Programming Language :: Python :: 3.11',
   'Programming Language :: Python :: 3.12',
-  'Programming Language :: Python :: 3.9',
 ]
 dependencies = [
   'bsl==0.5.2',
@@ -138,24 +137,6 @@ omit = [
 ]
 parallel = true
 
-[tool.isort]
-extend_skip_glob = [
-  'demo_realtime/resources',
-  'demo_realtime/visuals/resources',
-  'setup.py',
-]
-line_length = 88
-multi_line_output = 3
-profile = 'black'
-py_version = 39
-
-[tool.pydocstyle]
-add_ignore = 'D100,D104,D107'
-convention = 'numpy'
-ignore-decorators = '(copy_doc|property|.*setter|.*getter|pyqtSlot|Slot)'
-match = '^(?!setup|__init__|test_).*\.py'
-match-dir = '^demo_realtime.*'
-
 [tool.pytest.ini_options]
 addopts = '--durations 20 --junit-xml=junit-results.xml --verbose'
 minversion = '8.0'
@@ -164,25 +145,30 @@ minversion = '8.0'
 extend-exclude = [
   'demo_realtime/resources',
   'demo_realtime/visuals/resources',
-  'doc',
-  'setup.py',
 ]
 line-length = 88
-target-version = 'py39'
 
 [tool.ruff.format]
 docstring-code-format = true
+line-ending = "lf"
 
 [tool.ruff.lint]
 ignore = []
-select = ['A', 'B', 'E', 'F', 'UP', 'W']
+select = ['A', 'B', 'D', 'E', 'F', 'G', 'I', 'LOG', 'NPY', 'PIE', 'PT', 'T20', 'UP', 'W']
 
 [tool.ruff.lint.per-file-ignores]
 '*' = [
   'B904', # 'Within an except clause, raise exceptions with raise ... from ...'
+  'D100', # 'Missing docstring in public module'
+  'D104', # 'Missing docstring in public package'
+  'D107', # 'Missing docstring in __init__'
 ]
 '*.pyi' = ['E501', 'F811']
 '__init__.py' = ['F401']
+
+[tool.ruff.lint.pydocstyle]
+convention = 'numpy'
+ignore-decorators = ["demo_realtime.utils._docs.copy_doc"]
 
 [tool.setuptools]
 include-package-data = false
