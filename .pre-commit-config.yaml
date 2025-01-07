@@ -3,7 +3,7 @@ ci:
 
 repos:
     - repo: https://github.com/astral-sh/ruff-pre-commit
-      rev: v0.6.3
+      rev: v0.8.6
       hooks:
           - id: ruff
             name: ruff linter
@@ -18,7 +18,7 @@ repos:
             additional_dependencies: [tomli]
 
     - repo: https://github.com/pappasam/toml-sort
-      rev: v0.23.1
+      rev: v0.24.2
       hooks:
           - id: toml-sort-fix
             files: pyproject.toml
