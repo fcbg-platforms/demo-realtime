@@ -59,7 +59,7 @@ jobs:
           python -m pip install --progress-bar off .[test]
       - run: demo-sys_info --developer
       - run: pytest demo_realtime --cov=demo_realtime --cov-report=xml --cov-config=pyproject.toml
-      - uses: codecov/codecov-action@v5
+      - uses: codecov/codecov-action@v7
         with:
           files: ./coverage.xml
           flags: unittests  # optional
@@ -100,7 +100,7 @@ jobs:
           python -m pip install --progress-bar off --upgrade --pre --only-binary :all: -i https://pypi.anaconda.org/scientific-python-nightly-wheels/simple --timeout=180 numpy scipy
       - run: demo-sys_info --developer
       - run: pytest demo_realtime --cov=demo_realtime --cov-report=xml --cov-config=pyproject.toml
-      - uses: codecov/codecov-action@v5
+      - uses: codecov/codecov-action@v7
         with:
           files: ./coverage.xml
           flags: unittests  # optional
@@ -140,7 +140,7 @@ jobs:
           python -m pip install --progress-bar off psychopy psychtoolbox
       - run: demo-sys_info --developer
       - run: pytest demo_realtime/visuals/tests/test_double_spinning_wheel.py --cov=demo_realtime/visuals --cov-report=xml --cov-config=pyproject.toml
-      - uses: codecov/codecov-action@v5
+      - uses: codecov/codecov-action@v7
         with:
           files: ./coverage.xml
           flags: unittests-psychopy  # optional
